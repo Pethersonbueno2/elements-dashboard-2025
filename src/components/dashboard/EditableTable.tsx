@@ -9,27 +9,29 @@ interface EditableTableProps {
   onDataChange: (newData: MetricData[]) => void;
 }
 
-export function EditableTable({ data, onDataChange }: EditableTableProps) {
-  const [editingCell, setEditingCell] = useState<{ row: number; field: "previsto" | "realizado" } | null>(null);
+type EditableField = "previsto" | "realizado" | "diferenca" | "concluido";
 
-  const handleValueChange = (index: number, field: "previsto" | "realizado", value: string) => {
+export function EditableTable({ data, onDataChange }: EditableTableProps) {
+  const [editingCell, setEditingCell] = useState<{ row: number; field: EditableField } | null>(null);
+
+  const handleValueChange = (index: number, field: EditableField, value: string) => {
     const numValue = value === "" ? null : parseFloat(value);
     const newData = [...data];
+    
     newData[index] = {
       ...newData[index],
       [field]: numValue,
     };
-    
-    // Recalculate diferenca and concluido
-    const previsto = field === "previsto" ? numValue : newData[index].previsto;
-    const realizado = field === "realizado" ? numValue : newData[index].realizado;
-    
-    if (previsto !== null && realizado !== null) {
-      newData[index].diferenca = realizado - previsto;
-      newData[index].concluido = previsto !== 0 ? (realizado / previsto) * 100 : 0;
-    } else {
-      newData[index].diferenca = null;
-      newData[index].concluido = null;
+
+    // If editing previsto or realizado, recalculate diferenca and concluido
+    if (field === "previsto" || field === "realizado") {
+      const previsto = field === "previsto" ? numValue : newData[index].previsto;
+      const realizado = field === "realizado" ? numValue : newData[index].realizado;
+      
+      if (previsto !== null && realizado !== null) {
+        newData[index].diferenca = realizado - previsto;
+        newData[index].concluido = previsto !== 0 ? (realizado / previsto) * 100 : 0;
+      }
     }
     
     onDataChange(newData);
@@ -53,6 +55,53 @@ export function EditableTable({ data, onDataChange }: EditableTableProps) {
     return "text-destructive font-medium";
   };
 
+  const renderEditableCell = (
+    index: number,
+    field: EditableField,
+    value: number | null,
+    className?: string,
+    displayValue?: string
+  ) => {
+    const isEditing = editingCell?.row === index && editingCell?.field === field;
+
+    if (isEditing) {
+      return (
+        <Input
+          type="number"
+          step="any"
+          defaultValue={value ?? ""}
+          className="w-24 h-8 text-right ml-auto"
+          autoFocus
+          onBlur={(e) => {
+            handleValueChange(index, field, e.target.value);
+            setEditingCell(null);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleValueChange(index, field, (e.target as HTMLInputElement).value);
+              setEditingCell(null);
+            }
+            if (e.key === "Escape") {
+              setEditingCell(null);
+            }
+          }}
+        />
+      );
+    }
+
+    return (
+      <button
+        onClick={() => setEditingCell({ row: index, field })}
+        className={cn(
+          "px-2 py-1 hover:bg-accent rounded transition-colors cursor-text w-full text-right",
+          className
+        )}
+      >
+        {displayValue ?? formatValue(value)}
+      </button>
+    );
+  };
+
   return (
     <div className="rounded-lg border border-border overflow-hidden">
       <Table>
@@ -70,70 +119,28 @@ export function EditableTable({ data, onDataChange }: EditableTableProps) {
             <TableRow key={row.mes} className="hover:bg-muted/30 transition-colors">
               <TableCell className="font-medium">{row.mes}</TableCell>
               <TableCell className="text-right p-2">
-                {editingCell?.row === index && editingCell?.field === "previsto" ? (
-                  <Input
-                    type="number"
-                    defaultValue={row.previsto ?? ""}
-                    className="w-24 h-8 text-right ml-auto"
-                    autoFocus
-                    onBlur={(e) => {
-                      handleValueChange(index, "previsto", e.target.value);
-                      setEditingCell(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleValueChange(index, "previsto", (e.target as HTMLInputElement).value);
-                        setEditingCell(null);
-                      }
-                      if (e.key === "Escape") {
-                        setEditingCell(null);
-                      }
-                    }}
-                  />
-                ) : (
-                  <button
-                    onClick={() => setEditingCell({ row: index, field: "previsto" })}
-                    className="px-2 py-1 hover:bg-accent rounded transition-colors cursor-text w-full text-right"
-                  >
-                    {formatValue(row.previsto)}
-                  </button>
+                {renderEditableCell(index, "previsto", row.previsto)}
+              </TableCell>
+              <TableCell className="text-right p-2">
+                {renderEditableCell(index, "realizado", row.realizado)}
+              </TableCell>
+              <TableCell className="text-right p-2">
+                {renderEditableCell(
+                  index,
+                  "diferenca",
+                  row.diferenca,
+                  row.diferenca !== null && row.diferenca >= 0 ? "text-success" : "text-destructive",
+                  row.diferenca !== null ? (row.diferenca >= 0 ? "+" : "") + formatValue(row.diferenca) : "–"
                 )}
               </TableCell>
               <TableCell className="text-right p-2">
-                {editingCell?.row === index && editingCell?.field === "realizado" ? (
-                  <Input
-                    type="number"
-                    defaultValue={row.realizado ?? ""}
-                    className="w-24 h-8 text-right ml-auto"
-                    autoFocus
-                    onBlur={(e) => {
-                      handleValueChange(index, "realizado", e.target.value);
-                      setEditingCell(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handleValueChange(index, "realizado", (e.target as HTMLInputElement).value);
-                        setEditingCell(null);
-                      }
-                      if (e.key === "Escape") {
-                        setEditingCell(null);
-                      }
-                    }}
-                  />
-                ) : (
-                  <button
-                    onClick={() => setEditingCell({ row: index, field: "realizado" })}
-                    className="px-2 py-1 hover:bg-accent rounded transition-colors cursor-text w-full text-right"
-                  >
-                    {formatValue(row.realizado)}
-                  </button>
+                {renderEditableCell(
+                  index,
+                  "concluido",
+                  row.concluido,
+                  getConclusionStyle(row.concluido),
+                  row.concluido !== null ? `${row.concluido.toFixed(1)}%` : "–"
                 )}
-              </TableCell>
-              <TableCell className={cn("text-right", row.diferenca !== null && row.diferenca >= 0 ? "text-success" : "text-destructive")}>
-                {row.diferenca !== null ? (row.diferenca >= 0 ? "+" : "") + formatValue(row.diferenca) : "–"}
-              </TableCell>
-              <TableCell className={cn("text-right", getConclusionStyle(row.concluido))}>
-                {row.concluido !== null ? `${row.concluido.toFixed(1)}%` : "–"}
               </TableCell>
             </TableRow>
           ))}
