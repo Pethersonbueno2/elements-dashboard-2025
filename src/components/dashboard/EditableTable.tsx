@@ -39,13 +39,11 @@ export function EditableTable({ data, onDataChange }: EditableTableProps) {
 
   const formatValue = (value: number | null) => {
     if (value === null) return "–";
-    if (Math.abs(value) >= 1000000) {
-      return `${(value / 1000000).toFixed(2)}M`;
-    }
-    if (Math.abs(value) >= 1000) {
-      return `${(value / 1000).toFixed(1)}K`;
-    }
-    return value.toFixed(2);
+    // Format with thousand separators and up to 2 decimal places
+    return value.toLocaleString('pt-BR', { 
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 2 
+    });
   };
 
   const getConclusionStyle = (concluido: number | null) => {
