@@ -10,6 +10,7 @@ import { Header } from "@/components/dashboard/Header";
 import { EditableKPICard } from "@/components/dashboard/EditableKPICard";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { CategoryFilter } from "@/components/dashboard/CategoryFilter";
+import { ExecutivePanel } from "@/components/dashboard/ExecutivePanel";
 import { initialMetrics, categorias, type Metric, type MetricData } from "@/data/dashboardData";
 
 interface ManualKPIValue {
@@ -149,6 +150,9 @@ const Index = () => {
             </p>
           </div>
         </section>
+
+        {/* Executive Panel */}
+        <ExecutivePanel metrics={metrics} selectedMonth="Novembro" />
 
         {/* Revenue KPI Cards */}
         <section className="mb-6">
