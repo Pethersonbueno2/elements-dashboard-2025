@@ -20,7 +20,11 @@ interface ManualKPIValue {
 const Index = () => {
   const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
-  const [manualKPIValues, setManualKPIValues] = useState<Record<string, ManualKPIValue>>({});
+  const [manualKPIValues, setManualKPIValues] = useState<Record<string, ManualKPIValue>>({
+    "receita-b2b": { value: "R$ 39.353.316", trend: null },
+    "receita-b2bc": { value: "R$ 8.681.962", trend: null },
+    "receita-liquida-b2c-digital": { value: "R$ 42.944.924,33", trend: null },
+  });
 
   const handleDataChange = (metricId: string, newData: MetricData[]) => {
     setMetrics((prev) =>
