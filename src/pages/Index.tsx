@@ -28,6 +28,21 @@ const Index = () => {
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
+  // Calculate accumulated revenue for KPIs
+  const getAccumulatedRevenue = (metricId: string) => {
+    const metric = metrics.find((m) => m.id === metricId);
+    if (!metric) return { value: "–", trend: null };
+    
+    const total = metric.dados.reduce((acc, d) => acc + (d.realizado || 0), 0);
+    const totalPrevisto = metric.dados.reduce((acc, d) => acc + (d.previsto || 0), 0);
+    const trend = totalPrevisto > 0 ? (total / totalPrevisto) * 100 : null;
+    
+    const formatted = total >= 1000000 
+      ? `R$ ${(total / 1000000).toFixed(1)}M` 
+      : `R$ ${(total / 1000).toFixed(0)}K`;
+    return { value: formatted, trend };
+  };
+
   // Calculate KPIs from current data
   const getKPIValue = (metricId: string) => {
     const metric = metrics.find((m) => m.id === metricId);
@@ -39,13 +54,6 @@ const Index = () => {
     const value = lastWithData.realizado;
     const trend = lastWithData.concluido;
 
-    // Format based on metric type
-    if (metricId === "receita-b2b" || metricId === "receita-b2bc" || metricId === "receita-liquida-b2c") {
-      const formatted = value >= 1000000 
-        ? `R$ ${(value / 1000000).toFixed(1)}M` 
-        : `R$ ${(value / 1000).toFixed(0)}K`;
-      return { value: formatted, trend };
-    }
     if (metricId === "satisfacao" || metricId === "margem-bruta" || metricId === "taxa-conversao-site") {
       return { value: `${value.toFixed(1)}%`, trend };
     }
@@ -58,7 +66,7 @@ const Index = () => {
     return { value: value.toFixed(1), trend };
   };
 
-  const kpis = [
+  const revenueKpis = [
     {
       id: "receita-b2b",
       title: "Faturamento B2B",
@@ -72,11 +80,14 @@ const Index = () => {
       icon: <ShoppingCart className="h-5 w-5" />,
     },
     {
-      id: "receita-liquida-b2c",
+      id: "receita-liquida-b2c-digital",
       title: "Faturamento B2C Digital",
       meta: "R$ 60M",
       icon: <DollarSign className="h-5 w-5" />,
     },
+  ];
+
+  const kpis = [
     {
       id: "satisfacao",
       title: "Satisfação com Atendimento",
@@ -113,10 +124,31 @@ const Index = () => {
           </div>
         </section>
 
-        {/* KPI Cards */}
+        {/* Revenue KPI Cards */}
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground mb-6">Faturamento Acumulado</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {revenueKpis.map((kpi, index) => {
+              const { value, trend } = getAccumulatedRevenue(kpi.id);
+              return (
+                <KPICard
+                  key={kpi.id}
+                  title={kpi.title}
+                  value={value}
+                  meta={kpi.meta}
+                  trend={trend}
+                  icon={kpi.icon}
+                  delay={index * 100}
+                />
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Other KPI Cards */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-foreground mb-6">Visão Geral</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className="text-xl font-semibold text-foreground mb-6">Indicadores Gerais</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {kpis.map((kpi, index) => {
               const { value, trend } = getKPIValue(kpi.id);
               return (
@@ -127,7 +159,7 @@ const Index = () => {
                   meta={kpi.meta}
                   trend={trend}
                   icon={kpi.icon}
-                  delay={index * 100}
+                  delay={(index + 3) * 100}
                 />
               );
             })}
