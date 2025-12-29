@@ -14,12 +14,14 @@ interface MetricCardProps {
 export function MetricCard({ metric, onDataChange, delay = 0 }: MetricCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const getLatestCompletion = () => {
-    const lastWithData = [...metric.dados].reverse().find((d) => d.concluido !== null);
-    return lastWithData?.concluido ?? null;
+  const getAverageCompletion = () => {
+    const validValues = metric.dados.filter((d) => d.concluido !== null && d.concluido > 0);
+    if (validValues.length === 0) return null;
+    const sum = validValues.reduce((acc, d) => acc + (d.concluido ?? 0), 0);
+    return sum / validValues.length;
   };
 
-  const completion = getLatestCompletion();
+  const completion = getAverageCompletion();
 
   const getCompletionStyle = () => {
     if (completion === null) return "bg-muted text-muted-foreground";
