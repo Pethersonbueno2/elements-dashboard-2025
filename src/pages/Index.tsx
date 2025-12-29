@@ -3,24 +3,36 @@ import {
   TrendingUp, 
   Users, 
   DollarSign, 
-  Target,
   Star,
   ShoppingCart
 } from "lucide-react";
 import { Header } from "@/components/dashboard/Header";
-import { KPICard } from "@/components/dashboard/KPICard";
+import { EditableKPICard } from "@/components/dashboard/EditableKPICard";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { CategoryFilter } from "@/components/dashboard/CategoryFilter";
 import { initialMetrics, categorias, type Metric, type MetricData } from "@/data/dashboardData";
 
+interface ManualKPIValue {
+  value: string;
+  trend: number | null;
+}
+
 const Index = () => {
   const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [manualKPIValues, setManualKPIValues] = useState<Record<string, ManualKPIValue>>({});
 
   const handleDataChange = (metricId: string, newData: MetricData[]) => {
     setMetrics((prev) =>
       prev.map((m) => (m.id === metricId ? { ...m, dados: newData } : m))
     );
+  };
+
+  const handleKPIValueChange = (kpiId: string, newValue: string, currentTrend: number | null) => {
+    setManualKPIValues((prev) => ({
+      ...prev,
+      [kpiId]: { value: newValue, trend: currentTrend }
+    }));
   };
 
   const filteredMetrics = useMemo(() => {
@@ -30,6 +42,11 @@ const Index = () => {
 
   // Calculate accumulated revenue for KPIs
   const getAccumulatedRevenue = (metricId: string) => {
+    // Check if there's a manual value first
+    if (manualKPIValues[metricId]) {
+      return manualKPIValues[metricId];
+    }
+
     const metric = metrics.find((m) => m.id === metricId);
     if (!metric) return { value: "–", trend: null };
     
@@ -45,6 +62,11 @@ const Index = () => {
 
   // Calculate KPIs from current data
   const getKPIValue = (metricId: string) => {
+    // Check if there's a manual value first
+    if (manualKPIValues[metricId]) {
+      return manualKPIValues[metricId];
+    }
+
     const metric = metrics.find((m) => m.id === metricId);
     if (!metric) return { value: "–", trend: null };
     
@@ -119,7 +141,7 @@ const Index = () => {
             <h2 className="text-3xl font-bold mb-2">Painel de Indicadores 2025</h2>
             <p className="text-primary-foreground/80 text-lg">
               Acompanhe as métricas de performance da Elements em tempo real. 
-              Clique nos valores das tabelas para editar.
+              Passe o mouse sobre os cards para editar os valores.
             </p>
           </div>
         </section>
@@ -131,7 +153,7 @@ const Index = () => {
             {revenueKpis.map((kpi, index) => {
               const { value, trend } = getAccumulatedRevenue(kpi.id);
               return (
-                <KPICard
+                <EditableKPICard
                   key={kpi.id}
                   title={kpi.title}
                   value={value}
@@ -139,6 +161,7 @@ const Index = () => {
                   trend={trend}
                   icon={kpi.icon}
                   delay={index * 100}
+                  onValueChange={(newValue) => handleKPIValueChange(kpi.id, newValue, trend)}
                 />
               );
             })}
@@ -152,7 +175,7 @@ const Index = () => {
             {kpis.map((kpi, index) => {
               const { value, trend } = getKPIValue(kpi.id);
               return (
-                <KPICard
+                <EditableKPICard
                   key={kpi.id}
                   title={kpi.title}
                   value={value}
@@ -160,6 +183,7 @@ const Index = () => {
                   trend={trend}
                   icon={kpi.icon}
                   delay={(index + 3) * 100}
+                  onValueChange={(newValue) => handleKPIValueChange(kpi.id, newValue, trend)}
                 />
               );
             })}
