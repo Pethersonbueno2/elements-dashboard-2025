@@ -40,7 +40,7 @@ const Index = () => {
     const trend = lastWithData.concluido;
 
     // Format based on metric type
-    if (metricId === "receita-b2b" || metricId === "receita-b2bc") {
+    if (metricId === "receita-b2b" || metricId === "receita-b2bc" || metricId === "receita-liquida-b2c") {
       const formatted = value >= 1000000 
         ? `R$ ${(value / 1000000).toFixed(1)}M` 
         : `R$ ${(value / 1000).toFixed(0)}K`;
@@ -60,22 +60,28 @@ const Index = () => {
 
   const kpis = [
     {
-      id: "satisfacao",
-      title: "Satisfação com Atendimento",
-      meta: "> 90%",
-      icon: <Star className="h-5 w-5" />,
-    },
-    {
       id: "receita-b2b",
-      title: "Receita B2B",
+      title: "Faturamento B2B",
       meta: "R$ 61.6M",
       icon: <DollarSign className="h-5 w-5" />,
     },
     {
       id: "receita-b2bc",
-      title: "Receita B2BC",
+      title: "Faturamento B2BC",
       meta: "R$ 15.8M",
       icon: <ShoppingCart className="h-5 w-5" />,
+    },
+    {
+      id: "receita-liquida-b2c",
+      title: "Faturamento B2C Digital",
+      meta: "R$ 60M",
+      icon: <DollarSign className="h-5 w-5" />,
+    },
+    {
+      id: "satisfacao",
+      title: "Satisfação com Atendimento",
+      meta: "> 90%",
+      icon: <Star className="h-5 w-5" />,
     },
     {
       id: "leads",
@@ -88,12 +94,6 @@ const Index = () => {
       title: "Margem Bruta",
       meta: "55%",
       icon: <TrendingUp className="h-5 w-5" />,
-    },
-    {
-      id: "taxa-conversao-site",
-      title: "Taxa de Conversão",
-      meta: "1%",
-      icon: <Target className="h-5 w-5" />,
     },
   ];
 
