@@ -105,7 +105,7 @@ const Index = () => {
         {/* Hero Section */}
         <section className="mb-10">
           <div className="rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-primary/80 p-8 text-primary-foreground shadow-lg">
-            <h2 className="text-3xl font-bold mb-2">Painel de Indicadores 2024</h2>
+            <h2 className="text-3xl font-bold mb-2">Painel de Indicadores 2025</h2>
             <p className="text-primary-foreground/80 text-lg">
               Acompanhe as métricas de performance da Elements em tempo real. 
               Clique nos valores das tabelas para editar.
@@ -158,7 +158,7 @@ const Index = () => {
 
         {/* Footer */}
         <footer className="mt-12 py-6 border-t border-border text-center text-sm text-muted-foreground">
-          <p>Dashboard Elements © 2024 • Dados atualizados em tempo real</p>
+          <p>Dashboard Elements © 2025 • Dados atualizados em tempo real</p>
         </footer>
       </main>
     </div>
