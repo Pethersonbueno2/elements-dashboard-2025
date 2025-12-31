@@ -94,7 +94,7 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
             r="4"
             fill="hsl(var(--foreground))"
           />
-          {/* Meta label */}
+          {/* Value label near needle */}
           <text
             x={100 + Math.cos(needleRadians) * 68}
             y={102 - Math.sin(needleRadians) * 68}
@@ -102,7 +102,7 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
             fill="hsl(var(--muted-foreground))"
             textAnchor="middle"
           >
-            {formatValue(max)}
+            {formatValue(value)}
           </text>
         </svg>
 
