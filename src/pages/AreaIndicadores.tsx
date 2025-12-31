@@ -109,7 +109,7 @@ const AreaIndicadores = () => {
                 />
               </div>
               <div className="text-center mt-4 text-sm text-muted-foreground">
-                Meta anual: R$ {(metaRevenue / 1000000).toFixed(1)}M
+                Meta Anual {(metaRevenue / 1000000).toFixed(2)}M
               </div>
             </div>
           </section>
