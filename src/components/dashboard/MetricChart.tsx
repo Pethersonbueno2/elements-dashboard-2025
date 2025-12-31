@@ -20,23 +20,23 @@ export function MetricChart({ data, title }: MetricChartProps) {
         <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorPrevisto" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="hsl(160, 84%, 32%)" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="hsl(160, 84%, 32%)" stopOpacity={0} />
+              <stop offset="5%" stopColor="hsl(264, 100%, 50%)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="hsl(264, 100%, 50%)" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="hsl(200, 70%, 50%)" stopOpacity={0.3} />
               <stop offset="95%" stopColor="hsl(200, 70%, 50%)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(160, 15%, 88%)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(0, 0%, 78%)" />
           <XAxis 
             dataKey="name" 
-            stroke="hsl(160, 10%, 45%)"
+            stroke="hsl(0, 0%, 40%)"
             fontSize={12}
             tickLine={false}
           />
           <YAxis 
-            stroke="hsl(160, 10%, 45%)"
+            stroke="hsl(0, 0%, 40%)"
             fontSize={12}
             tickLine={false}
             axisLine={false}
@@ -44,18 +44,18 @@ export function MetricChart({ data, title }: MetricChartProps) {
           <Tooltip 
             contentStyle={{
               backgroundColor: "hsl(0, 0%, 100%)",
-              border: "1px solid hsl(160, 15%, 88%)",
+              border: "1px solid hsl(0, 0%, 78%)",
               borderRadius: "8px",
               boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             }}
-            labelStyle={{ color: "hsl(160, 25%, 12%)", fontWeight: 600 }}
+            labelStyle={{ color: "hsl(0, 0%, 0%)", fontWeight: 600 }}
           />
           <Legend />
           <Area
             type="monotone"
             dataKey="previsto"
             name="Previsto"
-            stroke="hsl(160, 84%, 32%)"
+            stroke="hsl(264, 100%, 50%)"
             strokeWidth={2}
             fillOpacity={1}
             fill="url(#colorPrevisto)"
