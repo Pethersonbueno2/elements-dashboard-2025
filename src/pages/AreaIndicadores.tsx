@@ -105,7 +105,7 @@ const AreaIndicadores = () => {
                 <GaugeChart 
                   value={totalRevenue} 
                   max={metaRevenue} 
-                  label={`R$ ${(totalRevenue / 1000000).toFixed(1)}M de R$ ${(metaRevenue / 1000000).toFixed(1)}M`}
+                  label={`R$ ${(totalRevenue / 1000000).toFixed(2)}M de ${(metaRevenue / 1000000).toFixed(2)}M`}
                 />
               </div>
               <div className="text-center mt-4 text-sm text-muted-foreground">
