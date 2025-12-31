@@ -224,7 +224,7 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                     {rankingData.map((entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={index < 3 ? "#22c55e" : "#86efac"} 
+                        fill={index < 3 ? "hsl(264, 100%, 50%)" : "hsl(264, 80%, 70%)"} 
                       />
                     ))}
                   </Bar>
@@ -235,9 +235,9 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
               {rankingData.slice(0, 3).map((item, index) => (
                 <div 
                   key={item.fullCategory}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 rounded-full text-sm"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-sm"
                 >
-                  <span className="font-bold text-green-600">#{index + 1}</span>
+                  <span className="font-bold text-primary">#{index + 1}</span>
                   <span className="text-foreground truncate max-w-[120px]">{item.fullCategory}</span>
                 </div>
               ))}
@@ -313,7 +313,7 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                     dataKey="preenchidos" 
                     name="Preenchidos" 
                     stackId="a" 
-                    fill="#22c55e" 
+                    fill="hsl(264, 100%, 50%)" 
                     radius={[0, 0, 0, 0]}
                   />
                   <Bar 

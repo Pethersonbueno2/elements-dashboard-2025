@@ -144,10 +144,16 @@ const Index = () => {
         <section className="mb-10">
           <div className="rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-primary/80 p-8 text-primary-foreground shadow-lg">
             <h2 className="text-3xl font-bold mb-2">Painel de Indicadores 2025</h2>
-            <p className="text-primary-foreground/80 text-lg">
+            <p className="text-primary-foreground/80 text-lg mb-4">
               Acompanhe as métricas de performance da Elements em tempo real. 
               Passe o mouse sobre os cards para editar os valores.
             </p>
+            <a 
+              href="/area-indicadores" 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground font-medium transition-colors"
+            >
+              Ver Indicadores por Área →
+            </a>
           </div>
         </section>
 
