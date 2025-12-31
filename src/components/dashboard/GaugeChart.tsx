@@ -31,19 +31,19 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
   const needleRadians = (needleAngle * Math.PI) / 180;
 
   return (
-    <div className="relative w-full h-64 flex flex-col items-center">
+    <div className="relative w-full h-72 flex flex-col items-center">
       {/* Title */}
-      <h4 className="text-xs font-medium text-muted-foreground mb-1">{label}</h4>
+      <h4 className="text-sm font-medium text-muted-foreground mb-2">{label}</h4>
       
       {/* Gauge Chart */}
-      <div className="relative w-full h-48">
+      <div className="relative w-full h-44">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             {/* Background track */}
             <Pie
               data={[{ value: 100 }]}
               cx="50%"
-              cy="75%"
+              cy="85%"
               startAngle={180}
               endAngle={0}
               innerRadius="50%"
@@ -57,7 +57,7 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
             <Pie
               data={data}
               cx="50%"
-              cy="75%"
+              cy="85%"
               startAngle={180}
               endAngle={0}
               innerRadius="50%"
@@ -71,44 +71,34 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        
-        {/* Center value */}
-        <div className="absolute inset-0 flex items-center justify-center" style={{ paddingTop: '20%' }}>
-          <span 
-            className="text-base font-semibold tracking-tight"
-            style={{ color: gaugeColor }}
-          >
-            {formatValue(value)}
-          </span>
-        </div>
 
         {/* Needle indicator for target */}
         <svg 
           className="absolute inset-0 w-full h-full pointer-events-none"
-          viewBox="0 0 200 150"
+          viewBox="0 0 200 120"
           preserveAspectRatio="xMidYMax meet"
         >
           {/* Needle line pointing to meta */}
           <line
             x1="100"
-            y1="112"
-            x2={100 + Math.cos(needleRadians) * 60}
-            y2={112 - Math.sin(needleRadians) * 60}
+            y1="102"
+            x2={100 + Math.cos(needleRadians) * 55}
+            y2={102 - Math.sin(needleRadians) * 55}
             stroke="hsl(var(--foreground))"
             strokeWidth="2"
           />
           {/* Needle center dot */}
           <circle
             cx="100"
-            cy="112"
+            cy="102"
             r="4"
             fill="hsl(var(--foreground))"
           />
           {/* Meta label */}
           <text
-            x={100 + Math.cos(needleRadians) * 72}
-            y={112 - Math.sin(needleRadians) * 72}
-            fontSize="7"
+            x={100 + Math.cos(needleRadians) * 68}
+            y={102 - Math.sin(needleRadians) * 68}
+            fontSize="9"
             fill="hsl(var(--muted-foreground))"
             textAnchor="middle"
           >
@@ -117,10 +107,20 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
         </svg>
 
         {/* Scale markers */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-between px-6 text-[10px] text-muted-foreground">
+        <div className="absolute bottom-0 left-0 right-0 flex justify-between px-4 text-sm text-muted-foreground font-medium">
           <span>0</span>
           <span>{formatValue(max)}</span>
         </div>
+      </div>
+
+      {/* Value below chart */}
+      <div className="mt-2 flex flex-col items-center">
+        <span 
+          className="text-lg font-bold tracking-tight"
+          style={{ color: gaugeColor }}
+        >
+          {formatValue(value)}
+        </span>
       </div>
     </div>
   );
