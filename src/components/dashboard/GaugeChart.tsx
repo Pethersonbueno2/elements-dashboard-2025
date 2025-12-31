@@ -107,8 +107,7 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
         </svg>
 
         {/* Scale markers */}
-        <div className="absolute bottom-0 left-0 right-0 flex justify-between px-4 text-sm text-muted-foreground font-medium">
-          <span>0</span>
+        <div className="absolute bottom-0 left-0 right-0 flex justify-end px-4 text-sm text-muted-foreground font-medium">
           <span>{formatValue(max)}</span>
         </div>
       </div>
