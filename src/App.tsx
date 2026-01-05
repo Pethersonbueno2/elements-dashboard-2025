@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AreaIndicadores from "./pages/AreaIndicadores";
 import NotFound from "./pages/NotFound";
+import { FloatingControls } from "./components/dashboard/FloatingControls";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <FloatingControls />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
