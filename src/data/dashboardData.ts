@@ -47,7 +47,7 @@ export const initialMetrics: Metric[] = [
       { mes: "Setembro", previsto: 90, realizado: 98, diferenca: 8, concluido: 108.89 },
       { mes: "Outubro", previsto: 90, realizado: 89.5, diferenca: -0.5, concluido: 99.44 },
       { mes: "Novembro", previsto: 90, realizado: 90.7, diferenca: 0.7, concluido: 100.78 },
-      { mes: "Dezembro", previsto: 90, realizado: null, diferenca: null, concluido: null },
+      { mes: "Dezembro", previsto: 90, realizado: 77.1, diferenca: -12.9, concluido: 85.67 },
     ],
   },
   {
@@ -67,7 +67,7 @@ export const initialMetrics: Metric[] = [
       { mes: "Setembro", previsto: 2, realizado: 1, diferenca: -1, concluido: 200 },
       { mes: "Outubro", previsto: 2, realizado: 0.54, diferenca: -1.46, concluido: 370.37 },
       { mes: "Novembro", previsto: 2, realizado: 1.59, diferenca: -0.41, concluido: 125.79 },
-      { mes: "Dezembro", previsto: 2, realizado: null, diferenca: null, concluido: null },
+      { mes: "Dezembro", previsto: 2, realizado: 6.6, diferenca: 4.6, concluido: 30.3 },
     ],
   },
   {
@@ -87,7 +87,7 @@ export const initialMetrics: Metric[] = [
       { mes: "Setembro", previsto: 4.5, realizado: 4.5, diferenca: 0, concluido: 100 },
       { mes: "Outubro", previsto: 4.5, realizado: 4.6, diferenca: 0.1, concluido: 102.22 },
       { mes: "Novembro", previsto: 4.6, realizado: 4.6, diferenca: 0, concluido: 100 },
-      { mes: "Dezembro", previsto: 4.6, realizado: null, diferenca: null, concluido: null },
+      { mes: "Dezembro", previsto: 4.6, realizado: 4.5, diferenca: -0.1, concluido: 97.83 },
     ],
   },
   {
@@ -107,7 +107,7 @@ export const initialMetrics: Metric[] = [
       { mes: "Setembro", previsto: 7.6, realizado: 7.5, diferenca: -0.1, concluido: 98.68 },
       { mes: "Outubro", previsto: 7.6, realizado: 7.9, diferenca: 0.3, concluido: 103.95 },
       { mes: "Novembro", previsto: 8, realizado: 7.9, diferenca: -0.1, concluido: 98.75 },
-      { mes: "Dezembro", previsto: 8, realizado: null, diferenca: null, concluido: null },
+      { mes: "Dezembro", previsto: 8, realizado: 8, diferenca: 0, concluido: 100 },
     ],
   },
   {
