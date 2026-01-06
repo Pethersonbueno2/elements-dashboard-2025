@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { TVMetricGrid } from "@/components/dashboard/TVMetricGrid";
-import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
+import { useMetricsFromDB } from "@/hooks/useMetricsFromDB";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -10,27 +10,48 @@ const meses = [
 ];
 
 const TVDashboard = () => {
-  const [metrics] = useState<Metric[]>(initialMetrics);
+  const { data, isLoading, error } = useMetricsFromDB();
   const [selectedMonth, setSelectedMonth] = useState("Novembro");
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
 
-  const selectedCategory = categorias[selectedCategoryIndex];
+  const categories = data?.categories || [];
+  const metrics = data?.metrics || [];
+  
+  const selectedCategory = categories[selectedCategoryIndex] || "";
   
   const filteredMetrics = useMemo(() => {
     return metrics.filter(m => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
   const goToPrevCategory = () => {
+    if (categories.length === 0) return;
     setSelectedCategoryIndex((prev) => 
-      prev === 0 ? categorias.length - 1 : prev - 1
+      prev === 0 ? categories.length - 1 : prev - 1
     );
   };
 
   const goToNextCategory = () => {
+    if (categories.length === 0) return;
     setSelectedCategoryIndex((prev) => 
-      prev === categorias.length - 1 ? 0 : prev + 1
+      prev === categories.length - 1 ? 0 : prev + 1
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-destructive text-xl">Erro ao carregar dados</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -66,7 +87,7 @@ const TVDashboard = () => {
           </div>
           
           <span className="text-xs text-muted-foreground">
-            ({selectedCategoryIndex + 1}/{categorias.length})
+            ({categories.length > 0 ? selectedCategoryIndex + 1 : 0}/{categories.length})
           </span>
         </div>
         
