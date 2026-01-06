@@ -1,42 +1,235 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Flag } from "lucide-react";
-import { CompactMetricRow } from "@/components/dashboard/CompactMetricRow";
-import { GaugeChart } from "@/components/dashboard/GaugeChart";
+import { ArrowLeft, Flag, ChevronLeft, ChevronRight, Tv, Grid } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
+import { cn } from "@/lib/utils";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
 ];
 
+// Extract unit from meta field
+function getUnit(meta: string): string {
+  if (meta.includes("%")) return "%";
+  if (meta.includes("R$")) return "R$";
+  if (meta.toLowerCase().includes("dias") || meta.toLowerCase().includes("dia")) return "dias";
+  if (meta.toLowerCase().includes("h") || meta.toLowerCase().includes("hora")) return "h";
+  return "";
+}
+
 const AreaIndicadores = () => {
   const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("B2B e B2BC");
   const [selectedMonth, setSelectedMonth] = useState("Novembro");
+  const [tvMode, setTvMode] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const filteredMetrics = metrics.filter((m) => m.categoria === selectedCategory);
 
-  // Calculate total revenue (sum of all channels for the year)
-  const getTotalRevenue = () => {
-    const revenueMetrics = ["receita-b2b", "receita-b2bc", "receita-liquida-b2c-digital"];
-    let total = 0;
-    let meta = 0;
+  // Auto-rotate every 30 seconds in TV mode
+  useEffect(() => {
+    if (!tvMode || filteredMetrics.length === 0) return;
     
-    revenueMetrics.forEach((id) => {
-      const metric = metrics.find((m) => m.id === id);
-      if (metric) {
-        total += metric.dados.reduce((acc, d) => acc + (d.realizado || 0), 0);
-        meta += metric.dados.reduce((acc, d) => acc + (d.previsto || 0), 0);
-      }
-    });
-    
-    return { total, meta };
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % filteredMetrics.length);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [tvMode, filteredMetrics.length]);
+
+  // Reset index when category changes
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [selectedCategory]);
+
+  const currentMetric = filteredMetrics[currentIndex];
+
+  const formatValue = (val: number | null, unit: string) => {
+    if (val === null) return "–";
+    if (unit === "R$") {
+      if (val >= 1000000) return `R$ ${(val / 1000000).toFixed(2)}M`;
+      if (val >= 1000) return `R$ ${(val / 1000).toFixed(0)}K`;
+      return `R$ ${val.toFixed(0)}`;
+    }
+    return val.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + (unit ? ` ${unit}` : "");
   };
 
-  const { total: totalRevenue, meta: metaRevenue } = getTotalRevenue();
+  const goToPrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + filteredMetrics.length) % filteredMetrics.length);
+  };
 
-  // Count indicators below target
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % filteredMetrics.length);
+  };
+
+  // TV Mode - Full screen pie chart carousel
+  if (tvMode && currentMetric) {
+    const unit = getUnit(currentMetric.meta);
+    const currentData = currentMetric.dados.find((d) => d.mes === selectedMonth);
+    const completionPercent = currentData?.concluido ?? 0;
+    const isBelowTarget = completionPercent < 100;
+
+    const pieData = [
+      { name: "Realizado", value: Math.min(completionPercent, 100) },
+      { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+    ];
+
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Compact Header */}
+        <header className="border-b border-border bg-card/95 backdrop-blur px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+              >
+                {categorias.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+              >
+                {meses.map((mes) => (
+                  <option key={mes} value={mes}>{mes}</option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={() => setTvMode(false)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"
+            >
+              <Grid className="h-4 w-4" />
+              <span>Grid</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Main Content - Full Screen Pie */}
+        <main className="flex-1 flex flex-col items-center justify-center px-8 py-6 relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={goToPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
+          >
+            <ChevronLeft className="h-8 w-8" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
+          >
+            <ChevronRight className="h-8 w-8" />
+          </button>
+
+          {/* Metric Title */}
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-center gap-3">
+              <h1 className="text-4xl font-bold text-foreground">{currentMetric.nome}</h1>
+              {isBelowTarget && (
+                <Flag className="h-8 w-8 text-destructive" fill="currentColor" />
+              )}
+            </div>
+            <p className="text-xl text-muted-foreground mt-2">{selectedCategory} • {selectedMonth}</p>
+          </div>
+
+          {/* Giant Pie Chart */}
+          <div className="w-[60vh] h-[60vh] max-w-[600px] max-h-[600px] relative animate-scale-in">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="30%"
+                  outerRadius="90%"
+                  startAngle={90}
+                  endAngle={-270}
+                  strokeWidth={0}
+                >
+                  <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                  <Cell fill="hsl(var(--muted))" />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            {/* Center Label */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className={cn(
+                "text-6xl font-bold",
+                isBelowTarget ? "text-destructive" : "text-green-500"
+              )}>
+                {completionPercent.toFixed(0)}%
+              </span>
+              <span className="text-lg text-muted-foreground">concluído</span>
+            </div>
+          </div>
+
+          {/* Values */}
+          <div className="flex gap-12 mt-6">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">Meta</p>
+              <p className="text-3xl font-bold text-foreground">
+                {formatValue(currentData?.previsto ?? null, unit)}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">Realizado</p>
+              <p className={cn(
+                "text-3xl font-bold",
+                isBelowTarget ? "text-destructive" : "text-green-500"
+              )}>
+                {formatValue(currentData?.realizado ?? null, unit)}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide">Diferença</p>
+              <p className={cn(
+                "text-3xl font-bold",
+                (currentData?.diferenca ?? 0) < 0 ? "text-destructive" : "text-green-500"
+              )}>
+                {formatValue(currentData?.diferenca ?? null, unit)}
+              </p>
+            </div>
+          </div>
+
+          {/* Progress dots */}
+          <div className="flex gap-2 mt-8">
+            {filteredMetrics.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={cn(
+                  "w-3 h-3 rounded-full transition-all",
+                  idx === currentIndex 
+                    ? "bg-primary scale-125" 
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                )}
+              />
+            ))}
+          </div>
+
+          {/* Auto-rotate indicator */}
+          <p className="text-sm text-muted-foreground mt-4">
+            Próximo indicador em 30 segundos • {currentIndex + 1} de {filteredMetrics.length}
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  // Grid Mode (original view)
   const indicatorsBelowTarget = filteredMetrics.filter((m) => {
     const data = m.dados.find((d) => d.mes === selectedMonth);
     return data?.concluido !== null && data?.concluido !== undefined && data.concluido < 100;
@@ -47,16 +240,25 @@ const AreaIndicadores = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span>Voltar</span>
+              </Link>
+              <div className="h-6 w-px bg-border" />
+              <h1 className="text-xl font-bold text-foreground">Indicadores por Área</h1>
+            </div>
+            <button
+              onClick={() => setTvMode(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Voltar</span>
-            </Link>
-            <div className="h-6 w-px bg-border" />
-            <h1 className="text-xl font-bold text-foreground">Indicadores por Área</h1>
+              <Tv className="h-4 w-4" />
+              <span>Modo TV</span>
+            </button>
           </div>
         </div>
       </header>
@@ -94,27 +296,6 @@ const AreaIndicadores = () => {
           </div>
         </section>
 
-        {/* Revenue Gauge - Only show for revenue-related categories */}
-        {(selectedCategory === "B2B e B2BC" || selectedCategory === "B2C Digital" || selectedCategory === "Financeiro") && (
-          <section className="mb-8">
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-foreground mb-4 text-center">
-                Faturamento Geral (Soma de Todos os Canais)
-              </h2>
-              <div className="max-w-xs mx-auto">
-                <GaugeChart 
-                  value={totalRevenue} 
-                  max={metaRevenue} 
-                  label={`R$ ${(totalRevenue / 1000000).toFixed(2)}M de ${(metaRevenue / 1000000).toFixed(2)}M`}
-                />
-              </div>
-              <div className="text-center mt-4 text-sm text-muted-foreground">
-                Meta Anual {(metaRevenue / 1000000).toFixed(2)}M
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* Alert for indicators below target */}
         {indicatorsBelowTarget > 0 && (
           <section className="mb-6">
@@ -136,37 +317,78 @@ const AreaIndicadores = () => {
         </section>
 
         {/* Metrics Grid - 6 colunas para TV */}
-        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {filteredMetrics.map((metric) => (
-            <CompactMetricRow 
-              key={metric.id} 
-              metric={metric} 
-              selectedMonth={selectedMonth}
-            />
-          ))}
-        </section>
+        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {filteredMetrics.map((metric) => {
+            const unit = getUnit(metric.meta);
+            const currentData = metric.dados.find((d) => d.mes === selectedMonth);
+            const completionPercent = currentData?.concluido ?? 0;
+            const isBelowTarget = completionPercent < 100;
 
-        {/* Legend */}
-        <section className="mt-8 p-4 rounded-lg bg-muted/50 border border-border">
-          <h3 className="text-sm font-medium text-foreground mb-3">Legenda</h3>
-          <div className="flex flex-wrap gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-primary" />
-              <span className="text-muted-foreground">Previsto</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: "hsl(200, 70%, 50%)" }} />
-              <span className="text-muted-foreground">Realizado (na meta)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-destructive" />
-              <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Flag className="h-4 w-4 text-destructive" fill="currentColor" />
-              <span className="text-muted-foreground">Red Flag - Abaixo da meta</span>
-            </div>
-          </div>
+            const pieData = [
+              { name: "Realizado", value: Math.min(completionPercent, 100) },
+              { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+            ];
+
+            return (
+              <div 
+                key={metric.id}
+                className={cn(
+                  "rounded-xl border bg-card p-4 flex flex-col items-center",
+                  isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border"
+                )}
+              >
+                <div className="flex items-center gap-1 mb-2">
+                  <h3 className="font-semibold text-foreground text-sm text-center truncate">
+                    {metric.nome}
+                  </h3>
+                  {isBelowTarget && (
+                    <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+                  )}
+                </div>
+                
+                <div className="w-24 h-24 relative">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="35%"
+                        outerRadius="90%"
+                        startAngle={90}
+                        endAngle={-270}
+                        strokeWidth={0}
+                      >
+                        <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                        <Cell fill="hsl(var(--muted))" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className={cn(
+                      "text-lg font-bold",
+                      isBelowTarget ? "text-destructive" : "text-green-500"
+                    )}>
+                      {completionPercent.toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-2 text-center text-xs">
+                  <div className="text-muted-foreground">
+                    Meta: {formatValue(currentData?.previsto ?? null, unit)}
+                  </div>
+                  <div className={cn(
+                    "font-semibold",
+                    isBelowTarget ? "text-destructive" : "text-foreground"
+                  )}>
+                    Real: {formatValue(currentData?.realizado ?? null, unit)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </section>
 
         {/* Footer */}
