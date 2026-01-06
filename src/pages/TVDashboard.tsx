@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { TVMetricCarousel } from "@/components/dashboard/TVMetricCarousel";
-import { initialMetrics, type Metric } from "@/data/dashboardData";
+import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -12,6 +12,25 @@ const meses = [
 const TVDashboard = () => {
   const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedMonth, setSelectedMonth] = useState("Novembro");
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+
+  const selectedCategory = categorias[selectedCategoryIndex];
+  
+  const filteredMetrics = useMemo(() => {
+    return metrics.filter(m => m.categoria === selectedCategory);
+  }, [metrics, selectedCategory]);
+
+  const goToPrevCategory = () => {
+    setSelectedCategoryIndex((prev) => 
+      prev === 0 ? categorias.length - 1 : prev - 1
+    );
+  };
+
+  const goToNextCategory = () => {
+    setSelectedCategoryIndex((prev) => 
+      prev === categorias.length - 1 ? 0 : prev + 1
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -26,7 +45,29 @@ const TVDashboard = () => {
             <span>Voltar</span>
           </Link>
           <div className="h-4 w-px bg-border" />
-          <h1 className="text-lg font-bold text-foreground">Todos os Indicadores</h1>
+          
+          {/* Category Navigation */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={goToPrevCategory}
+              className="p-1 rounded hover:bg-muted transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <h1 className="text-lg font-bold text-foreground min-w-[200px] text-center">
+              {selectedCategory}
+            </h1>
+            <button
+              onClick={goToNextCategory}
+              className="p-1 rounded hover:bg-muted transition-colors"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+          
+          <span className="text-xs text-muted-foreground">
+            ({selectedCategoryIndex + 1}/{categorias.length})
+          </span>
         </div>
         
         {/* Month Filter */}
@@ -41,13 +82,21 @@ const TVDashboard = () => {
         </select>
       </header>
 
-      {/* TV Carousel - Full screen with ALL metrics */}
+      {/* TV Carousel - Shows metrics for selected category */}
       <div className="flex-1">
-        <TVMetricCarousel 
-          metrics={metrics} 
-          selectedMonth={selectedMonth}
-          intervalMs={5000}
-        />
+        {filteredMetrics.length > 0 ? (
+          <TVMetricCarousel 
+            metrics={filteredMetrics} 
+            selectedMonth={selectedMonth}
+            intervalMs={5000}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center h-full">
+            <p className="text-muted-foreground text-2xl">
+              Nenhum indicador nesta categoria
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
