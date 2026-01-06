@@ -128,15 +128,15 @@ const AreaIndicadores = () => {
         )}
 
         {/* Category title */}
-        <section className="mb-6">
-          <h2 className="text-xl font-bold text-foreground">{selectedCategory}</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {filteredMetrics.length} indicadores • Referência: {selectedMonth}
+        <section className="mb-1">
+          <h2 className="text-sm font-bold text-foreground">{selectedCategory}</h2>
+          <p className="text-[10px] text-muted-foreground">
+            {filteredMetrics.length} indicadores • {selectedMonth}
           </p>
         </section>
 
         {/* Metrics Grid - 2 colunas para TV */}
-        <section className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <section className="grid grid-cols-2 gap-x-2 gap-y-px">
           {filteredMetrics.map((metric) => (
             <CompactMetricRow 
               key={metric.id} 

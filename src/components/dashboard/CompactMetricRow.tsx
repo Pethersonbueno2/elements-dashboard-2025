@@ -48,40 +48,38 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
   return (
     <div 
       className={cn(
-        "rounded border bg-card px-1 py-px transition-all",
-        isBelowTarget ? "border-destructive/50 bg-destructive/5" : "border-border/20"
+        "rounded-sm border bg-card px-0.5 transition-all leading-none",
+        isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border/15"
       )}
+      style={{ paddingTop: '1px', paddingBottom: '1px' }}
     >
-      <div className="flex items-center justify-between gap-0.5">
+      <div className="flex items-center justify-between">
         {/* Left: Title and current values */}
-        <div className="flex-1 min-w-0 flex items-center gap-1">
-          <div className="flex items-center gap-0.5 min-w-[100px] max-w-[100px]">
-            <h3 className="font-medium text-foreground text-[8px] truncate leading-none">
+        <div className="flex-1 min-w-0 flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5 min-w-[90px] max-w-[90px]">
+            <h3 className="font-medium text-foreground text-[6px] truncate leading-none">
               {metric.nome}
             </h3>
             {isBelowTarget && (
-              <Flag className="h-1.5 w-1.5 text-destructive flex-shrink-0" fill="currentColor" />
+              <Flag className="h-1 w-1 text-destructive flex-shrink-0" fill="currentColor" />
             )}
           </div>
           
-          <div className="flex items-center gap-1.5 text-[7px]">
-            <span className="text-muted-foreground w-8 text-right">
+          <div className="flex items-center gap-1 text-[6px]">
+            <span className="text-muted-foreground w-7 text-right">
               {formatValue(currentData?.previsto ?? null, isReais)}
             </span>
             <span className={cn(
-              "font-semibold w-8 text-right",
+              "font-semibold w-7 text-right",
               isBelowTarget ? "text-destructive" : "text-foreground"
             )}>
               {formatValue(currentData?.realizado ?? null, isReais)}
-            </span>
-            <span className="text-muted-foreground/70 text-[6px] w-6">
-              {metric.meta}
             </span>
           </div>
         </div>
 
         {/* Right: Mini chart */}
-        <div className="w-10 h-3 flex-shrink-0">
+        <div className="w-8 h-2 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <defs>
