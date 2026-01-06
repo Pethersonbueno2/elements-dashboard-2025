@@ -135,8 +135,8 @@ const AreaIndicadores = () => {
           </p>
         </section>
 
-        {/* Metrics Grid */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Metrics Grid - layout otimizado para TV */}
+        <section className="grid grid-cols-1 gap-2">
           {filteredMetrics.map((metric) => (
             <CompactMetricRow 
               key={metric.id} 
