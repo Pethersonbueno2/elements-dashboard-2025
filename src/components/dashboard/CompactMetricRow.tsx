@@ -1,7 +1,7 @@
 import { Flag } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { cn } from "@/lib/utils";
-import type { Metric, MetricData } from "@/data/dashboardData";
+import type { Metric } from "@/data/dashboardData";
 
 interface CompactMetricRowProps {
   metric: Metric;
@@ -25,13 +25,12 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
                         currentData?.concluido !== undefined && 
                         currentData.concluido < 100;
 
-  const chartData = metric.dados
-    .filter((d) => d.previsto !== null || d.realizado !== null)
-    .map((item) => ({
-      name: item.mes.substring(0, 3),
-      previsto: item.previsto,
-      realizado: item.realizado,
-    }));
+  // Pie chart data - shows completion percentage
+  const completionPercent = currentData?.concluido ?? 0;
+  const pieData = [
+    { name: "Realizado", value: Math.min(completionPercent, 100) },
+    { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+  ];
 
   const formatValue = (val: number | null, isReais: boolean = false) => {
     if (val === null) return "–";
@@ -78,37 +77,25 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
           </div>
         </div>
 
-        {/* Right: Mini chart */}
-        <div className="w-12 h-4 flex-shrink-0">
+        {/* Right: Pie chart */}
+        <div className="w-8 h-8 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id={`gradient-${metric.id}-prev`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(264, 100%, 50%)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="hsl(264, 100%, 50%)" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id={`gradient-${metric.id}-real`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(200, 70%, 50%)"} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(200, 70%, 50%)"} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="name" hide />
-              <YAxis hide />
-              <Area
-                type="monotone"
-                dataKey="previsto"
-                stroke="hsl(264, 100%, 50%)"
-                strokeWidth={0.5}
-                fill={`url(#gradient-${metric.id}-prev)`}
-              />
-              <Area
-                type="monotone"
-                dataKey="realizado"
-                stroke={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(200, 70%, 50%)"}
-                strokeWidth={0.5}
-                fill={`url(#gradient-${metric.id}-real)`}
-              />
-            </AreaChart>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                cx="50%"
+                cy="50%"
+                innerRadius={0}
+                outerRadius="100%"
+                startAngle={90}
+                endAngle={-270}
+                strokeWidth={0}
+              >
+                <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                <Cell fill="hsl(var(--muted))" />
+              </Pie>
+            </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
