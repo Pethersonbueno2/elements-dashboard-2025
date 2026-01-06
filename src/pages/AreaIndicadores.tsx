@@ -129,7 +129,7 @@ const AreaIndicadores = () => {
                   className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
                 >
                   <div className="flex items-center gap-1 mb-1">
-                    <h3 className="font-semibold text-foreground text-base text-center line-clamp-1">
+                    <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
                       {metric.nome}
                     </h3>
                     {isBelowTarget && (
