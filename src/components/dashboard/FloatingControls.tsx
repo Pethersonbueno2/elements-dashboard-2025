@@ -34,7 +34,7 @@ export function FloatingControls() {
   };
 
   const handleZoomOut = () => {
-    const newZoom = Math.max(zoom - 10, 50);
+    const newZoom = Math.max(zoom - 10, 25);
     setZoom(newZoom);
     document.documentElement.style.zoom = `${newZoom}%`;
   };
@@ -182,7 +182,7 @@ export function FloatingControls() {
                 variant="ghost"
                 size="icon"
                 onClick={handleZoomOut}
-                disabled={zoom <= 50}
+                disabled={zoom <= 25}
                 className="h-10 w-10 rounded-lg hover:bg-accent"
               >
                 <ZoomOut className="h-5 w-5 text-muted-foreground" />
