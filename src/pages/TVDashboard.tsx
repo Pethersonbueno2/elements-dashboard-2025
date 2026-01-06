@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { TVMetricCarousel } from "@/components/dashboard/TVMetricCarousel";
+import { TVMetricGrid } from "@/components/dashboard/TVMetricGrid";
 import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
 
 const meses = [
@@ -82,13 +82,12 @@ const TVDashboard = () => {
         </select>
       </header>
 
-      {/* TV Carousel - Shows metrics for selected category */}
-      <div className="flex-1">
+      {/* TV Grid - Shows ALL metrics for selected category on same page */}
+      <div className="flex-1 overflow-hidden">
         {filteredMetrics.length > 0 ? (
-          <TVMetricCarousel 
+          <TVMetricGrid 
             metrics={filteredMetrics} 
             selectedMonth={selectedMonth}
-            intervalMs={5000}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center h-full">
