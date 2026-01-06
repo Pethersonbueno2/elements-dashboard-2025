@@ -28,20 +28,8 @@ const AreaIndicadores = () => {
 
   const filteredMetrics = metrics.filter((m) => m.categoria === selectedCategory);
 
-  // Total slides = individual metrics + 1 summary slide
-  const totalSlides = filteredMetrics.length + 1;
-  const isOnSummarySlide = currentIndex === filteredMetrics.length;
-
-  // Auto-rotate every 15 seconds in TV mode
-  useEffect(() => {
-    if (!tvMode || filteredMetrics.length === 0) return;
-    
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalSlides);
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, [tvMode, filteredMetrics.length, totalSlides]);
+  // Only summary slide in TV mode
+  const totalSlides = 1;
 
   // Reset index when category changes
   useEffect(() => {
@@ -109,35 +97,21 @@ const AreaIndicadores = () => {
     </header>
   );
 
-  // TV Mode - Summary slide (all indicators together)
-  if (tvMode && isOnSummarySlide) {
+  // TV Mode - Summary slide only (all indicators together)
+  if (tvMode) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <TvHeader />
         
-        <main className="flex-1 flex flex-col px-6 py-4 relative">
-          {/* Navigation Arrows */}
-          <button
-            onClick={goToPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-
+        <main className="flex-1 flex flex-col px-4 py-4">
           {/* Title */}
-          <div className="text-center mb-4">
+          <div className="text-center mb-3">
             <h1 className="text-3xl font-bold text-foreground">Resumo Geral</h1>
             <p className="text-lg text-muted-foreground">{selectedCategory} • {selectedMonth}</p>
           </div>
 
           {/* All indicators grid */}
-          <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 animate-scale-in">
+          <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 animate-scale-in">
             {filteredMetrics.map((metric) => {
               const unit = getUnit(metric.meta);
               const data = metric.dados.find((d) => d.mes === selectedMonth);
@@ -152,7 +126,7 @@ const AreaIndicadores = () => {
               return (
                 <div 
                   key={metric.id}
-                  className="flex flex-col items-center"
+                  className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
                 >
                   <div className="flex items-center gap-1 mb-1">
                     <h3 className="font-semibold text-foreground text-sm text-center line-clamp-1">
@@ -163,7 +137,7 @@ const AreaIndicadores = () => {
                     )}
                   </div>
                   
-                  <div className="w-28 h-28 relative">
+                  <div className="w-36 h-28 relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -204,32 +178,12 @@ const AreaIndicadores = () => {
               );
             })}
           </div>
-
-          {/* Progress dots */}
-          <div className="flex justify-center gap-2 mt-4">
-            {Array.from({ length: totalSlides }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={cn(
-                  "w-2.5 h-2.5 rounded-full transition-all",
-                  idx === currentIndex 
-                    ? "bg-primary scale-125" 
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                )}
-              />
-            ))}
-          </div>
-
-          <p className="text-xs text-muted-foreground text-center mt-2">
-            Próximo em 15s • Resumo ({totalSlides} de {totalSlides})
-          </p>
         </main>
       </div>
     );
   }
 
-  // TV Mode - Full screen pie chart carousel (individual metrics)
+  // Grid Mode (original view)
   if (tvMode && currentMetric) {
     const unit = getUnit(currentMetric.meta);
     const currentData = currentMetric.dados.find((d) => d.mes === selectedMonth);
