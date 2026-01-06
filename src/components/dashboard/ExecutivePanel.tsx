@@ -141,28 +141,29 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* 1. Performance Geral dos Indicadores */}
         <Card className="animate-fade-in">
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1 pt-3 px-4">
             <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">Performance Geral dos Indicadores</CardTitle>
+              <Target className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm font-semibold">Performance Geral</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="h-[200px] w-[200px]">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-4">
+              <div className="h-[140px] w-[140px] flex-shrink-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={performanceData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
+                      innerRadius={35}
+                      outerRadius={60}
                       dataKey="value"
-                      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                      label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
                     >
                       {performanceData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -172,24 +173,24 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-4 h-4 rounded bg-green-500" />
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-green-500" />
                   <div>
-                    <p className="text-2xl font-bold text-green-600">{analysis.totals.achieved}</p>
-                    <p className="text-sm text-muted-foreground">Atingidos ({achievedPercentage}%)</p>
+                    <p className="text-xl font-bold text-green-600">{analysis.totals.achieved}</p>
+                    <p className="text-xs text-muted-foreground">Atingidos ({achievedPercentage}%)</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-4 h-4 rounded bg-red-500" />
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded bg-red-500" />
                   <div>
-                    <p className="text-2xl font-bold text-red-600">{analysis.totals.notAchieved}</p>
-                    <p className="text-sm text-muted-foreground">Não Atingidos</p>
+                    <p className="text-xl font-bold text-red-600">{analysis.totals.notAchieved}</p>
+                    <p className="text-xs text-muted-foreground">Não Atingidos</p>
                   </div>
                 </div>
-                <div className="text-sm text-muted-foreground mt-2">
-                  Total: {analysis.totals.achieved + analysis.totals.notAchieved} indicadores reportados
-                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Total: {analysis.totals.achieved + analysis.totals.notAchieved} reportados
+                </p>
               </div>
             </div>
           </CardContent>
@@ -197,23 +198,23 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
 
         {/* 2. Ranking de Performance por Área */}
         <Card className="animate-fade-in" style={{ animationDelay: "100ms" }}>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1 pt-3 px-4">
             <div className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-500" />
-              <CardTitle className="text-lg">Ranking de Performance por Área</CardTitle>
+              <Trophy className="h-4 w-4 text-yellow-500" />
+              <CardTitle className="text-sm font-semibold">Ranking por Área</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="h-[220px]">
+          <CardContent className="p-3">
+            <div className="h-[160px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={rankingData} layout="vertical" margin={{ left: 10, right: 30 }}>
+                <BarChart data={rankingData} layout="vertical" margin={{ left: 0, right: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis type="number" />
+                  <XAxis type="number" tick={{ fontSize: 10 }} />
                   <YAxis 
                     type="category" 
                     dataKey="category" 
-                    width={100} 
-                    tick={{ fontSize: 11 }}
+                    width={80} 
+                    tick={{ fontSize: 9 }}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar 
@@ -231,14 +232,14 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-1.5 mt-2 flex-wrap">
               {rankingData.slice(0, 3).map((item, index) => (
                 <div 
                   key={item.fullCategory}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-sm"
+                  className="flex items-center gap-1 px-2 py-0.5 bg-primary/10 rounded-full text-xs"
                 >
                   <span className="font-bold text-primary">#{index + 1}</span>
-                  <span className="text-foreground truncate max-w-[120px]">{item.fullCategory}</span>
+                  <span className="text-foreground truncate max-w-[80px]">{item.fullCategory}</span>
                 </div>
               ))}
             </div>
@@ -247,28 +248,28 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
 
         {/* 3. Indicadores Não Reportados - Alerta */}
         <Card className="animate-fade-in border-amber-500/50 bg-amber-500/5" style={{ animationDelay: "200ms" }}>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1 pt-3 px-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              <CardTitle className="text-lg text-amber-700 dark:text-amber-400">
-                Indicadores Não Reportados – Alerta
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <CardTitle className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+                Não Reportados – Alerta
               </CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3">
             {alertData.length > 0 ? (
-              <div className="space-y-3">
-                <div className="text-sm text-amber-700 dark:text-amber-400 mb-4">
-                  Total de {analysis.totals.notReported} indicadores pendentes de preenchimento
+              <div className="space-y-2">
+                <div className="text-xs text-amber-700 dark:text-amber-400 mb-2">
+                  Total de {analysis.totals.notReported} indicadores pendentes
                 </div>
-                <div className="grid grid-cols-2 gap-3 max-h-[180px] overflow-y-auto">
+                <div className="grid grid-cols-2 gap-2 max-h-[140px] overflow-y-auto">
                   {alertData.map((item) => (
                     <div
                       key={item.category}
-                      className="flex items-center justify-between p-3 bg-amber-500/10 rounded-lg border border-amber-500/20"
+                      className="flex items-center justify-between p-2 bg-amber-500/10 rounded-lg border border-amber-500/20"
                     >
-                      <span className="text-sm font-medium truncate mr-2">{item.category}</span>
-                      <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                      <span className="text-xs font-medium truncate mr-1">{item.category}</span>
+                      <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
                         {item.notReported}
                       </span>
                     </div>
@@ -276,10 +277,10 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-[150px] text-green-600">
+              <div className="flex items-center justify-center h-[140px] text-green-600">
                 <div className="text-center">
-                  <p className="text-lg font-medium">Todos os indicadores foram reportados!</p>
-                  <p className="text-sm text-muted-foreground">Excelente disciplina de reporte</p>
+                  <p className="text-sm font-medium">Todos reportados!</p>
+                  <p className="text-xs text-muted-foreground">Excelente disciplina</p>
                 </div>
               </div>
             )}
@@ -288,27 +289,27 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
 
         {/* 4. Disciplina de Reporte por Área */}
         <Card className="animate-fade-in" style={{ animationDelay: "300ms" }}>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-1 pt-3 px-4">
             <div className="flex items-center gap-2">
-              <ClipboardCheck className="h-5 w-5 text-blue-500" />
-              <CardTitle className="text-lg">Disciplina de Reporte por Área</CardTitle>
+              <ClipboardCheck className="h-4 w-4 text-blue-500" />
+              <CardTitle className="text-sm font-semibold">Disciplina de Reporte</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="h-[220px]">
+          <CardContent className="p-3">
+            <div className="h-[180px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={disciplineData} margin={{ left: 10, right: 30 }}>
+                <BarChart data={disciplineData} margin={{ left: 0, right: 20, bottom: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis 
                     dataKey="category" 
-                    tick={{ fontSize: 10 }} 
+                    tick={{ fontSize: 8 }} 
                     angle={-45} 
                     textAnchor="end" 
-                    height={60}
+                    height={50}
                   />
-                  <YAxis />
+                  <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: 10 }} />
                   <Bar 
                     dataKey="preenchidos" 
                     name="Preenchidos" 
@@ -325,6 +326,69 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
                   />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 5. Resumo de Metas - Card Extra */}
+        <Card className="animate-fade-in bg-gradient-to-br from-primary/5 to-primary/10" style={{ animationDelay: "400ms" }}>
+          <CardHeader className="pb-1 pt-3 px-4">
+            <CardTitle className="text-sm font-semibold">Resumo de Metas</CardTitle>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center p-3 bg-background/50 rounded-lg">
+                <p className="text-2xl font-bold text-primary">{analysis.totals.total}</p>
+                <p className="text-xs text-muted-foreground">Total Indicadores</p>
+              </div>
+              <div className="text-center p-3 bg-background/50 rounded-lg">
+                <p className="text-2xl font-bold text-green-600">{achievedPercentage}%</p>
+                <p className="text-xs text-muted-foreground">Taxa de Sucesso</p>
+              </div>
+              <div className="text-center p-3 bg-background/50 rounded-lg">
+                <p className="text-2xl font-bold text-blue-600">{Object.keys(analysis.byCategory).length}</p>
+                <p className="text-xs text-muted-foreground">Áreas</p>
+              </div>
+              <div className="text-center p-3 bg-background/50 rounded-lg">
+                <p className="text-2xl font-bold text-amber-600">{analysis.totals.notReported}</p>
+                <p className="text-xs text-muted-foreground">Pendentes</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 6. Top Performers */}
+        <Card className="animate-fade-in" style={{ animationDelay: "500ms" }}>
+          <CardHeader className="pb-1 pt-3 px-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-yellow-500" />
+              <CardTitle className="text-sm font-semibold">Top Performers</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-3">
+            <div className="space-y-2">
+              {rankingData.slice(0, 5).map((item, index) => (
+                <div 
+                  key={item.fullCategory}
+                  className="flex items-center justify-between p-2 bg-muted/50 rounded-lg"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      index === 0 ? 'bg-yellow-500 text-white' :
+                      index === 1 ? 'bg-gray-400 text-white' :
+                      index === 2 ? 'bg-amber-700 text-white' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {index + 1}
+                    </span>
+                    <span className="text-xs font-medium truncate max-w-[100px]">{item.fullCategory}</span>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-primary">{item.atingidos}/{item.total}</p>
+                    <p className="text-xs text-muted-foreground">{item.percentual}%</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
