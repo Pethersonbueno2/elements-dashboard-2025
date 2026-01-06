@@ -129,15 +129,15 @@ const AreaIndicadores = () => {
                   className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
                 >
                   <div className="flex items-center gap-1 mb-1">
-                    <h3 className="font-semibold text-foreground text-sm text-center line-clamp-1">
+                    <h3 className="font-semibold text-foreground text-base text-center line-clamp-1">
                       {metric.nome}
                     </h3>
                     {isBelowTarget && (
-                      <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+                      <Flag className="h-4 w-4 text-destructive flex-shrink-0" fill="currentColor" />
                     )}
                   </div>
                   
-                  <div className="w-36 h-28 relative">
+                  <div className="w-44 h-28 relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -166,7 +166,7 @@ const AreaIndicadores = () => {
                     </div>
                   </div>
 
-                  <div className="text-center text-[10px] mt-1 space-y-0.5">
+                  <div className="text-center text-xs mt-1 space-y-0.5">
                     <div className="flex justify-between gap-2 px-1">
                       <span className="text-muted-foreground">Previsto:</span>
                       <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
