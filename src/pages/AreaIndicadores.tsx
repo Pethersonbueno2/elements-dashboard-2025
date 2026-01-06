@@ -141,34 +141,37 @@ const AreaIndicadores = () => {
                           ];
 
                           return (
-                            <div key={metric.id} className="flex flex-col items-center">
-                              <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1 mb-1">
+                            <div key={metric.id} className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3">
+                              <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1 mb-2">
                                 {metric.nome}
                               </h4>
-                              <div className="w-32 h-24 relative">
+                              <div className="w-28 h-28 relative">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <PieChart>
+                                    <defs>
+                                      <linearGradient id={`gradient-margem-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
+                                        <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                                      </linearGradient>
+                                    </defs>
                                     <Pie
                                       data={pieData}
                                       dataKey="value"
                                       cx="50%"
                                       cy="50%"
-                                      innerRadius="30%"
-                                      outerRadius="90%"
+                                      innerRadius="55%"
+                                      outerRadius="95%"
                                       startAngle={90}
                                       endAngle={-270}
                                       strokeWidth={0}
                                     >
-                                      <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                                      <Cell fill="hsl(var(--muted))" />
+                                      <Cell fill={`url(#gradient-margem-${metric.id})`} />
+                                      <Cell fill="hsl(264, 30%, 25%)" />
                                     </Pie>
                                   </PieChart>
                                 </ResponsiveContainer>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <span className={cn(
-                                    "text-[10px] font-bold",
-                                    isBelowTarget ? "text-destructive" : "text-green-500"
-                                  )}>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                  <span className="text-lg font-bold text-white">
                                     {completionPercent.toFixed(0)}%
                                   </span>
                                 </div>
@@ -195,54 +198,54 @@ const AreaIndicadores = () => {
                           ];
 
                           return (
-                            <div key={metric.id} className="flex flex-col items-center">
-                              <div className="flex items-center gap-1 mb-1">
+                            <div key={metric.id} className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3">
+                              <div className="flex items-center gap-1 mb-2">
                                 <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1">
                                   {metric.nome}
                                 </h4>
                                 {isBelowTarget && (
-                                  <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+                                  <Flag className="h-3 w-3 text-orange-400 flex-shrink-0" fill="currentColor" />
                                 )}
                               </div>
-                              <div className="w-28 h-20 relative">
+                              <div className="w-24 h-24 relative">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <PieChart>
+                                    <defs>
+                                      <linearGradient id={`gradient-fin-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
+                                        <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                                      </linearGradient>
+                                    </defs>
                                     <Pie
                                       data={pieData}
                                       dataKey="value"
                                       cx="50%"
                                       cy="50%"
-                                      innerRadius="30%"
-                                      outerRadius="90%"
+                                      innerRadius="55%"
+                                      outerRadius="95%"
                                       startAngle={90}
                                       endAngle={-270}
                                       strokeWidth={0}
                                     >
-                                      <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                                      <Cell fill="hsl(var(--muted))" />
+                                      <Cell fill={`url(#gradient-fin-${metric.id})`} />
+                                      <Cell fill="hsl(264, 30%, 25%)" />
                                     </Pie>
                                   </PieChart>
                                 </ResponsiveContainer>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <span className={cn(
-                                    "text-[10px] font-bold",
-                                    isBelowTarget ? "text-destructive" : "text-green-500"
-                                  )}>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                  <span className="text-sm font-bold text-white">
                                     {completionPercent.toFixed(0)}%
                                   </span>
                                 </div>
                               </div>
-                              <div className="text-center text-[10px] mt-1 space-y-0.5">
-                                <div className="flex justify-between gap-1 px-1">
-                                  <span className="text-muted-foreground">Prev:</span>
+                              <div className="text-center text-[10px] mt-2 space-y-1">
+                                <div className="flex justify-between gap-2 px-1">
+                                  <span className="text-muted-foreground">Meta:</span>
                                   <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
                                 </div>
-                                <div className="flex justify-between gap-1 px-1">
+                                <div className="flex justify-between gap-2 px-1">
                                   <span className="text-muted-foreground">Real:</span>
-                                  <span className={cn(
-                                    "font-semibold",
-                                    isBelowTarget ? "text-destructive" : "text-green-500"
-                                  )}>{formatValue(data?.realizado ?? null, unit)}</span>
+                                  <span className="font-semibold text-emerald-400">{formatValue(data?.realizado ?? null, unit)}</span>
                                 </div>
                               </div>
                             </div>
@@ -271,57 +274,57 @@ const AreaIndicadores = () => {
                 return (
                   <div 
                     key={metric.id}
-                    className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
+                    className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3"
                   >
-                    <div className="flex items-center gap-1 mb-1">
+                    <div className="flex items-center gap-1 mb-2">
                       <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
                         {metric.nome}
                       </h3>
                       {isBelowTarget && (
-                        <Flag className="h-4 w-4 text-destructive flex-shrink-0" fill="currentColor" />
+                        <Flag className="h-3 w-3 text-orange-400 flex-shrink-0" fill="currentColor" />
                       )}
                     </div>
                     
-                    <div className="w-44 h-28 relative">
+                    <div className="w-32 h-32 relative">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
+                          <defs>
+                            <linearGradient id={`gradient-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
+                              <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
+                              <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                            </linearGradient>
+                          </defs>
                           <Pie
                             data={pieData}
                             dataKey="value"
                             cx="50%"
                             cy="50%"
-                            innerRadius="30%"
-                            outerRadius="90%"
+                            innerRadius="55%"
+                            outerRadius="95%"
                             startAngle={90}
                             endAngle={-270}
                             strokeWidth={0}
                           >
-                            <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                            <Cell fill="hsl(var(--muted))" />
+                            <Cell fill={`url(#gradient-${metric.id})`} />
+                            <Cell fill="hsl(264, 30%, 25%)" />
                           </Pie>
                         </PieChart>
                       </ResponsiveContainer>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className={cn(
-                          "text-[10px] font-bold",
-                          isBelowTarget ? "text-destructive" : "text-green-500"
-                        )}>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-lg font-bold text-white">
                           {completionPercent.toFixed(0)}%
                         </span>
                       </div>
                     </div>
 
-                    <div className="text-center text-xs mt-1 space-y-0.5">
-                      <div className="flex justify-between gap-2 px-1">
-                        <span className="text-muted-foreground">Previsto:</span>
+                    <div className="text-center text-xs mt-2 space-y-1">
+                      <div className="flex justify-between gap-2 px-2">
+                        <span className="text-muted-foreground">Meta:</span>
                         <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
                       </div>
-                      <div className="flex justify-between gap-2 px-1">
+                      <div className="flex justify-between gap-2 px-2">
                         <span className="text-muted-foreground">Realizado:</span>
-                        <span className={cn(
-                          "font-semibold",
-                          isBelowTarget ? "text-destructive" : "text-green-500"
-                        )}>{formatValue(data?.realizado ?? null, unit)}</span>
+                        <span className="font-semibold text-emerald-400">{formatValue(data?.realizado ?? null, unit)}</span>
                       </div>
                     </div>
                   </div>
