@@ -28,16 +28,20 @@ const AreaIndicadores = () => {
 
   const filteredMetrics = metrics.filter((m) => m.categoria === selectedCategory);
 
-  // Auto-rotate every 30 seconds in TV mode
+  // Total slides = individual metrics + 1 summary slide
+  const totalSlides = filteredMetrics.length + 1;
+  const isOnSummarySlide = currentIndex === filteredMetrics.length;
+
+  // Auto-rotate every 15 seconds in TV mode
   useEffect(() => {
     if (!tvMode || filteredMetrics.length === 0) return;
     
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % filteredMetrics.length);
-    }, 30000);
+      setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, [tvMode, filteredMetrics.length]);
+  }, [tvMode, filteredMetrics.length, totalSlides]);
 
   // Reset index when category changes
   useEffect(() => {
@@ -57,14 +61,178 @@ const AreaIndicadores = () => {
   };
 
   const goToPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + filteredMetrics.length) % filteredMetrics.length);
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % filteredMetrics.length);
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
   };
 
-  // TV Mode - Full screen pie chart carousel
+  // TV Mode Header Component
+  const TvHeader = () => (
+    <header className="border-b border-border bg-card/95 backdrop-blur px-6 py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link 
+            to="/" 
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+          >
+            {categorias.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+          >
+            {meses.map((mes) => (
+              <option key={mes} value={mes}>{mes}</option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={() => setTvMode(false)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"
+        >
+          <Grid className="h-4 w-4" />
+          <span>Grid</span>
+        </button>
+      </div>
+    </header>
+  );
+
+  // TV Mode - Summary slide (all indicators together)
+  if (tvMode && isOnSummarySlide) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <TvHeader />
+        
+        <main className="flex-1 flex flex-col px-6 py-4 relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={goToPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Title */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl font-bold text-foreground">Resumo Geral</h1>
+            <p className="text-lg text-muted-foreground">{selectedCategory} • {selectedMonth}</p>
+          </div>
+
+          {/* All indicators grid */}
+          <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 animate-scale-in">
+            {filteredMetrics.map((metric) => {
+              const unit = getUnit(metric.meta);
+              const data = metric.dados.find((d) => d.mes === selectedMonth);
+              const completionPercent = data?.concluido ?? 0;
+              const isBelowTarget = completionPercent < 100;
+
+              const pieData = [
+                { name: "Realizado", value: Math.min(completionPercent, 100) },
+                { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+              ];
+
+              return (
+                <div 
+                  key={metric.id}
+                  className={cn(
+                    "rounded-xl border bg-card p-3 flex flex-col items-center",
+                    isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border"
+                  )}
+                >
+                  <div className="flex items-center gap-1 mb-1">
+                    <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
+                      {metric.nome}
+                    </h3>
+                    {isBelowTarget && (
+                      <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+                    )}
+                  </div>
+                  
+                  <div className="w-20 h-20 relative">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          dataKey="value"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius="30%"
+                          outerRadius="90%"
+                          startAngle={90}
+                          endAngle={-270}
+                          strokeWidth={0}
+                        >
+                          <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                          <Cell fill="hsl(var(--muted))" />
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className={cn(
+                        "text-sm font-bold",
+                        isBelowTarget ? "text-destructive" : "text-green-500"
+                      )}>
+                        {completionPercent.toFixed(0)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="text-center text-[10px] mt-1">
+                    <div className={cn(
+                      "font-semibold",
+                      isBelowTarget ? "text-destructive" : "text-foreground"
+                    )}>
+                      {formatValue(data?.realizado ?? null, unit)}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Progress dots */}
+          <div className="flex justify-center gap-2 mt-4">
+            {Array.from({ length: totalSlides }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={cn(
+                  "w-2.5 h-2.5 rounded-full transition-all",
+                  idx === currentIndex 
+                    ? "bg-primary scale-125" 
+                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                )}
+              />
+            ))}
+          </div>
+
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            Próximo em 15s • Resumo ({totalSlides} de {totalSlides})
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  // TV Mode - Full screen pie chart carousel (individual metrics)
   if (tvMode && currentMetric) {
     const unit = getUnit(currentMetric.meta);
     const currentData = currentMetric.dados.find((d) => d.mes === selectedMonth);
@@ -78,44 +246,7 @@ const AreaIndicadores = () => {
 
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        {/* Compact Header */}
-        <header className="border-b border-border bg-card/95 backdrop-blur px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
-              >
-                {categorias.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
-              >
-                {meses.map((mes) => (
-                  <option key={mes} value={mes}>{mes}</option>
-                ))}
-              </select>
-            </div>
-            <button
-              onClick={() => setTvMode(false)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"
-            >
-              <Grid className="h-4 w-4" />
-              <span>Grid</span>
-            </button>
-          </div>
-        </header>
+        <TvHeader />
 
         {/* Main Content - Full Screen Pie */}
         <main className="flex-1 flex flex-col items-center justify-center px-8 py-6 relative">
@@ -145,7 +276,7 @@ const AreaIndicadores = () => {
           </div>
 
           {/* Giant Pie Chart */}
-          <div className="w-[60vh] h-[60vh] max-w-[600px] max-h-[600px] relative animate-scale-in">
+          <div className="w-[55vh] h-[55vh] max-w-[550px] max-h-[550px] relative animate-scale-in">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -167,12 +298,12 @@ const AreaIndicadores = () => {
             {/* Center Label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className={cn(
-                "text-6xl font-bold",
+                "text-4xl font-bold",
                 isBelowTarget ? "text-destructive" : "text-green-500"
               )}>
                 {completionPercent.toFixed(0)}%
               </span>
-              <span className="text-lg text-muted-foreground">concluído</span>
+              <span className="text-sm text-muted-foreground">concluído</span>
             </div>
           </div>
 
@@ -206,7 +337,7 @@ const AreaIndicadores = () => {
 
           {/* Progress dots */}
           <div className="flex gap-2 mt-8">
-            {filteredMetrics.map((_, idx) => (
+            {Array.from({ length: totalSlides }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
@@ -222,7 +353,7 @@ const AreaIndicadores = () => {
 
           {/* Auto-rotate indicator */}
           <p className="text-sm text-muted-foreground mt-4">
-            Próximo indicador em 30 segundos • {currentIndex + 1} de {filteredMetrics.length}
+            Próximo em 15s • {currentIndex + 1} de {totalSlides}
           </p>
         </main>
       </div>
