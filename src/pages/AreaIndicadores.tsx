@@ -152,13 +152,10 @@ const AreaIndicadores = () => {
               return (
                 <div 
                   key={metric.id}
-                  className={cn(
-                    "rounded-xl border bg-card p-3 flex flex-col items-center",
-                    isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border"
-                  )}
+                  className="flex flex-col items-center"
                 >
                   <div className="flex items-center gap-1 mb-1">
-                    <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
+                    <h3 className="font-semibold text-foreground text-sm text-center line-clamp-1">
                       {metric.nome}
                     </h3>
                     {isBelowTarget && (
@@ -166,7 +163,7 @@ const AreaIndicadores = () => {
                     )}
                   </div>
                   
-                  <div className="w-20 h-20 relative">
+                  <div className="w-28 h-28 relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
