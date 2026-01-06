@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { TVMetricCarousel } from "@/components/dashboard/TVMetricCarousel";
-import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
+import { useMetricsFromDB } from "@/hooks/useMetricsFromDB";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -10,11 +10,32 @@ const meses = [
 ];
 
 const AreaIndicadores = () => {
-  const [metrics] = useState<Metric[]>(initialMetrics);
+  const { data, isLoading, error } = useMetricsFromDB();
   const [selectedCategory, setSelectedCategory] = useState("B2B e B2BC");
   const [selectedMonth, setSelectedMonth] = useState("Novembro");
 
-  const filteredMetrics = metrics.filter((m) => m.categoria === selectedCategory);
+  const categories = data?.categories || [];
+  const metrics = data?.metrics || [];
+
+  const filteredMetrics = useMemo(() => {
+    return metrics.filter((m) => m.categoria === selectedCategory);
+  }, [metrics, selectedCategory]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-destructive text-xl">Erro ao carregar dados</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -39,7 +60,7 @@ const AreaIndicadores = () => {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-3 py-1 text-sm rounded border border-border bg-card text-foreground"
           >
-            {categorias.map((cat) => (
+            {categories.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
@@ -57,11 +78,19 @@ const AreaIndicadores = () => {
 
       {/* TV Carousel - Full screen */}
       <div className="flex-1">
-        <TVMetricCarousel 
-          metrics={filteredMetrics} 
-          selectedMonth={selectedMonth}
-          intervalMs={5000}
-        />
+        {filteredMetrics.length > 0 ? (
+          <TVMetricCarousel 
+            metrics={filteredMetrics} 
+            selectedMonth={selectedMonth}
+            intervalMs={5000}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center h-full">
+            <p className="text-muted-foreground text-2xl">
+              Nenhum indicador nesta categoria
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

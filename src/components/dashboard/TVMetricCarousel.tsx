@@ -30,6 +30,8 @@ export function TVMetricCarousel({
   if (metrics.length === 0) return null;
 
   const metric = metrics[currentIndex];
+  if (!metric || !metric.dados) return null;
+  
   const currentData = metric.dados.find((d) => d.mes === selectedMonth);
   const completionPercent = currentData?.concluido ?? 0;
   const isBelowTarget = completionPercent < 100;
