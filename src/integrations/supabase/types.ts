@@ -14,7 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categorias: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      dados_mensais: {
+        Row: {
+          ano: number
+          concluido: number | null
+          created_at: string
+          diferenca: number | null
+          id: string
+          mes: string
+          mes_numero: number
+          metrica_id: string
+          previsto: number | null
+          realizado: number | null
+          updated_at: string
+        }
+        Insert: {
+          ano?: number
+          concluido?: number | null
+          created_at?: string
+          diferenca?: number | null
+          id?: string
+          mes: string
+          mes_numero: number
+          metrica_id: string
+          previsto?: number | null
+          realizado?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ano?: number
+          concluido?: number | null
+          created_at?: string
+          diferenca?: number | null
+          id?: string
+          mes?: string
+          mes_numero?: number
+          metrica_id?: string
+          previsto?: number | null
+          realizado?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dados_mensais_metrica_id_fkey"
+            columns: ["metrica_id"]
+            isOneToOne: false
+            referencedRelation: "metricas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metricas: {
+        Row: {
+          categoria_id: string
+          codigo: string
+          created_at: string
+          id: string
+          meta: string
+          nome: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          categoria_id: string
+          codigo: string
+          created_at?: string
+          id?: string
+          meta: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          categoria_id?: string
+          codigo?: string
+          created_at?: string
+          id?: string
+          meta?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metricas_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
