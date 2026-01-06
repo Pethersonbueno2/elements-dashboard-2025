@@ -14,7 +14,7 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
     { name: "empty", value: 100 - percentage },
   ];
 
-  const gaugeColor = "hsl(0, 72%, 51%)"; // Red color
+  const gaugeColor = "hsl(264, 100%, 65%)"; // Purple color
 
   const formatValue = (val: number) => {
     if (val >= 1000000) {
