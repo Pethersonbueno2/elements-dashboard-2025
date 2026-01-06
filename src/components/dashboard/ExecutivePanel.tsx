@@ -141,7 +141,7 @@ export function ExecutivePanel({ metrics, selectedMonth = "Novembro" }: Executiv
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {/* 1. Performance Geral dos Indicadores */}
         <Card className="animate-fade-in">
           <CardHeader className="pb-1 pt-3 px-4">
