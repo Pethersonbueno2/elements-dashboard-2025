@@ -48,29 +48,29 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
   return (
     <div 
       className={cn(
-        "rounded-sm border bg-card px-0.5 transition-all leading-none",
+        "rounded-sm border bg-card px-1 leading-none",
         isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border/15"
       )}
-      style={{ paddingTop: '1px', paddingBottom: '1px' }}
+      style={{ paddingTop: '2px', paddingBottom: '2px' }}
     >
       <div className="flex items-center justify-between">
         {/* Left: Title and current values */}
-        <div className="flex-1 min-w-0 flex items-center gap-0.5">
-          <div className="flex items-center gap-0.5 min-w-[90px] max-w-[90px]">
-            <h3 className="font-medium text-foreground text-[6px] truncate leading-none">
+        <div className="flex-1 min-w-0 flex items-center gap-1">
+          <div className="flex items-center gap-0.5 min-w-[110px] max-w-[110px]">
+            <h3 className="font-semibold text-foreground text-[10px] truncate leading-none">
               {metric.nome}
             </h3>
             {isBelowTarget && (
-              <Flag className="h-1 w-1 text-destructive flex-shrink-0" fill="currentColor" />
+              <Flag className="h-2 w-2 text-destructive flex-shrink-0" fill="currentColor" />
             )}
           </div>
           
-          <div className="flex items-center gap-1 text-[6px]">
-            <span className="text-muted-foreground w-7 text-right">
+          <div className="flex items-center gap-2 text-[9px]">
+            <span className="text-muted-foreground w-10 text-right font-medium">
               {formatValue(currentData?.previsto ?? null, isReais)}
             </span>
             <span className={cn(
-              "font-semibold w-7 text-right",
+              "font-bold w-10 text-right",
               isBelowTarget ? "text-destructive" : "text-foreground"
             )}>
               {formatValue(currentData?.realizado ?? null, isReais)}
@@ -79,7 +79,7 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
         </div>
 
         {/* Right: Mini chart */}
-        <div className="w-8 h-2 flex-shrink-0">
+        <div className="w-12 h-4 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <defs>
