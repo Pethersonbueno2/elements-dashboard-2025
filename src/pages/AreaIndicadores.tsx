@@ -166,12 +166,17 @@ const AreaIndicadores = () => {
                     </div>
                   </div>
 
-                  <div className="text-center text-[10px] mt-1">
-                    <div className={cn(
-                      "font-semibold",
-                      isBelowTarget ? "text-destructive" : "text-foreground"
-                    )}>
-                      {formatValue(data?.realizado ?? null, unit)}
+                  <div className="text-center text-[10px] mt-1 space-y-0.5">
+                    <div className="flex justify-between gap-2 px-1">
+                      <span className="text-muted-foreground">Previsto:</span>
+                      <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
+                    </div>
+                    <div className="flex justify-between gap-2 px-1">
+                      <span className="text-muted-foreground">Realizado:</span>
+                      <span className={cn(
+                        "font-semibold",
+                        isBelowTarget ? "text-destructive" : "text-green-500"
+                      )}>{formatValue(data?.realizado ?? null, unit)}</span>
                     </div>
                   </div>
                 </div>
