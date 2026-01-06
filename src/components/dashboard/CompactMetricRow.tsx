@@ -48,46 +48,40 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
   return (
     <div 
       className={cn(
-        "rounded-md border bg-card px-3 py-2 shadow-sm transition-all",
-        isBelowTarget ? "border-destructive/50 bg-destructive/5" : "border-border/50"
+        "rounded border bg-card px-1.5 py-0.5 transition-all",
+        isBelowTarget ? "border-destructive/50 bg-destructive/5" : "border-border/30"
       )}
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-1">
         {/* Left: Title and current values */}
-        <div className="flex-1 min-w-0 flex items-center gap-4">
-          <div className="flex items-center gap-1.5 min-w-[200px]">
-            <h3 className="font-medium text-foreground text-xs truncate">
-              {metric.nome} {unit && `(${unit})`}
+        <div className="flex-1 min-w-0 flex items-center gap-2">
+          <div className="flex items-center gap-0.5 min-w-[120px] max-w-[120px]">
+            <h3 className="font-medium text-foreground text-[9px] truncate leading-none">
+              {metric.nome}
             </h3>
             {isBelowTarget && (
-              <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+              <Flag className="h-2 w-2 text-destructive flex-shrink-0" fill="currentColor" />
             )}
           </div>
           
-          <div className="flex items-center gap-6 text-xs">
-            <div>
-              <span className="text-muted-foreground">Previsto:</span>{" "}
-              <span className="font-medium text-foreground">
-                {formatValue(currentData?.previsto ?? null, isReais)}
-              </span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Realizado:</span>{" "}
-              <span className={cn(
-                "font-medium",
-                isBelowTarget ? "text-destructive" : "text-foreground"
-              )}>
-                {formatValue(currentData?.realizado ?? null, isReais)}
-              </span>
-            </div>
-            <div className="text-muted-foreground">
-              Meta: {metric.meta}
-            </div>
+          <div className="flex items-center gap-2 text-[8px]">
+            <span className="text-muted-foreground w-10 text-right">
+              {formatValue(currentData?.previsto ?? null, isReais)}
+            </span>
+            <span className={cn(
+              "font-semibold w-10 text-right",
+              isBelowTarget ? "text-destructive" : "text-foreground"
+            )}>
+              {formatValue(currentData?.realizado ?? null, isReais)}
+            </span>
+            <span className="text-muted-foreground/70 text-[7px] w-8">
+              {metric.meta}
+            </span>
           </div>
         </div>
 
         {/* Right: Mini chart */}
-        <div className="w-24 h-10 flex-shrink-0">
+        <div className="w-12 h-4 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <defs>
@@ -106,14 +100,14 @@ export function CompactMetricRow({ metric, selectedMonth }: CompactMetricRowProp
                 type="monotone"
                 dataKey="previsto"
                 stroke="hsl(264, 100%, 50%)"
-                strokeWidth={1}
+                strokeWidth={0.5}
                 fill={`url(#gradient-${metric.id}-prev)`}
               />
               <Area
                 type="monotone"
                 dataKey="realizado"
                 stroke={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(200, 70%, 50%)"}
-                strokeWidth={1}
+                strokeWidth={0.5}
                 fill={`url(#gradient-${metric.id}-real)`}
               />
             </AreaChart>
