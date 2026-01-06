@@ -158,7 +158,7 @@ const AreaIndicadores = () => {
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className={cn(
-                        "text-sm font-bold",
+                        "text-[10px] font-bold",
                         isBelowTarget ? "text-destructive" : "text-green-500"
                       )}>
                         {completionPercent.toFixed(0)}%
