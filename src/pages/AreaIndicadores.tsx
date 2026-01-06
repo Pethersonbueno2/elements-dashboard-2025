@@ -111,78 +111,224 @@ const AreaIndicadores = () => {
           </div>
 
           {/* All indicators grid */}
-          <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 animate-scale-in">
-            {filteredMetrics.map((metric) => {
-              const unit = getUnit(metric.meta);
-              const data = metric.dados.find((d) => d.mes === selectedMonth);
-              const completionPercent = data?.concluido ?? 0;
-              const isBelowTarget = completionPercent < 100;
+          {selectedCategory === "Financeiro" ? (
+            // Special layout for Financeiro - group margins and other financials
+            <div className="flex-1 flex flex-col gap-4 animate-scale-in">
+              {/* Margens - grouped together */}
+              {(() => {
+                const margemMetrics = filteredMetrics.filter(m => 
+                  m.nome.toLowerCase().includes("margem")
+                );
+                const otherFinanceiroMetrics = filteredMetrics.filter(m => 
+                  !m.nome.toLowerCase().includes("margem")
+                );
 
-              const pieData = [
-                { name: "Realizado", value: Math.min(completionPercent, 100) },
-                { name: "Restante", value: Math.max(100 - completionPercent, 0) }
-              ];
+                return (
+                  <>
+                    {/* Margens Section */}
+                    <div className="rounded-xl bg-card/50 border border-border p-3">
+                      <h3 className="text-sm font-bold text-foreground mb-3 text-center">Margens</h3>
+                      <div className="grid grid-cols-4 gap-3">
+                        {margemMetrics.map((metric) => {
+                          const unit = getUnit(metric.meta);
+                          const data = metric.dados.find((d) => d.mes === selectedMonth);
+                          const completionPercent = data?.concluido ?? 0;
+                          const isBelowTarget = completionPercent < 100;
 
-              return (
-                <div 
-                  key={metric.id}
-                  className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
-                >
-                  <div className="flex items-center gap-1 mb-1">
-                    <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
-                      {metric.nome}
-                    </h3>
-                    {isBelowTarget && (
-                      <Flag className="h-4 w-4 text-destructive flex-shrink-0" fill="currentColor" />
-                    )}
-                  </div>
-                  
-                  <div className="w-44 h-28 relative">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={pieData}
-                          dataKey="value"
-                          cx="50%"
-                          cy="50%"
-                          innerRadius="30%"
-                          outerRadius="90%"
-                          startAngle={90}
-                          endAngle={-270}
-                          strokeWidth={0}
-                        >
-                          <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                          <Cell fill="hsl(var(--muted))" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={cn(
-                        "text-[10px] font-bold",
-                        isBelowTarget ? "text-destructive" : "text-green-500"
-                      )}>
-                        {completionPercent.toFixed(0)}%
-                      </span>
+                          const pieData = [
+                            { name: "Realizado", value: Math.min(completionPercent, 100) },
+                            { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+                          ];
+
+                          return (
+                            <div key={metric.id} className="flex flex-col items-center">
+                              <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1 mb-1">
+                                {metric.nome}
+                              </h4>
+                              <div className="w-32 h-24 relative">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <PieChart>
+                                    <Pie
+                                      data={pieData}
+                                      dataKey="value"
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius="30%"
+                                      outerRadius="90%"
+                                      startAngle={90}
+                                      endAngle={-270}
+                                      strokeWidth={0}
+                                    >
+                                      <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                                      <Cell fill="hsl(var(--muted))" />
+                                    </Pie>
+                                  </PieChart>
+                                </ResponsiveContainer>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className={cn(
+                                    "text-[10px] font-bold",
+                                    isBelowTarget ? "text-destructive" : "text-green-500"
+                                  )}>
+                                    {completionPercent.toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Outros Financeiros Section */}
+                    <div className="rounded-xl bg-card/50 border border-border p-3">
+                      <h3 className="text-sm font-bold text-foreground mb-3 text-center">Financeiro</h3>
+                      <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+                        {otherFinanceiroMetrics.map((metric) => {
+                          const unit = getUnit(metric.meta);
+                          const data = metric.dados.find((d) => d.mes === selectedMonth);
+                          const completionPercent = data?.concluido ?? 0;
+                          const isBelowTarget = completionPercent < 100;
+
+                          const pieData = [
+                            { name: "Realizado", value: Math.min(completionPercent, 100) },
+                            { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+                          ];
+
+                          return (
+                            <div key={metric.id} className="flex flex-col items-center">
+                              <div className="flex items-center gap-1 mb-1">
+                                <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1">
+                                  {metric.nome}
+                                </h4>
+                                {isBelowTarget && (
+                                  <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
+                                )}
+                              </div>
+                              <div className="w-28 h-20 relative">
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <PieChart>
+                                    <Pie
+                                      data={pieData}
+                                      dataKey="value"
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius="30%"
+                                      outerRadius="90%"
+                                      startAngle={90}
+                                      endAngle={-270}
+                                      strokeWidth={0}
+                                    >
+                                      <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                                      <Cell fill="hsl(var(--muted))" />
+                                    </Pie>
+                                  </PieChart>
+                                </ResponsiveContainer>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className={cn(
+                                    "text-[10px] font-bold",
+                                    isBelowTarget ? "text-destructive" : "text-green-500"
+                                  )}>
+                                    {completionPercent.toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="text-center text-[10px] mt-1 space-y-0.5">
+                                <div className="flex justify-between gap-1 px-1">
+                                  <span className="text-muted-foreground">Prev:</span>
+                                  <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
+                                </div>
+                                <div className="flex justify-between gap-1 px-1">
+                                  <span className="text-muted-foreground">Real:</span>
+                                  <span className={cn(
+                                    "font-semibold",
+                                    isBelowTarget ? "text-destructive" : "text-green-500"
+                                  )}>{formatValue(data?.realizado ?? null, unit)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          ) : (
+            // Default grid for other categories
+            <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 animate-scale-in">
+              {filteredMetrics.map((metric) => {
+                const unit = getUnit(metric.meta);
+                const data = metric.dados.find((d) => d.mes === selectedMonth);
+                const completionPercent = data?.concluido ?? 0;
+                const isBelowTarget = completionPercent < 100;
+
+                const pieData = [
+                  { name: "Realizado", value: Math.min(completionPercent, 100) },
+                  { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+                ];
+
+                return (
+                  <div 
+                    key={metric.id}
+                    className="flex flex-col items-center rounded-xl bg-card/50 border border-border p-2"
+                  >
+                    <div className="flex items-center gap-1 mb-1">
+                      <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
+                        {metric.nome}
+                      </h3>
+                      {isBelowTarget && (
+                        <Flag className="h-4 w-4 text-destructive flex-shrink-0" fill="currentColor" />
+                      )}
+                    </div>
+                    
+                    <div className="w-44 h-28 relative">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            dataKey="value"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius="30%"
+                            outerRadius="90%"
+                            startAngle={90}
+                            endAngle={-270}
+                            strokeWidth={0}
+                          >
+                            <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
+                            <Cell fill="hsl(var(--muted))" />
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className={cn(
+                          "text-[10px] font-bold",
+                          isBelowTarget ? "text-destructive" : "text-green-500"
+                        )}>
+                          {completionPercent.toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-center text-xs mt-1 space-y-0.5">
+                      <div className="flex justify-between gap-2 px-1">
+                        <span className="text-muted-foreground">Previsto:</span>
+                        <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
+                      </div>
+                      <div className="flex justify-between gap-2 px-1">
+                        <span className="text-muted-foreground">Realizado:</span>
+                        <span className={cn(
+                          "font-semibold",
+                          isBelowTarget ? "text-destructive" : "text-green-500"
+                        )}>{formatValue(data?.realizado ?? null, unit)}</span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="text-center text-xs mt-1 space-y-0.5">
-                    <div className="flex justify-between gap-2 px-1">
-                      <span className="text-muted-foreground">Previsto:</span>
-                      <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
-                    </div>
-                    <div className="flex justify-between gap-2 px-1">
-                      <span className="text-muted-foreground">Realizado:</span>
-                      <span className={cn(
-                        "font-semibold",
-                        isBelowTarget ? "text-destructive" : "text-green-500"
-                      )}>{formatValue(data?.realizado ?? null, unit)}</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </main>
       </div>
     );
