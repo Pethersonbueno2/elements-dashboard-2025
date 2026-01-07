@@ -145,7 +145,7 @@ const Index = () => {
 
   // TV Mode
   if (isTVMode) {
-    return <TVCarousel metrics={b2bMetrics} slideIntervalMs={20000} summaryIntervalMs={60000} />;
+    return <TVCarousel metrics={b2bMetrics} slideIntervalMs={30000} summaryIntervalMs={60000} />;
   }
 
   return (
