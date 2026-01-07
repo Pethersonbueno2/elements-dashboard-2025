@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import { Flag } from "lucide-react";
 import { type Metric } from "@/data/dashboardData";
@@ -40,7 +40,6 @@ const formatValue = (value: number, metricId: string) => {
 };
 
 const formatDiferenca = (value: number, metricId: string) => {
-  const prefix = value >= 0 ? "" : "";
   if (metricId.includes("receita")) {
     return `R$ ${value >= 0 ? "" : "-"}${Math.abs(value).toLocaleString("pt-BR")}`;
   }
@@ -53,13 +52,8 @@ const formatDiferenca = (value: number, metricId: string) => {
   return `${value >= 0 ? "+" : ""}${value.toLocaleString("pt-BR")}`;
 };
 
-// Single metric slide component
-const SingleSlide = ({ metric, timeLeft, currentIndex, totalSlides }: { 
-  metric: Metric; 
-  timeLeft: number;
-  currentIndex: number;
-  totalSlides: number;
-}) => {
+// Single metric slide component - memoized to prevent re-renders
+const SingleSlide = memo(({ metric }: { metric: Metric }) => {
   const { previsto, realizado, concluido, diferenca, mes, isBelowTarget } = getMetricData(metric);
   
   const percentage = Math.min(concluido, 100);
@@ -73,7 +67,7 @@ const SingleSlide = ({ metric, timeLeft, currentIndex, totalSlides }: {
   const bgColor = "#E5E7EB";
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full">
+    <div className="flex flex-col items-center justify-center gap-4 w-full">
       {/* Title with flag */}
       <div className="flex items-center gap-3">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">
@@ -100,6 +94,7 @@ const SingleSlide = ({ metric, timeLeft, currentIndex, totalSlides }: {
             endAngle={-270}
             dataKey="value"
             stroke="none"
+            isAnimationActive={false}
           >
             <Cell fill={mainColor} />
             <Cell fill={bgColor} />
@@ -136,39 +131,18 @@ const SingleSlide = ({ metric, timeLeft, currentIndex, totalSlides }: {
           </p>
         </div>
       </div>
-
-      {/* Navigation dots */}
-      <div className="flex gap-2 mt-8">
-        {[...Array(totalSlides)].map((_, idx) => (
-          <div
-            key={idx}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              idx === currentIndex
-                ? "bg-blue-600 scale-125"
-                : "bg-gray-300"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Timer and counter */}
-      <p className="text-gray-400 text-sm mt-4">
-        Próximo indicador em {timeLeft} segundos • {currentIndex + 1} de {totalSlides}
-      </p>
     </div>
   );
-};
+});
 
-// Summary slide with all metrics
-const SummarySlide = ({ metrics, timeLeft, totalSlides }: { 
-  metrics: Metric[]; 
-  timeLeft: number;
-  totalSlides: number;
-}) => {
+SingleSlide.displayName = "SingleSlide";
+
+// Summary slide with all metrics - memoized
+const SummarySlide = memo(({ metrics }: { metrics: Metric[] }) => {
   const gridCols = metrics.length <= 4 ? 2 : metrics.length <= 6 ? 3 : 4;
   
   return (
-    <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full px-8">
+    <div className="flex flex-col items-center justify-center gap-4 w-full h-full px-8">
       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
         Resumo Geral - B2B e B2BC
       </h1>
@@ -210,6 +184,7 @@ const SummarySlide = ({ metrics, timeLeft, totalSlides }: {
                     endAngle={-270}
                     dataKey="value"
                     stroke="none"
+                    isAnimationActive={false}
                   >
                     <Cell fill={mainColor} />
                     <Cell fill={bgColor} />
@@ -241,31 +216,15 @@ const SummarySlide = ({ metrics, timeLeft, totalSlides }: {
           );
         })}
       </div>
-
-      {/* Navigation dots */}
-      <div className="flex gap-2 mt-6">
-        {[...Array(totalSlides)].map((_, idx) => (
-          <div
-            key={idx}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              idx === totalSlides - 1
-                ? "bg-green-500 scale-125"
-                : "bg-gray-300"
-            }`}
-          />
-        ))}
-      </div>
-
-      <p className="text-gray-400 text-sm mt-2">
-        Reiniciando em {timeLeft} segundos • Resumo
-      </p>
     </div>
   );
-};
+});
+
+SummarySlide.displayName = "SummarySlide";
 
 export const TVCarousel = ({ 
   metrics, 
-  slideIntervalMs = 20000,
+  slideIntervalMs = 30000,
   summaryIntervalMs = 60000 
 }: TVCarouselProps) => {
   const totalSlides = metrics.length + 1;
@@ -275,7 +234,7 @@ export const TVCarousel = ({
   const isSummarySlide = currentIndex === metrics.length;
   const currentInterval = isSummarySlide ? summaryIntervalMs : slideIntervalMs;
 
-  // Countdown timer
+  // Countdown timer - separate from slide content
   useEffect(() => {
     setTimeLeft(Math.floor(currentInterval / 1000));
     
@@ -299,22 +258,38 @@ export const TVCarousel = ({
 
   return (
     <div className="w-full h-screen bg-white flex flex-col items-center justify-center p-8 overflow-hidden">
-      {isSummarySlide ? (
-        <SummarySlide 
-          metrics={metrics} 
-          timeLeft={timeLeft}
-          totalSlides={totalSlides}
-        />
-      ) : (
-        currentMetric && (
-          <SingleSlide 
-            metric={currentMetric} 
-            timeLeft={timeLeft}
-            currentIndex={currentIndex}
-            totalSlides={totalSlides}
+      {/* Slide content - stable, no re-render on timer */}
+      <div className="flex-1 flex items-center justify-center w-full">
+        {isSummarySlide ? (
+          <SummarySlide metrics={metrics} />
+        ) : (
+          currentMetric && <SingleSlide metric={currentMetric} />
+        )}
+      </div>
+
+      {/* Navigation dots - outside slide components */}
+      <div className="flex gap-2 mt-4">
+        {[...Array(totalSlides)].map((_, idx) => (
+          <div
+            key={idx}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              idx === currentIndex
+                ? idx === metrics.length 
+                  ? "bg-green-500 scale-125" 
+                  : "bg-blue-600 scale-125"
+                : "bg-gray-300"
+            }`}
           />
-        )
-      )}
+        ))}
+      </div>
+
+      {/* Timer and counter - outside slide components */}
+      <p className="text-gray-400 text-sm mt-4">
+        {isSummarySlide 
+          ? `Reiniciando em ${timeLeft} segundos • Resumo`
+          : `Próximo indicador em ${timeLeft} segundos • ${currentIndex + 1} de ${metrics.length}`
+        }
+      </p>
     </div>
   );
 };

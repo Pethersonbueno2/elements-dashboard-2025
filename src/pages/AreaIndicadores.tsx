@@ -143,7 +143,7 @@ const AreaIndicadores = () => {
     const bgColor = "#E5E7EB";
 
     return (
-      <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full">
+      <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
         {/* Title with flag */}
         <div className="flex items-center gap-3">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">
@@ -171,6 +171,7 @@ const AreaIndicadores = () => {
                 endAngle={-270}
                 dataKey="value"
                 stroke="none"
+                isAnimationActive={false}
               >
                 <Cell fill={mainColor} />
                 <Cell fill={bgColor} />
@@ -217,7 +218,7 @@ const AreaIndicadores = () => {
     const gridCols = filteredMetrics.length <= 4 ? 2 : filteredMetrics.length <= 6 ? 3 : 4;
 
     return (
-      <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full px-8">
+      <div className="flex flex-col items-center justify-center gap-4 w-full h-full px-8">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
           Resumo Geral - {selectedCategory}
         </h1>
@@ -264,6 +265,7 @@ const AreaIndicadores = () => {
                         endAngle={-270}
                         dataKey="value"
                         stroke="none"
+                        isAnimationActive={false}
                       >
                         <Cell fill={mainColor} />
                         <Cell fill={bgColor} />
@@ -394,6 +396,7 @@ const AreaIndicadores = () => {
                         endAngle={-270}
                         dataKey="value"
                         stroke="none"
+                        isAnimationActive={false}
                       >
                         <Cell fill={mainColor} />
                         <Cell fill={bgColor} />
