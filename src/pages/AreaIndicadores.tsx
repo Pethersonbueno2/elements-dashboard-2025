@@ -31,7 +31,7 @@ const AreaIndicadores = () => {
   // Total slides = individual metrics + 1 summary slide
   const totalSlides = filteredMetrics.length + 1;
   const isSummarySlide = currentIndex === filteredMetrics.length;
-  const slideInterval = isSummarySlide ? 60 : 20; // 60s for summary, 20s for individual
+  const slideInterval = isSummarySlide ? 60 : 30; // 60s for summary, 30s for individual
 
   // Reset index when category changes
   useEffect(() => {
