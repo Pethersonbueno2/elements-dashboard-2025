@@ -150,8 +150,8 @@ const AreaIndicadores = () => {
                                   <PieChart>
                                     <defs>
                                       <linearGradient id={`gradient-margem-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
-                                        <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                                        <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
+                                        <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
                                       </linearGradient>
                                     </defs>
                                     <Pie
@@ -166,7 +166,7 @@ const AreaIndicadores = () => {
                                       strokeWidth={0}
                                     >
                                       <Cell fill={`url(#gradient-margem-${metric.id})`} />
-                                      <Cell fill="hsl(264, 30%, 25%)" />
+                                      <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
                                     </Pie>
                                   </PieChart>
                                 </ResponsiveContainer>
@@ -212,8 +212,8 @@ const AreaIndicadores = () => {
                                   <PieChart>
                                     <defs>
                                       <linearGradient id={`gradient-fin-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
-                                        <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                                        <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
+                                        <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
                                       </linearGradient>
                                     </defs>
                                     <Pie
@@ -228,7 +228,7 @@ const AreaIndicadores = () => {
                                       strokeWidth={0}
                                     >
                                       <Cell fill={`url(#gradient-fin-${metric.id})`} />
-                                      <Cell fill="hsl(264, 30%, 25%)" />
+                                      <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
                                     </Pie>
                                   </PieChart>
                                 </ResponsiveContainer>
@@ -245,7 +245,7 @@ const AreaIndicadores = () => {
                                 </div>
                                 <div className="flex justify-between gap-2 px-1">
                                   <span className="text-muted-foreground">Real:</span>
-                                  <span className="font-semibold text-emerald-400">{formatValue(data?.realizado ?? null, unit)}</span>
+                                  <span className={`font-semibold ${isBelowTarget ? "text-red-400" : "text-emerald-400"}`}>{formatValue(data?.realizado ?? null, unit)}</span>
                                 </div>
                               </div>
                             </div>
@@ -290,8 +290,8 @@ const AreaIndicadores = () => {
                         <PieChart>
                           <defs>
                             <linearGradient id={`gradient-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                              <stop offset="0%" stopColor="hsl(264, 100%, 70%)" />
-                              <stop offset="100%" stopColor="hsl(200, 80%, 60%)" />
+                              <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
+                              <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
                             </linearGradient>
                           </defs>
                           <Pie
@@ -306,7 +306,7 @@ const AreaIndicadores = () => {
                             strokeWidth={0}
                           >
                             <Cell fill={`url(#gradient-${metric.id})`} />
-                            <Cell fill="hsl(264, 30%, 25%)" />
+                            <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
                           </Pie>
                         </PieChart>
                       </ResponsiveContainer>
@@ -324,7 +324,7 @@ const AreaIndicadores = () => {
                       </div>
                       <div className="flex justify-between gap-2 px-2">
                         <span className="text-muted-foreground">Realizado:</span>
-                        <span className="font-semibold text-emerald-400">{formatValue(data?.realizado ?? null, unit)}</span>
+                        <span className={`font-semibold ${isBelowTarget ? "text-red-400" : "text-emerald-400"}`}>{formatValue(data?.realizado ?? null, unit)}</span>
                       </div>
                     </div>
                   </div>
