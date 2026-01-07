@@ -14,115 +14,2295 @@ export type Database = {
   }
   public: {
     Tables: {
-      dados_mensais: {
+      "Atendimento - Índique de Satisfacao com Atendimento  >90% - 20": {
         Row: {
-          ano: number
-          created_at: string
-          id: string
+          diferenca: number | null
+          id: number
           mes: string
-          metrica_id: string
           previsto: number | null
           realizado: number | null
-          status: string | null
-          updated_at: string
         }
         Insert: {
-          ano?: number
-          created_at?: string
-          id?: string
+          diferenca?: number | null
+          id?: number
           mes: string
-          metrica_id: string
           previsto?: number | null
           realizado?: number | null
-          status?: string | null
-          updated_at?: string
         }
         Update: {
-          ano?: number
-          created_at?: string
-          id?: string
+          diferenca?: number | null
+          id?: number
           mes?: string
-          metrica_id?: string
           previsto?: number | null
           realizado?: number | null
-          status?: string | null
-          updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "dados_mensais_metrica_id_fkey"
-            columns: ["metrica_id"]
-            isOneToOne: false
-            referencedRelation: "metricas"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      metricas: {
+      "Atendimento - Reputacao Google  >4.5  - 2025": {
         Row: {
-          created_at: string
-          id: string
-          meta: string | null
-          nome: string
-          ordem: number | null
-          setor_id: string
-          unidade: string | null
-          updated_at: string
+          diferenca: number | null
+          id: number
+          mes: string
+          previsto: number | null
+          realizado: number | null
         }
         Insert: {
-          created_at?: string
-          id?: string
-          meta?: string | null
-          nome: string
-          ordem?: number | null
-          setor_id: string
-          unidade?: string | null
-          updated_at?: string
+          diferenca?: number | null
+          id?: number
+          mes: string
+          previsto?: number | null
+          realizado?: number | null
         }
         Update: {
-          created_at?: string
-          id?: string
-          meta?: string | null
-          nome?: string
-          ordem?: number | null
-          setor_id?: string
-          unidade?: string | null
-          updated_at?: string
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          previsto?: number | null
+          realizado?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "metricas_setor_id_fkey"
-            columns: ["setor_id"]
-            isOneToOne: false
-            referencedRelation: "setores"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      setores: {
+      "Atendimento - Reputacao Reclame Aqui > 7..6 %  - 2025": {
         Row: {
-          created_at: string
-          descricao: string | null
-          id: string
-          nome: string
-          ordem: number | null
-          updated_at: string
+          diferenca: number | null
+          id: number
+          mes: string
+          previsto: number | null
+          realizado: number | null
         }
         Insert: {
-          created_at?: string
-          descricao?: string | null
-          id?: string
-          nome: string
-          ordem?: number | null
-          updated_at?: string
+          diferenca?: number | null
+          id?: number
+          mes: string
+          previsto?: number | null
+          realizado?: number | null
         }
         Update: {
-          created_at?: string
-          descricao?: string | null
-          id?: string
-          nome?: string
-          ordem?: number | null
-          updated_at?: string
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Atendimento - Tempo de Primeira Resposta <2h - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B  - Ciclo de Vendas - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B - Base Ativa Saudavel - 60% - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B - Churn Revendedores -1 % - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - Crescimento Receita Base Ativa - 5% - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - faturamento_leads_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - novos_clientes_b2bc_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - nps_b2bc_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - receita_prevista_b2bc_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2B e B2BC - ticket_medio_b2b_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Agendas Realizadas - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Ciclo de Vendas - 10 dias - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Receita - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Taxa de Conversao - 25% - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Ticket Medio - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2C Digital - LCP 2s - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2C Digital - receita_liquida_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2C Digital - taxa_conversao_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Compras Internacionais - giro_estoque_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Compras Internacionais - indice_ruptura_estoque_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Compras Internacionais - prazo_entrega_lead_time_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Compras Internacionais - reducao_custos_aquisicao_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  compliance_tributario_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  crescimento_ebitda_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  despesas_operacionais_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  ebitda_sob_juros_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  endividamento_ebitda_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  grau_alavancagem_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  margem_bruta_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  margem_contribuicao_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  margem_ebitda_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  margem_liquida_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro -  resultado_financeiro_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Financeiro - carga_tributaria_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  custos_variaveis_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  ebitda_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  investimento_trafego_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  oportunidades_leads_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  receita_operacional_bruta_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  roas_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy -  ticket_medio_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy - custo_por_lead_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy - despesa_fixa_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Legacy - faturamento_trafego_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Logistica - Meta Frete - Centro Oeste": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Meta Frete Nordeste 9%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Meta Frete Norte - 9%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Meta Frete Sudeste 5%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Prazo de Entrega - Sudeste - 4 dias": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Prazo de Entrega - Sul - 3 dias": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica acuracidade_estoque_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Logistica indice_avaria_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Logistica Meta Frete Regiao - Sul 4%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          regiao: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao?: string
+        }
+        Relationships: []
+      }
+      "Logistica performance_transp_entregas_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Logistica prazo_entrega_regiao_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          regiao: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao?: string
+        }
+        Relationships: []
+      }
+      "Logistica reducao_frete_geral_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - alcance_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - brand_search_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - engajamento_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - nps_satisfacao_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - share_of_voice_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Branding - trafego_organico_mensal - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth cfa_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth cohort_ltv_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth cpl_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth crescimento_base_clientes_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth crescimento_receita_clientes_existentes_mensal": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth percentual_compras_originais_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth projetos_realizados_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth roas_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth taxa_conversao_lead_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Marketing Growth vendas_por_a15_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Operações monitoramento_cross_funcional_mensal 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          observacao: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          observacao?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          observacao?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Operações tempo de ciclo 15%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          observacao: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          observacao?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          observacao?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "P&D - produtos Lançados - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          percentual_acima: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          percentual_acima?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          percentual_acima?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "P&D - Projetos Realizados - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "P&D tempo de desenvolvimento >90 - 120 dias": {
+        Row: {
+          diferenca: number | null
+          id: number
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          trimestre: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          trimestre: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          trimestre?: string
+        }
+        Relationships: []
+      }
+      "RH consistencia de feedbacks de liderança - 80%": {
+        Row: {
+          id: number
+          mes: string
+          metrica_desempenho: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          id?: number
+          mes: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          id?: number
+          mes?: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "RH eNPS >51": {
+        Row: {
+          id: number
+          mes: string
+          metrica_desempenho: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          id?: number
+          mes: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          id?: number
+          mes?: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "RH headcount_receita_mensal 2025": {
+        Row: {
+          id: number
+          mes: string
+          metrica_desempenho: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          id?: number
+          mes: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          id?: number
+          mes?: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "RH time to Fill - 30 dias": {
+        Row: {
+          id: number
+          mes: string
+          metrica_desempenho: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          id?: number
+          mes: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          id?: number
+          mes?: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "RH turnover_mensal 2025": {
+        Row: {
+          id: number
+          mes: string
+          metrica_desempenho: string | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          id?: number
+          mes: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          id?: number
+          mes?: string
+          metrica_desempenho?: string | null
+          previsto?: number | null
+          realizado?: number | null
         }
         Relationships: []
       }

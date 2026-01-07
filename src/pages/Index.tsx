@@ -1,259 +1,193 @@
 import { useState, useMemo } from "react";
 import { 
-  TrendingUp, 
-  Users, 
   DollarSign, 
-  Star,
-  ShoppingCart,
-  Tv
+  Users, 
+  TrendingUp, 
+  Target,
+  Tv,
+  Clock
 } from "lucide-react";
-import { Header } from "@/components/dashboard/Header";
-import { EditableKPICard } from "@/components/dashboard/EditableKPICard";
-import { MetricCard } from "@/components/dashboard/MetricCard";
-import { CategoryFilter } from "@/components/dashboard/CategoryFilter";
-import { ExecutivePanel } from "@/components/dashboard/ExecutivePanel";
+import { Sidebar } from "@/components/dashboard/Sidebar";
+import { MetricCardGradient } from "@/components/dashboard/MetricCardGradient";
+import { MainChart } from "@/components/dashboard/MainChart";
+import { MetricListCard } from "@/components/dashboard/MetricListCard";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
-import { initialMetrics, categorias, type Metric, type MetricData } from "@/data/dashboardData";
-
-interface ManualKPIValue {
-  value: string;
-  trend: number | null;
-}
+import { Button } from "@/components/ui/button";
+import { initialMetrics, type Metric, type MetricData } from "@/data/dashboardData";
 
 const Index = () => {
   const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [isTVMode, setIsTVMode] = useState(false);
-  const [manualKPIValues, setManualKPIValues] = useState<Record<string, ManualKPIValue>>({
-    "receita-b2b": { value: "R$ 39.353.316", trend: null },
-    "receita-b2bc": { value: "R$ 8.681.962", trend: null },
-    "receita-liquida-b2c-digital": { value: "R$ 42.944.924,33", trend: null },
-  });
 
   // Filter metrics for B2B e B2BC category for TV mode
   const b2bMetrics = useMemo(() => {
     return metrics.filter((m) => m.categoria === "B2B e B2BC");
   }, [metrics]);
 
-  const handleDataChange = (metricId: string, newData: MetricData[]) => {
-    setMetrics((prev) =>
-      prev.map((m) => (m.id === metricId ? { ...m, dados: newData } : m))
-    );
-  };
-
-  const handleKPIValueChange = (kpiId: string, newValue: string, currentTrend: number | null) => {
-    setManualKPIValues((prev) => ({
-      ...prev,
-      [kpiId]: { value: newValue, trend: currentTrend }
-    }));
-  };
-
   const filteredMetrics = useMemo(() => {
     if (selectedCategory === "Todas") return metrics;
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
-  // Calculate accumulated revenue for KPIs
-  const getAccumulatedRevenue = (metricId: string) => {
-    // Check if there's a manual value first
-    if (manualKPIValues[metricId]) {
-      return manualKPIValues[metricId];
-    }
-
-    const metric = metrics.find((m) => m.id === metricId);
-    if (!metric) return { value: "–", trend: null };
+  // Get main chart data from first metric with data
+  const mainChartData = useMemo(() => {
+    const metricsWithData = filteredMetrics.filter(m => m.dados.some(d => d.realizado !== null));
+    if (metricsWithData.length === 0) return [];
     
-    const total = metric.dados.reduce((acc, d) => acc + (d.realizado || 0), 0);
-    const totalPrevisto = metric.dados.reduce((acc, d) => acc + (d.previsto || 0), 0);
-    const trend = totalPrevisto > 0 ? (total / totalPrevisto) * 100 : null;
+    // Use the first metric for chart demo
+    const metric = metricsWithData[0];
+    return metric.dados.map(d => ({
+      mes: d.mes.substring(0, 3),
+      previsto: d.previsto || 0,
+      realizado: d.realizado || 0,
+    }));
+  }, [filteredMetrics]);
+
+  // Calculate summary KPIs
+  const summaryKPIs = useMemo(() => {
+    const totalMetrics = filteredMetrics.length;
+    const achievedMetrics = filteredMetrics.filter(m => {
+      const lastData = m.dados.find(d => d.realizado !== null);
+      return lastData && (lastData.concluido ?? 0) >= 100;
+    }).length;
     
-    const formatted = total >= 1000000 
-      ? `R$ ${(total / 1000000).toFixed(1)}M` 
-      : `R$ ${(total / 1000).toFixed(0)}K`;
-    return { value: formatted, trend };
-  };
+    const avgCompletion = filteredMetrics.reduce((acc, m) => {
+      const lastData = m.dados.find(d => d.realizado !== null);
+      return acc + (lastData?.concluido ?? 0);
+    }, 0) / (totalMetrics || 1);
 
-  // Calculate KPIs from current data
-  const getKPIValue = (metricId: string) => {
-    // Check if there's a manual value first
-    if (manualKPIValues[metricId]) {
-      return manualKPIValues[metricId];
-    }
-
-    const metric = metrics.find((m) => m.id === metricId);
-    if (!metric) return { value: "–", trend: null };
-    
-    const lastWithData = [...metric.dados].reverse().find((d) => d.realizado !== null);
-    if (!lastWithData) return { value: "–", trend: null };
-
-    const value = lastWithData.realizado;
-    const trend = lastWithData.concluido;
-
-    if (metricId === "satisfacao" || metricId === "margem-bruta" || metricId === "taxa-conversao-site") {
-      return { value: `${value.toFixed(1)}%`, trend };
-    }
-    if (metricId === "reputacao-google") {
-      return { value: value.toFixed(1), trend };
-    }
-    if (metricId === "leads") {
-      return { value: value.toLocaleString("pt-BR"), trend };
-    }
-    return { value: value.toFixed(1), trend };
-  };
-
-  const revenueKpis = [
-    {
-      id: "receita-b2b",
-      title: "Faturamento B2B",
-      meta: "R$ 61.6M",
-      icon: <DollarSign className="h-5 w-5" />,
-    },
-    {
-      id: "receita-b2bc",
-      title: "Faturamento B2BC",
-      meta: "R$ 15.8M",
-      icon: <ShoppingCart className="h-5 w-5" />,
-    },
-    {
-      id: "receita-liquida-b2c-digital",
-      title: "Faturamento B2C Digital",
-      meta: "R$ 60M",
-      icon: <DollarSign className="h-5 w-5" />,
-    },
-  ];
-
-  const kpis = [
-    {
-      id: "satisfacao",
-      title: "Satisfação com Atendimento",
-      meta: "> 90%",
-      icon: <Star className="h-5 w-5" />,
-    },
-    {
-      id: "leads",
-      title: "Total de Leads",
-      meta: "19.600",
-      icon: <Users className="h-5 w-5" />,
-    },
-    {
-      id: "margem-bruta",
-      title: "Margem Bruta",
-      meta: "55%",
-      icon: <TrendingUp className="h-5 w-5" />,
-    },
-  ];
+    return {
+      total: totalMetrics,
+      achieved: achievedMetrics,
+      avgCompletion: avgCompletion.toFixed(1),
+      pending: totalMetrics - achievedMetrics,
+    };
+  }, [filteredMetrics]);
 
   // TV Mode
   if (isTVMode) {
-    return <TVCarousel metrics={b2bMetrics} slideIntervalMs={30000} summaryIntervalMs={60000} />;
+    return (
+      <TVCarousel 
+        metrics={b2bMetrics} 
+        slideIntervalMs={10000} 
+        summaryIntervalMs={20000} 
+      />
+    );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <div className="min-h-screen bg-background flex">
+      {/* Sidebar */}
+      <Sidebar 
+        onCategoryChange={setSelectedCategory} 
+        selectedCategory={selectedCategory} 
+      />
 
-      {/* TV Mode Toggle */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setIsTVMode(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-[hsl(264,60%,50%)] hover:bg-[hsl(264,60%,45%)] text-white rounded-full shadow-lg transition-all hover:scale-105"
-        >
-          <Tv className="w-5 h-5" />
-          <span className="font-medium">Modo TV</span>
-        </button>
-      </div>
-
-      <main className="container mx-auto px-6 py-8">
-        {/* Hero Section */}
-        <section className="mb-10">
-          <div className="rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-primary/80 p-8 text-primary-foreground shadow-lg">
-            <h2 className="text-3xl font-bold mb-2">Painel de Indicadores 2025</h2>
-            <p className="text-primary-foreground/80 text-lg mb-4">
-              Acompanhe as métricas de performance da Elements em tempo real. 
-              Passe o mouse sobre os cards para editar os valores.
+      {/* Main Content */}
+      <main className="flex-1 ml-64 p-6">
+        {/* Header */}
+        <header className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              {selectedCategory === "Todas" ? "Dashboard" : selectedCategory}
+            </h1>
+            <p className="text-muted-foreground">
+              Acompanhe os indicadores de performance em tempo real
             </p>
-            <a 
-              href="/area-indicadores" 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground font-medium transition-colors"
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsTVMode(true)}
+              className="gap-2"
             >
-              Ver Indicadores por Área →
-            </a>
+              <Tv className="w-4 h-4" />
+              Modo TV
+            </Button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Clock className="w-4 h-4" />
+              <span>Atualizado agora</span>
+            </div>
           </div>
-        </section>
+        </header>
 
-        {/* Executive Panel */}
-        <ExecutivePanel metrics={metrics} selectedMonth="Novembro" />
-
-        {/* Revenue KPI Cards */}
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold text-foreground mb-6">Faturamento Acumulado</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {revenueKpis.map((kpi, index) => {
-              const { value, trend } = getAccumulatedRevenue(kpi.id);
-              return (
-                <EditableKPICard
-                  key={kpi.id}
-                  title={kpi.title}
-                  value={value}
-                  meta={kpi.meta}
-                  trend={trend}
-                  icon={kpi.icon}
-                  delay={index * 100}
-                  onValueChange={(newValue) => handleKPIValueChange(kpi.id, newValue, trend)}
-                />
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Other KPI Cards */}
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold text-foreground mb-6">Indicadores Gerais</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {kpis.map((kpi, index) => {
-              const { value, trend } = getKPIValue(kpi.id);
-              return (
-                <EditableKPICard
-                  key={kpi.id}
-                  title={kpi.title}
-                  value={value}
-                  meta={kpi.meta}
-                  trend={trend}
-                  icon={kpi.icon}
-                  delay={(index + 3) * 100}
-                  onValueChange={(newValue) => handleKPIValueChange(kpi.id, newValue, trend)}
-                />
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Category Filter */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Métricas Detalhadas</h2>
-          <CategoryFilter
-            categories={categorias}
-            selected={selectedCategory}
-            onSelect={setSelectedCategory}
+        {/* KPI Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <MetricCardGradient
+            title="Total de Indicadores"
+            value={summaryKPIs.total.toString()}
+            subtitle="métricas"
+            trend={null}
+            gradient="purple"
+            icon={<Target className="w-6 h-6" />}
+            delay={0}
+          />
+          <MetricCardGradient
+            title="Metas Atingidas"
+            value={summaryKPIs.achieved.toString()}
+            subtitle="indicadores"
+            trend={(summaryKPIs.achieved / summaryKPIs.total) * 100 - 50}
+            trendLabel="vs meta"
+            gradient="green"
+            icon={<TrendingUp className="w-6 h-6" />}
+            delay={100}
+          />
+          <MetricCardGradient
+            title="Conclusão Média"
+            value={`${summaryKPIs.avgCompletion}%`}
+            trend={parseFloat(summaryKPIs.avgCompletion) - 100}
+            trendLabel="vs 100%"
+            gradient="blue"
+            icon={<DollarSign className="w-6 h-6" />}
+            delay={200}
+          />
+          <MetricCardGradient
+            title="Pendentes"
+            value={summaryKPIs.pending.toString()}
+            subtitle="a atingir"
+            trend={summaryKPIs.pending > 0 ? -((summaryKPIs.pending / summaryKPIs.total) * 100) : 0}
+            gradient="orange"
+            icon={<Users className="w-6 h-6" />}
+            delay={300}
           />
         </section>
 
-        {/* Metric Cards */}
-        <section className="space-y-4">
-          {filteredMetrics.map((metric, index) => (
-            <MetricCard
-              key={metric.id}
-              metric={metric}
-              onDataChange={handleDataChange}
-              delay={index * 50}
-            />
-          ))}
+        {/* Main Chart */}
+        <section className="mb-8">
+          <MainChart 
+            title="Evolução Mensal" 
+            data={mainChartData}
+          />
         </section>
 
-        {/* Footer */}
-        <footer className="mt-12 py-6 border-t border-border text-center text-sm text-muted-foreground">
-          <p>Dashboard Elements © 2025 • Dados atualizados em tempo real</p>
-        </footer>
+        {/* Metrics List */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-foreground">
+              Indicadores Detalhados
+            </h2>
+            <span className="text-sm text-muted-foreground">
+              {filteredMetrics.length} indicadores
+            </span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {filteredMetrics.slice(0, 10).map((metric, index) => (
+              <MetricListCard
+                key={metric.id}
+                metric={metric}
+              />
+            ))}
+          </div>
+          {filteredMetrics.length > 10 && (
+            <div className="mt-4 text-center">
+              <Button variant="outline">
+                Ver todos ({filteredMetrics.length} indicadores)
+              </Button>
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );
