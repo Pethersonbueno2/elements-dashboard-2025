@@ -4,13 +4,15 @@ import {
   Users, 
   DollarSign, 
   Star,
-  ShoppingCart
+  ShoppingCart,
+  Tv
 } from "lucide-react";
 import { Header } from "@/components/dashboard/Header";
 import { EditableKPICard } from "@/components/dashboard/EditableKPICard";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { CategoryFilter } from "@/components/dashboard/CategoryFilter";
 import { ExecutivePanel } from "@/components/dashboard/ExecutivePanel";
+import { TVCarousel } from "@/components/dashboard/TVCarousel";
 import { initialMetrics, categorias, type Metric, type MetricData } from "@/data/dashboardData";
 
 interface ManualKPIValue {
@@ -21,11 +23,17 @@ interface ManualKPIValue {
 const Index = () => {
   const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [isTVMode, setIsTVMode] = useState(false);
   const [manualKPIValues, setManualKPIValues] = useState<Record<string, ManualKPIValue>>({
     "receita-b2b": { value: "R$ 39.353.316", trend: null },
     "receita-b2bc": { value: "R$ 8.681.962", trend: null },
     "receita-liquida-b2c-digital": { value: "R$ 42.944.924,33", trend: null },
   });
+
+  // Filter metrics for B2B e B2BC category for TV mode
+  const b2bMetrics = useMemo(() => {
+    return metrics.filter((m) => m.categoria === "B2B e B2BC");
+  }, [metrics]);
 
   const handleDataChange = (metricId: string, newData: MetricData[]) => {
     setMetrics((prev) =>
@@ -135,9 +143,25 @@ const Index = () => {
     },
   ];
 
+  // TV Mode
+  if (isTVMode) {
+    return <TVCarousel metrics={b2bMetrics} intervalMs={20000} />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
+
+      {/* TV Mode Toggle */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          onClick={() => setIsTVMode(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-[hsl(264,60%,50%)] hover:bg-[hsl(264,60%,45%)] text-white rounded-full shadow-lg transition-all hover:scale-105"
+        >
+          <Tv className="w-5 h-5" />
+          <span className="font-medium">Modo TV</span>
+        </button>
+      </div>
 
       <main className="container mx-auto px-6 py-8">
         {/* Hero Section */}
