@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Flag, ChevronLeft, ChevronRight, Tv, Grid } from "lucide-react";
+import { ArrowLeft, Flag, Grid, Tv } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
-import { cn } from "@/lib/utils";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -25,18 +24,45 @@ const AreaIndicadores = () => {
   const [selectedMonth, setSelectedMonth] = useState("Novembro");
   const [tvMode, setTvMode] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(20);
 
   const filteredMetrics = metrics.filter((m) => m.categoria === selectedCategory);
-
-  // Only summary slide in TV mode
-  const totalSlides = 1;
+  
+  // Total slides = individual metrics + 1 summary slide
+  const totalSlides = filteredMetrics.length + 1;
+  const isSummarySlide = currentIndex === filteredMetrics.length;
+  const slideInterval = isSummarySlide ? 60 : 20; // 60s for summary, 20s for individual
 
   // Reset index when category changes
   useEffect(() => {
     setCurrentIndex(0);
   }, [selectedCategory]);
 
-  const currentMetric = filteredMetrics[currentIndex];
+  // Countdown timer
+  useEffect(() => {
+    if (!tvMode) return;
+    
+    setTimeLeft(slideInterval);
+    
+    const countdown = setInterval(() => {
+      setTimeLeft((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [currentIndex, tvMode, slideInterval]);
+
+  // Auto-advance slides
+  useEffect(() => {
+    if (!tvMode) return;
+    
+    const timeout = setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % totalSlides);
+    }, slideInterval * 1000);
+
+    return () => clearTimeout(timeout);
+  }, [currentIndex, totalSlides, tvMode, slideInterval]);
+
+  const currentMetric = !isSummarySlide ? filteredMetrics[currentIndex] : null;
 
   const formatValue = (val: number | null, unit: string) => {
     if (val === null) return "–";
@@ -48,29 +74,30 @@ const AreaIndicadores = () => {
     return val.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + (unit ? ` ${unit}` : "");
   };
 
-  const goToPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  const formatDiferenca = (val: number | null, unit: string) => {
+    if (val === null) return "–";
+    const prefix = val >= 0 ? "" : "";
+    if (unit === "R$") {
+      return `R$ ${val >= 0 ? "" : "-"}${Math.abs(val).toLocaleString("pt-BR")}`;
+    }
+    return `${val >= 0 ? "+" : ""}${val.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}${unit ? ` ${unit}` : ""}`;
   };
 
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  };
-
-  // TV Mode Header Component
-  const TvHeader = () => (
-    <header className="border-b border-border bg-card/95 backdrop-blur px-6 py-3">
+  // Header Component
+  const Header = () => (
+    <header className="border-b border-gray-200 bg-white px-6 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link 
             to="/" 
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+            className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm"
           >
             {categorias.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
@@ -79,7 +106,7 @@ const AreaIndicadores = () => {
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-sm"
+            className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm"
           >
             {meses.map((mes) => (
               <option key={mes} value={mes}>{mes}</option>
@@ -87,550 +114,318 @@ const AreaIndicadores = () => {
           </select>
         </div>
         <button
-          onClick={() => setTvMode(false)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"
+          onClick={() => setTvMode(!tvMode)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm"
         >
-          <Grid className="h-4 w-4" />
-          <span>Grid</span>
+          {tvMode ? <Grid className="h-4 w-4" /> : <Tv className="h-4 w-4" />}
+          <span>{tvMode ? "Grid" : "TV"}</span>
         </button>
       </div>
     </header>
   );
 
-  // TV Mode - Summary slide only (all indicators together)
-  if (tvMode) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <TvHeader />
-        
-        <main className="flex-1 flex flex-col px-4 py-4">
-          {/* Title */}
-          <div className="text-center mb-3">
-            <h1 className="text-3xl font-bold text-foreground">Resumo Geral</h1>
-            <p className="text-lg text-muted-foreground">{selectedCategory} • {selectedMonth}</p>
-          </div>
-
-          {/* All indicators grid */}
-          {selectedCategory === "Financeiro" ? (
-            // Special layout for Financeiro - group margins and other financials
-            <div className="flex-1 flex flex-col gap-4 animate-scale-in">
-              {/* Margens - grouped together */}
-              {(() => {
-                const margemMetrics = filteredMetrics.filter(m => 
-                  m.nome.toLowerCase().includes("margem")
-                );
-                const otherFinanceiroMetrics = filteredMetrics.filter(m => 
-                  !m.nome.toLowerCase().includes("margem")
-                );
-
-                return (
-                  <>
-                    {/* Margens Section */}
-                    <div className="rounded-xl bg-card/50 border border-border p-3">
-                      <h3 className="text-sm font-bold text-foreground mb-3 text-center">Margens</h3>
-                      <div className="grid grid-cols-4 gap-3">
-                        {margemMetrics.map((metric) => {
-                          const unit = getUnit(metric.meta);
-                          const data = metric.dados.find((d) => d.mes === selectedMonth);
-                          const completionPercent = data?.concluido ?? 0;
-                          const isBelowTarget = completionPercent < 100;
-
-                          const pieData = [
-                            { name: "Realizado", value: Math.min(completionPercent, 100) },
-                            { name: "Restante", value: Math.max(100 - completionPercent, 0) }
-                          ];
-
-                          return (
-                            <div key={metric.id} className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3">
-                              <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1 mb-2">
-                                {metric.nome}
-                              </h4>
-                              <div className="w-28 h-28 relative">
-                                <ResponsiveContainer width="100%" height="100%">
-                                  <PieChart>
-                                    <defs>
-                                      <linearGradient id={`gradient-margem-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
-                                        <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
-                                      </linearGradient>
-                                    </defs>
-                                    <Pie
-                                      data={pieData}
-                                      dataKey="value"
-                                      cx="50%"
-                                      cy="50%"
-                                      innerRadius="55%"
-                                      outerRadius="95%"
-                                      startAngle={90}
-                                      endAngle={-270}
-                                      strokeWidth={0}
-                                    >
-                                      <Cell fill={`url(#gradient-margem-${metric.id})`} />
-                                      <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
-                                    </Pie>
-                                  </PieChart>
-                                </ResponsiveContainer>
-                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                  <span className="text-lg font-bold text-white">
-                                    {completionPercent.toFixed(0)}%
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Outros Financeiros Section */}
-                    <div className="rounded-xl bg-card/50 border border-border p-3">
-                      <h3 className="text-sm font-bold text-foreground mb-3 text-center">Financeiro</h3>
-                      <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-                        {otherFinanceiroMetrics.map((metric) => {
-                          const unit = getUnit(metric.meta);
-                          const data = metric.dados.find((d) => d.mes === selectedMonth);
-                          const completionPercent = data?.concluido ?? 0;
-                          const isBelowTarget = completionPercent < 100;
-
-                          const pieData = [
-                            { name: "Realizado", value: Math.min(completionPercent, 100) },
-                            { name: "Restante", value: Math.max(100 - completionPercent, 0) }
-                          ];
-
-                          return (
-                            <div key={metric.id} className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3">
-                              <div className="flex items-center gap-1 mb-2">
-                                <h4 className="font-semibold text-foreground text-xs text-center line-clamp-1">
-                                  {metric.nome}
-                                </h4>
-                                {isBelowTarget && (
-                                  <Flag className="h-3 w-3 text-orange-400 flex-shrink-0" fill="currentColor" />
-                                )}
-                              </div>
-                              <div className="w-24 h-24 relative">
-                                <ResponsiveContainer width="100%" height="100%">
-                                  <PieChart>
-                                    <defs>
-                                      <linearGradient id={`gradient-fin-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                                        <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
-                                        <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
-                                      </linearGradient>
-                                    </defs>
-                                    <Pie
-                                      data={pieData}
-                                      dataKey="value"
-                                      cx="50%"
-                                      cy="50%"
-                                      innerRadius="55%"
-                                      outerRadius="95%"
-                                      startAngle={90}
-                                      endAngle={-270}
-                                      strokeWidth={0}
-                                    >
-                                      <Cell fill={`url(#gradient-fin-${metric.id})`} />
-                                      <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
-                                    </Pie>
-                                  </PieChart>
-                                </ResponsiveContainer>
-                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                  <span className="text-sm font-bold text-white">
-                                    {completionPercent.toFixed(0)}%
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="text-center text-[10px] mt-2 space-y-1">
-                                <div className="flex justify-between gap-2 px-1">
-                                  <span className="text-muted-foreground">Meta:</span>
-                                  <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
-                                </div>
-                                <div className="flex justify-between gap-2 px-1">
-                                  <span className="text-muted-foreground">Real:</span>
-                                  <span className={`font-semibold ${isBelowTarget ? "text-red-400" : "text-emerald-400"}`}>{formatValue(data?.realizado ?? null, unit)}</span>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-          ) : (
-            // Default grid for other categories
-            <div className="flex-1 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 animate-scale-in">
-              {filteredMetrics.map((metric) => {
-                const unit = getUnit(metric.meta);
-                const data = metric.dados.find((d) => d.mes === selectedMonth);
-                const completionPercent = data?.concluido ?? 0;
-                const isBelowTarget = completionPercent < 100;
-
-                const pieData = [
-                  { name: "Realizado", value: Math.min(completionPercent, 100) },
-                  { name: "Restante", value: Math.max(100 - completionPercent, 0) }
-                ];
-
-                return (
-                  <div 
-                    key={metric.id}
-                    className="flex flex-col items-center rounded-xl bg-[hsl(264,60%,20%)]/40 border border-[hsl(264,60%,40%)]/30 p-3"
-                  >
-                    <div className="flex items-center gap-1 mb-2">
-                      <h3 className="font-semibold text-foreground text-xs text-center line-clamp-1">
-                        {metric.nome}
-                      </h3>
-                      {isBelowTarget && (
-                        <Flag className="h-3 w-3 text-orange-400 flex-shrink-0" fill="currentColor" />
-                      )}
-                    </div>
-                    
-                    <div className="w-32 h-32 relative">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <defs>
-                            <linearGradient id={`gradient-${metric.id}`} x1="0" y1="0" x2="1" y2="1">
-                              <stop offset="0%" stopColor={isBelowTarget ? "hsl(0, 85%, 60%)" : "hsl(264, 100%, 70%)"} />
-                              <stop offset="100%" stopColor={isBelowTarget ? "hsl(0, 70%, 45%)" : "hsl(200, 80%, 60%)"} />
-                            </linearGradient>
-                          </defs>
-                          <Pie
-                            data={pieData}
-                            dataKey="value"
-                            cx="50%"
-                            cy="50%"
-                            innerRadius="55%"
-                            outerRadius="95%"
-                            startAngle={90}
-                            endAngle={-270}
-                            strokeWidth={0}
-                          >
-                            <Cell fill={`url(#gradient-${metric.id})`} />
-                            <Cell fill={isBelowTarget ? "hsl(0, 30%, 25%)" : "hsl(264, 30%, 25%)"} />
-                          </Pie>
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-lg font-bold text-white">
-                          {completionPercent.toFixed(0)}%
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="text-center text-xs mt-2 space-y-1">
-                      <div className="flex justify-between gap-2 px-2">
-                        <span className="text-muted-foreground">Meta:</span>
-                        <span className="font-semibold text-foreground">{formatValue(data?.previsto ?? null, unit)}</span>
-                      </div>
-                      <div className="flex justify-between gap-2 px-2">
-                        <span className="text-muted-foreground">Realizado:</span>
-                        <span className={`font-semibold ${isBelowTarget ? "text-red-400" : "text-emerald-400"}`}>{formatValue(data?.realizado ?? null, unit)}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </main>
-      </div>
-    );
-  }
-
-  // Grid Mode (original view)
-  if (tvMode && currentMetric) {
-    const unit = getUnit(currentMetric.meta);
-    const currentData = currentMetric.dados.find((d) => d.mes === selectedMonth);
-    const completionPercent = currentData?.concluido ?? 0;
-    const isBelowTarget = completionPercent < 100;
+  // Single Slide Component
+  const SingleSlide = ({ metric }: { metric: Metric }) => {
+    const unit = getUnit(metric.meta);
+    const data = metric.dados.find((d) => d.mes === selectedMonth);
+    const previsto = data?.previsto ?? 0;
+    const realizado = data?.realizado ?? 0;
+    const concluido = data?.concluido ?? 0;
+    const diferenca = data?.diferenca ?? 0;
+    const isBelowTarget = concluido < 100;
 
     const pieData = [
-      { name: "Realizado", value: Math.min(completionPercent, 100) },
-      { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+      { name: "Realizado", value: Math.min(concluido, 100) },
+      { name: "Restante", value: Math.max(100 - concluido, 0) }
     ];
 
+    const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
+    const bgColor = "#E5E7EB";
+
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <TvHeader />
+      <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full">
+        {/* Title with flag */}
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">
+            {metric.nome}
+          </h1>
+          <Flag className={`w-8 h-8 ${isBelowTarget ? "text-red-600" : "text-purple-600"} fill-current`} />
+        </div>
 
-        {/* Main Content - Full Screen Pie */}
-        <main className="flex-1 flex flex-col items-center justify-center px-8 py-6 relative">
-          {/* Navigation Arrows */}
-          <button
-            onClick={goToPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
-          >
-            <ChevronLeft className="h-8 w-8" />
-          </button>
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-card/80 border border-border hover:bg-muted transition-colors z-10"
-          >
-            <ChevronRight className="h-8 w-8" />
-          </button>
+        {/* Category and month */}
+        <p className="text-gray-500 text-lg">
+          {metric.categoria} • {selectedMonth}
+        </p>
 
-          {/* Metric Title */}
-          <div className="text-center mb-4">
-            <div className="flex items-center justify-center gap-3">
-              <h1 className="text-4xl font-bold text-foreground">{currentMetric.nome}</h1>
-              {isBelowTarget && (
-                <Flag className="h-8 w-8 text-destructive" fill="currentColor" />
-              )}
-            </div>
-            <p className="text-xl text-muted-foreground mt-2">{selectedCategory} • {selectedMonth}</p>
-          </div>
-
-          {/* Giant Pie Chart */}
-          <div className="w-[55vh] h-[55vh] max-w-[550px] max-h-[550px] relative animate-scale-in">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius="30%"
-                  outerRadius="90%"
-                  startAngle={90}
-                  endAngle={-270}
-                  strokeWidth={0}
-                >
-                  <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                  <Cell fill="hsl(var(--muted))" />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            {/* Center Label */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={cn(
-                "text-4xl font-bold",
-                isBelowTarget ? "text-destructive" : "text-green-500"
-              )}>
-                {completionPercent.toFixed(0)}%
-              </span>
-              <span className="text-sm text-muted-foreground">concluído</span>
-            </div>
-          </div>
-
-          {/* Values */}
-          <div className="flex gap-12 mt-6">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">Meta</p>
-              <p className="text-3xl font-bold text-foreground">
-                {formatValue(currentData?.previsto ?? null, unit)}
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">Realizado</p>
-              <p className={cn(
-                "text-3xl font-bold",
-                isBelowTarget ? "text-destructive" : "text-green-500"
-              )}>
-                {formatValue(currentData?.realizado ?? null, unit)}
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground uppercase tracking-wide">Diferença</p>
-              <p className={cn(
-                "text-3xl font-bold",
-                (currentData?.diferenca ?? 0) < 0 ? "text-destructive" : "text-green-500"
-              )}>
-                {formatValue(currentData?.diferenca ?? null, unit)}
-              </p>
-            </div>
-          </div>
-
-          {/* Progress dots */}
-          <div className="flex gap-2 mt-8">
-            {Array.from({ length: totalSlides }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={cn(
-                  "w-3 h-3 rounded-full transition-all",
-                  idx === currentIndex 
-                    ? "bg-primary scale-125" 
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                )}
-              />
-            ))}
-          </div>
-
-          {/* Auto-rotate indicator */}
-          <p className="text-sm text-muted-foreground mt-4">
-            Próximo em 15s • {currentIndex + 1} de {totalSlides}
-          </p>
-        </main>
-      </div>
-    );
-  }
-
-  // Grid Mode (original view)
-  const indicatorsBelowTarget = filteredMetrics.filter((m) => {
-    const data = m.dados.find((d) => d.mes === selectedMonth);
-    return data?.concluido !== null && data?.concluido !== undefined && data.concluido < 100;
-  }).length;
-
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                to="/" 
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        {/* Giant Pie Chart */}
+        <div className="relative my-4" style={{ width: 400, height: 400 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={100}
+                outerRadius={180}
+                startAngle={90}
+                endAngle={-270}
+                dataKey="value"
+                stroke="none"
               >
-                <ArrowLeft className="h-5 w-5" />
-                <span>Voltar</span>
-              </Link>
-              <div className="h-6 w-px bg-border" />
-              <h1 className="text-xl font-bold text-foreground">Indicadores por Área</h1>
-            </div>
-            <button
-              onClick={() => setTvMode(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              <Tv className="h-4 w-4" />
-              <span>Modo TV</span>
-            </button>
+                <Cell fill={mainColor} />
+                <Cell fill={bgColor} />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          
+          {/* Center content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className={`text-5xl md:text-6xl font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+              {concluido.toFixed(0)}%
+            </span>
+            <span className="text-gray-400 text-lg mt-1">concluído</span>
           </div>
         </div>
-      </header>
 
-      <main className="container mx-auto px-6 py-8">
-        {/* Filters */}
-        <section className="mb-8 flex flex-wrap gap-4">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Área
-            </label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-primary"
-            >
-              {categorias.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
+        {/* Values: META, REALIZADO, DIFERENÇA */}
+        <div className="flex gap-12 md:gap-20 mt-2">
+          <div className="text-center">
+            <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Meta</p>
+            <p className="text-gray-900 text-2xl md:text-3xl font-bold">
+              {formatValue(previsto, unit)}
+            </p>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Mês de Referência
-            </label>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-card text-foreground focus:ring-2 focus:ring-primary focus:border-primary"
-            >
-              {meses.map((mes) => (
-                <option key={mes} value={mes}>{mes}</option>
-              ))}
-            </select>
+          <div className="text-center">
+            <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Realizado</p>
+            <p className={`text-2xl md:text-3xl font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+              {formatValue(realizado, unit)}
+            </p>
           </div>
-        </section>
+          <div className="text-center">
+            <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Diferença</p>
+            <p className={`text-2xl md:text-3xl font-bold ${diferenca >= 0 ? "text-purple-600" : "text-red-600"}`}>
+              {formatDiferenca(diferenca, unit)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-        {/* Alert for indicators below target */}
-        {indicatorsBelowTarget > 0 && (
-          <section className="mb-6">
-            <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-4 flex items-center gap-3">
-              <Flag className="h-5 w-5 text-destructive" fill="currentColor" />
-              <span className="text-destructive font-medium">
-                {indicatorsBelowTarget} indicador{indicatorsBelowTarget > 1 ? "es" : ""} abaixo da meta em {selectedMonth}
-              </span>
-            </div>
-          </section>
-        )}
+  // Summary Slide Component
+  const SummarySlide = () => {
+    const gridCols = filteredMetrics.length <= 4 ? 2 : filteredMetrics.length <= 6 ? 3 : 4;
 
-        {/* Category title */}
-        <section className="mb-1">
-          <h2 className="text-sm font-bold text-foreground">{selectedCategory}</h2>
-          <p className="text-[10px] text-muted-foreground">
-            {filteredMetrics.length} indicadores • {selectedMonth}
-          </p>
-        </section>
-
-        {/* Metrics Grid - 6 colunas para TV */}
-        <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 animate-fade-in w-full h-full px-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
+          Resumo Geral - {selectedCategory}
+        </h1>
+        <p className="text-gray-500 text-lg mb-4">{selectedMonth} • Todos os indicadores</p>
+        
+        <div 
+          className="grid gap-4 w-full max-w-6xl"
+          style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
+        >
           {filteredMetrics.map((metric) => {
             const unit = getUnit(metric.meta);
-            const currentData = metric.dados.find((d) => d.mes === selectedMonth);
-            const completionPercent = currentData?.concluido ?? 0;
-            const isBelowTarget = completionPercent < 100;
+            const data = metric.dados.find((d) => d.mes === selectedMonth);
+            const previsto = data?.previsto ?? 0;
+            const realizado = data?.realizado ?? 0;
+            const concluido = data?.concluido ?? 0;
+            const isBelowTarget = concluido < 100;
 
             const pieData = [
-              { name: "Realizado", value: Math.min(completionPercent, 100) },
-              { name: "Restante", value: Math.max(100 - completionPercent, 0) }
+              { name: "Realizado", value: Math.min(concluido, 100) },
+              { name: "Restante", value: Math.max(100 - concluido, 0) }
             ];
+            const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
+            const bgColor = "#E5E7EB";
 
             return (
               <div 
-                key={metric.id}
-                className={cn(
-                  "rounded-xl border bg-card p-4 flex flex-col items-center",
-                  isBelowTarget ? "border-destructive/40 bg-destructive/5" : "border-border"
-                )}
+                key={metric.id} 
+                className="bg-gray-50 rounded-xl p-3 flex flex-col items-center border border-gray-100"
               >
-                <div className="flex items-center gap-1 mb-2">
-                  <h3 className="font-semibold text-foreground text-sm text-center truncate">
-                    {metric.nome}
-                  </h3>
-                  {isBelowTarget && (
-                    <Flag className="h-3 w-3 text-destructive flex-shrink-0" fill="currentColor" />
-                  )}
-                </div>
+                <h3 className="text-gray-700 text-xs font-medium text-center mb-1 line-clamp-2 h-8">
+                  {metric.nome}
+                </h3>
                 
-                <div className="w-24 h-24 relative">
+                <div className="relative" style={{ width: 100, height: 100 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={pieData}
-                        dataKey="value"
                         cx="50%"
                         cy="50%"
-                        innerRadius="35%"
-                        outerRadius="90%"
+                        innerRadius={30}
+                        outerRadius={45}
                         startAngle={90}
                         endAngle={-270}
-                        strokeWidth={0}
+                        dataKey="value"
+                        stroke="none"
                       >
-                        <Cell fill={isBelowTarget ? "hsl(0, 72%, 51%)" : "hsl(142, 71%, 45%)"} />
-                        <Cell fill="hsl(var(--muted))" />
+                        <Cell fill={mainColor} />
+                        <Cell fill={bgColor} />
                       </Pie>
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={cn(
-                      "text-lg font-bold",
-                      isBelowTarget ? "text-destructive" : "text-green-500"
-                    )}>
-                      {completionPercent.toFixed(0)}%
+                  
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className={`text-sm font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+                      {concluido.toFixed(0)}%
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-2 text-center text-xs">
-                  <div className="text-muted-foreground">
-                    Meta: {formatValue(currentData?.previsto ?? null, unit)}
+                <div className="flex gap-3 mt-1 text-xs">
+                  <div className="text-center">
+                    <p className="text-gray-400">Meta</p>
+                    <p className="text-gray-700 font-semibold">
+                      {formatValue(previsto, unit)}
+                    </p>
                   </div>
-                  <div className={cn(
-                    "font-semibold",
-                    isBelowTarget ? "text-destructive" : "text-foreground"
-                  )}>
-                    Real: {formatValue(currentData?.realizado ?? null, unit)}
+                  <div className="text-center">
+                    <p className="text-gray-400">Real</p>
+                    <p className={`font-semibold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+                      {formatValue(realizado, unit)}
+                    </p>
                   </div>
                 </div>
               </div>
             );
           })}
-        </section>
+        </div>
+      </div>
+    );
+  };
 
-        {/* Footer */}
-        <footer className="mt-12 py-6 border-t border-border text-center text-sm text-muted-foreground">
-          <p>Dashboard Elements © 2025 • Dados atualizados em tempo real</p>
-        </footer>
+  // TV Mode
+  if (tvMode) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <Header />
+        
+        <main className="flex-1 flex flex-col items-center justify-center px-8 py-6">
+          {isSummarySlide ? (
+            <SummarySlide />
+          ) : (
+            currentMetric && <SingleSlide metric={currentMetric} />
+          )}
+          
+          {/* Navigation dots */}
+          <div className="flex gap-2 mt-8">
+            {[...Array(totalSlides)].map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  idx === currentIndex
+                    ? idx === filteredMetrics.length 
+                      ? "bg-green-500 scale-125" 
+                      : "bg-blue-600 scale-125"
+                    : "bg-gray-300 hover:bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Timer and counter */}
+          <p className="text-gray-400 text-sm mt-4">
+            {isSummarySlide 
+              ? `Reiniciando em ${timeLeft} segundos • Resumo`
+              : `Próximo indicador em ${timeLeft} segundos • ${currentIndex + 1} de ${filteredMetrics.length}`
+            }
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  // Grid Mode
+  return (
+    <div className="min-h-screen bg-white flex flex-col">
+      <Header />
+      
+      <main className="flex-1 p-6">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">{selectedCategory}</h1>
+          <p className="text-lg text-gray-500">{selectedMonth}</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredMetrics.map((metric) => {
+            const unit = getUnit(metric.meta);
+            const data = metric.dados.find((d) => d.mes === selectedMonth);
+            const previsto = data?.previsto ?? 0;
+            const realizado = data?.realizado ?? 0;
+            const concluido = data?.concluido ?? 0;
+            const isBelowTarget = concluido < 100;
+
+            const pieData = [
+              { name: "Realizado", value: Math.min(concluido, 100) },
+              { name: "Restante", value: Math.max(100 - concluido, 0) }
+            ];
+            const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
+            const bgColor = "#E5E7EB";
+
+            return (
+              <div 
+                key={metric.id} 
+                className="bg-gray-50 rounded-xl p-4 flex flex-col items-center border border-gray-100"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-gray-700 text-sm font-medium text-center line-clamp-2">
+                    {metric.nome}
+                  </h3>
+                  {isBelowTarget && <Flag className="w-4 h-4 text-red-500 fill-current flex-shrink-0" />}
+                </div>
+                
+                <div className="relative" style={{ width: 120, height: 120 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={35}
+                        outerRadius={55}
+                        startAngle={90}
+                        endAngle={-270}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        <Cell fill={mainColor} />
+                        <Cell fill={bgColor} />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className={`text-lg font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+                      {concluido.toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 mt-2 text-xs">
+                  <div className="text-center">
+                    <p className="text-gray-400">Meta</p>
+                    <p className="text-gray-700 font-semibold">
+                      {formatValue(previsto, unit)}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-gray-400">Real</p>
+                    <p className={`font-semibold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
+                      {formatValue(realizado, unit)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </main>
     </div>
   );
