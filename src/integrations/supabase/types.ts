@@ -14,18 +14,115 @@ export type Database = {
   }
   public: {
     Tables: {
-      Clickup: {
+      dados_mensais: {
+        Row: {
+          ano: number
+          created_at: string
+          id: string
+          mes: string
+          metrica_id: string
+          previsto: number | null
+          realizado: number | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          ano?: number
+          created_at?: string
+          id?: string
+          mes: string
+          metrica_id: string
+          previsto?: number | null
+          realizado?: number | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          id?: string
+          mes?: string
+          metrica_id?: string
+          previsto?: number | null
+          realizado?: number | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dados_mensais_metrica_id_fkey"
+            columns: ["metrica_id"]
+            isOneToOne: false
+            referencedRelation: "metricas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metricas: {
         Row: {
           created_at: string
-          id: number
+          id: string
+          meta: string | null
+          nome: string
+          ordem: number | null
+          setor_id: string
+          unidade: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
-          id?: number
+          id?: string
+          meta?: string | null
+          nome: string
+          ordem?: number | null
+          setor_id: string
+          unidade?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
-          id?: number
+          id?: string
+          meta?: string | null
+          nome?: string
+          ordem?: number | null
+          setor_id?: string
+          unidade?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metricas_setor_id_fkey"
+            columns: ["setor_id"]
+            isOneToOne: false
+            referencedRelation: "setores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      setores: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          ordem: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          ordem?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          ordem?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
