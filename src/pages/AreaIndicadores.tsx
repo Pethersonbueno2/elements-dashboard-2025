@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Flag, Grid, Tv } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { initialMetrics, categorias, type Metric } from "@/data/dashboardData";
+import { FloatingControls } from "@/components/dashboard/FloatingControls";
 
 const meses = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -53,20 +54,20 @@ const SingleSlide = memo(({ metric, selectedMonth }: { metric: Metric; selectedM
   ], [concluido]);
 
   const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
-  const bgColor = "#E5E7EB";
+  const bgColor = "hsl(var(--muted))";
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
       {/* Title with flag */}
       <div className="flex items-center gap-3">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-center">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground text-center">
           {metric.nome}
         </h1>
         <Flag className={`w-8 h-8 ${isBelowTarget ? "text-red-600" : "text-purple-600"} fill-current`} />
       </div>
 
       {/* Category and month */}
-      <p className="text-gray-500 text-lg">
+      <p className="text-muted-foreground text-lg">
         {metric.categoria} • {selectedMonth}
       </p>
 
@@ -97,26 +98,26 @@ const SingleSlide = memo(({ metric, selectedMonth }: { metric: Metric; selectedM
           <span className={`text-5xl md:text-6xl font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
             {concluido.toFixed(0)}%
           </span>
-          <span className="text-gray-400 text-lg mt-1">concluído</span>
+          <span className="text-muted-foreground text-lg mt-1">concluído</span>
         </div>
       </div>
 
       {/* Values: META, REALIZADO, DIFERENÇA */}
       <div className="flex gap-12 md:gap-20 mt-2">
         <div className="text-center">
-          <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Meta</p>
-          <p className="text-gray-900 text-2xl md:text-3xl font-bold">
+          <p className="text-muted-foreground text-sm uppercase tracking-wide mb-1">Meta</p>
+          <p className="text-foreground text-2xl md:text-3xl font-bold">
             {formatValue(previsto, unit)}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Realizado</p>
+          <p className="text-muted-foreground text-sm uppercase tracking-wide mb-1">Realizado</p>
           <p className={`text-2xl md:text-3xl font-bold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
             {formatValue(realizado, unit)}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-gray-400 text-sm uppercase tracking-wide mb-1">Diferença</p>
+          <p className="text-muted-foreground text-sm uppercase tracking-wide mb-1">Diferença</p>
           <p className={`text-2xl md:text-3xl font-bold ${diferenca >= 0 ? "text-purple-600" : "text-red-600"}`}>
             {formatDiferenca(diferenca, unit)}
           </p>
@@ -142,10 +143,10 @@ const SummarySlide = memo(({
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 w-full h-full px-8">
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
+      <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center">
         Resumo Geral - {selectedCategory}
       </h1>
-      <p className="text-gray-500 text-lg mb-4">{selectedMonth} • Todos os indicadores</p>
+      <p className="text-muted-foreground text-lg mb-4">{selectedMonth} • Todos os indicadores</p>
       
       <div 
         className="grid gap-4 w-full max-w-6xl"
@@ -164,14 +165,14 @@ const SummarySlide = memo(({
             { name: "Restante", value: Math.max(100 - concluido, 0) }
           ];
           const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
-          const bgColor = "#E5E7EB";
+          const bgColor = "hsl(var(--muted))";
 
           return (
             <div 
               key={metric.id} 
-              className="bg-gray-50 rounded-xl p-3 flex flex-col items-center border border-gray-100"
+              className="bg-card rounded-xl p-3 flex flex-col items-center border border-border"
             >
-              <h3 className="text-gray-700 text-xs font-medium text-center mb-1 line-clamp-2 h-8">
+              <h3 className="text-foreground text-xs font-medium text-center mb-1 line-clamp-2 h-8">
                 {metric.nome}
               </h3>
               
@@ -205,13 +206,13 @@ const SummarySlide = memo(({
 
               <div className="flex gap-3 mt-1 text-xs">
                 <div className="text-center">
-                  <p className="text-gray-400">Meta</p>
-                  <p className="text-gray-700 font-semibold">
+                  <p className="text-muted-foreground">Meta</p>
+                  <p className="text-foreground font-semibold">
                     {formatValue(previsto, unit)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-400">Real</p>
+                  <p className="text-muted-foreground">Real</p>
                   <p className={`font-semibold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
                     {formatValue(realizado, unit)}
                   </p>
@@ -243,19 +244,19 @@ const Header = memo(({
   tvMode: boolean;
   setTvMode: (v: boolean) => void;
 }) => (
-  <header className="border-b border-gray-200 bg-white px-6 py-3">
+  <header className="border-b border-border bg-background px-6 py-3">
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
         <Link 
           to="/" 
-          className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm"
+          className="px-3 py-1.5 rounded-lg border border-border bg-background text-foreground text-sm"
         >
           {categorias.map((cat) => (
             <option key={cat} value={cat}>{cat}</option>
@@ -264,7 +265,7 @@ const Header = memo(({
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
-          className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm"
+          className="px-3 py-1.5 rounded-lg border border-border bg-background text-foreground text-sm"
         >
           {meses.map((mes) => (
             <option key={mes} value={mes}>{mes}</option>
@@ -273,7 +274,7 @@ const Header = memo(({
       </div>
       <button
         onClick={() => setTvMode(!tvMode)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-background hover:bg-muted transition-colors text-sm text-foreground"
       >
         {tvMode ? <Grid className="h-4 w-4" /> : <Tv className="h-4 w-4" />}
         <span>{tvMode ? "Grid" : "TV"}</span>
@@ -296,7 +297,7 @@ const TimerDisplay = memo(({
   currentIndex: number; 
   totalMetrics: number;
 }) => (
-  <p className="text-gray-400 text-sm mt-4">
+  <p className="text-muted-foreground text-sm mt-4">
     {isSummarySlide 
       ? `Reiniciando em ${timeLeft} segundos • Resumo`
       : `Próximo indicador em ${timeLeft} segundos • ${currentIndex + 1} de ${totalMetrics}`
@@ -328,7 +329,7 @@ const NavigationDots = memo(({
             ? idx === metricsLength 
               ? "bg-green-500 scale-125" 
               : "bg-blue-600 scale-125"
-            : "bg-gray-300 hover:bg-gray-400"
+            : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
         }`}
       />
     ))}
@@ -389,7 +390,7 @@ const AreaIndicadores = () => {
   // TV Mode
   if (tvMode) {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col">
         <Header 
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
@@ -428,6 +429,7 @@ const AreaIndicadores = () => {
             currentIndex={currentIndex}
             totalMetrics={filteredMetrics.length}
           />
+          <FloatingControls />
         </main>
       </div>
     );
@@ -435,7 +437,7 @@ const AreaIndicadores = () => {
 
   // Grid Mode
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header 
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
@@ -447,8 +449,8 @@ const AreaIndicadores = () => {
       
       <main className="flex-1 p-6">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">{selectedCategory}</h1>
-          <p className="text-lg text-gray-500">{selectedMonth}</p>
+          <h1 className="text-3xl font-bold text-foreground">{selectedCategory}</h1>
+          <p className="text-lg text-muted-foreground">{selectedMonth}</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -465,15 +467,15 @@ const AreaIndicadores = () => {
               { name: "Restante", value: Math.max(100 - concluido, 0) }
             ];
             const mainColor = isBelowTarget ? "#DC2626" : "#7C3AED";
-            const bgColor = "#E5E7EB";
+            const bgColor = "hsl(var(--muted))";
 
             return (
               <div 
                 key={metric.id} 
-                className="bg-gray-50 rounded-xl p-4 flex flex-col items-center border border-gray-100"
+                className="bg-card rounded-xl p-4 flex flex-col items-center border border-border"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-gray-700 text-sm font-medium text-center line-clamp-2">
+                  <h3 className="text-foreground text-sm font-medium text-center line-clamp-2">
                     {metric.nome}
                   </h3>
                   {isBelowTarget && <Flag className="w-4 h-4 text-red-500 fill-current flex-shrink-0" />}
@@ -509,13 +511,13 @@ const AreaIndicadores = () => {
 
                 <div className="flex gap-4 mt-2 text-xs">
                   <div className="text-center">
-                    <p className="text-gray-400">Meta</p>
-                    <p className="text-gray-700 font-semibold">
+                    <p className="text-muted-foreground">Meta</p>
+                    <p className="text-foreground font-semibold">
                       {formatValue(previsto, unit)}
                     </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-gray-400">Real</p>
+                    <p className="text-muted-foreground">Real</p>
                     <p className={`font-semibold ${isBelowTarget ? "text-red-600" : "text-purple-600"}`}>
                       {formatValue(realizado, unit)}
                     </p>
@@ -525,6 +527,7 @@ const AreaIndicadores = () => {
             );
           })}
         </div>
+        <FloatingControls />
       </main>
     </div>
   );
