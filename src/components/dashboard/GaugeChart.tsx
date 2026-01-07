@@ -14,7 +14,9 @@ export function GaugeChart({ value, max, label }: GaugeChartProps) {
     { name: "empty", value: 100 - percentage },
   ];
 
-  const gaugeColor = "hsl(264, 100%, 65%)"; // Purple color
+  // Purple when goal is met, red when not
+  const isGoalMet = value >= max;
+  const gaugeColor = isGoalMet ? "hsl(264, 100%, 65%)" : "hsl(0, 85%, 55%)";
 
   const formatValue = (val: number) => {
     if (val >= 1000000) {
