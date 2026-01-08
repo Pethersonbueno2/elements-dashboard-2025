@@ -372,22 +372,6 @@ export function MonthlyChartCarousel({
             </ComposedChart>
           </ResponsiveContainer>
         </div>
-        
-        {/* Legend */}
-        <div className="flex items-center justify-center gap-6 mt-4">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-primary" />
-            <span className="text-sm text-muted-foreground">Valor Realizado</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142, 76%, 45%)' }} />
-            <span className="text-sm text-muted-foreground">Crescimento</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0, 84%, 60%)' }} />
-            <span className="text-sm text-muted-foreground">Decrescimento</span>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

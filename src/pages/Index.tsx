@@ -164,7 +164,7 @@ const Index = () => {
         </header>
 
         {/* KPI Cards - Responsive grid */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 mb-4 md:mb-5">
+        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 mb-4 md:mb-5">
           <KPICardNew
             title="Total Indicadores"
             value={summaryKPIs.total.toString()}
@@ -195,11 +195,18 @@ const Index = () => {
             delay={150}
           />
           <KPICardNew
+            title="Total Previsto"
+            value={formatValue(summaryKPIs.totalPrevisto)}
+            icon={<Target className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
+            iconBgColor="bg-blue-600"
+            delay={200}
+          />
+          <KPICardNew
             title="Total Realizado"
             value={formatValue(summaryKPIs.totalRealized)}
             icon={<DollarSign className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
             iconBgColor="bg-purple-600"
-            delay={200}
+            delay={250}
           />
         </section>
 
