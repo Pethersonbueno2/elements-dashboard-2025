@@ -191,7 +191,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B e B2BC - Crescimento Receita Base Ativa - 5% - 2025": {
+      "B2B - Crescimento Receita Base Ativa - 5% - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -218,31 +218,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B e B2BC - faturamento_leads_mensal - 2025": {
-        Row: {
-          diferenca: number | null
-          id: number
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "B2B e B2BC - novos_clientes_b2bc_mensal - 2025": {
+      "B2B - Receita - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -269,11 +245,11 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B e B2BC - nps_b2bc_mensal - 2025": {
+      "B2B - Taxa de Conversão - 25% - 2025": {
         Row: {
           diferenca: number | null
           id: number
-          mes: string
+          mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
@@ -281,7 +257,7 @@ export type Database = {
         Insert: {
           diferenca?: number | null
           id?: number
-          mes: string
+          mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
@@ -289,41 +265,14 @@ export type Database = {
         Update: {
           diferenca?: number | null
           id?: number
-          mes?: string
+          mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
         }
         Relationships: []
       }
-      "B2B e B2BC - receita_prevista_b2bc_mensal - 2025": {
-        Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "B2B e B2BC - ticket_medio_b2b_mensal - 2025": {
+      "B2B - Ticket Médio - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -378,6 +327,60 @@ export type Database = {
         Relationships: []
       }
       "B2BC - Ciclo de Vendas - 10 dias - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - NPS - 5": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "B2BC - Número de Novos Clientes": {
         Row: {
           diferenca: number | null
           id: number
@@ -512,7 +515,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2C Digital - receita_liquida_mensal - 2025": {
+      "B2C Digital - Receita Liquida - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -539,7 +542,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2C Digital - taxa_conversao_mensal - 2025": {
+      "B2C Digital - Taxa de Conversão - 1%": {
         Row: {
           diferenca: number | null
           id: number
@@ -674,7 +677,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  compliance_tributario_mensal - 2025": {
+      "Financeiro -  Compliance Tributário - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -701,7 +704,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  crescimento_ebitda_mensal - 2025": {
+      "Financeiro -  Crescimento EBITDA ? 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -728,7 +731,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  despesas_operacionais_mensal - 2025": {
+      "Financeiro -  Despesas Operacionais - 30%": {
         Row: {
           diferenca: number | null
           id: number
@@ -755,7 +758,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  ebitda_sob_juros_mensal - 2025": {
+      "Financeiro -  EBITDA sob Juros - >6 - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -782,7 +785,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  endividamento_ebitda_mensal - 2025": {
+      "Financeiro -  Grau de Alavancagem Financeira <2,5": {
         Row: {
           diferenca: number | null
           id: number
@@ -809,7 +812,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  grau_alavancagem_mensal - 2025": {
+      "Financeiro -  Margem Bruta - 55%": {
         Row: {
           diferenca: number | null
           id: number
@@ -836,7 +839,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  margem_bruta_mensal - 2025": {
+      "Financeiro -  Margem de Contribuição - 34%": {
         Row: {
           diferenca: number | null
           id: number
@@ -863,7 +866,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  margem_contribuicao_mensal - 2025": {
+      "Financeiro -  Margem EBITDA - 25%": {
         Row: {
           diferenca: number | null
           id: number
@@ -890,7 +893,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  margem_ebitda_mensal - 2025": {
+      "Financeiro -  Margem Liquida - 15% - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -917,7 +920,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  margem_liquida_mensal - 2025": {
+      "Financeiro -  Resultado Financeiro - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -944,7 +947,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  resultado_financeiro_mensal - 2025": {
+      "Financeiro - Carga Tributaria Efetiva": {
         Row: {
           diferenca: number | null
           id: number
@@ -971,7 +974,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro - carga_tributaria_mensal - 2025": {
+      "Financeiro - Endividamento sobre EBITDA <3 - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1106,7 +1109,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  receita_operacional_bruta_mensal - 2025": {
+      "Legacy -  receita Operacional Bruta - R$7.370.000": {
         Row: {
           diferenca: number | null
           id: number
@@ -1778,7 +1781,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth cfa_mensal 2025": {
+      "Marketing Growth Cohort - LTV(validar dashboard) 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1805,7 +1808,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth cohort_ltv_mensal 2025": {
+      "Marketing Growth cpa R$200 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1832,7 +1835,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth cpl_mensal 2025": {
+      "Marketing Growth CPL - R$50 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1859,7 +1862,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth crescimento_base_clientes_mensal 2025": {
+      "Marketing Growth Crescimento da Base de Clientes (novos cliente": {
         Row: {
           diferenca: number | null
           id: number
@@ -1886,7 +1889,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth crescimento_receita_clientes_existentes_mensal": {
+      "Marketing Growth Crescimento da Receita de Clientes Existentes": {
         Row: {
           diferenca: number | null
           id: number
@@ -1913,7 +1916,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth percentual_compras_originais_mensal 2025": {
+      "Marketing Growth Percentual de Compras originadas por indicaç": {
         Row: {
           diferenca: number | null
           id: number
@@ -1940,7 +1943,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth projetos_realizados_mensal 2025": {
+      "Marketing Growth Projetos Realizados 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1967,7 +1970,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth roas_mensal 2025": {
+      "Marketing Growth ROAS 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1994,7 +1997,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth taxa_conversao_lead_mensal 2025": {
+      "Marketing Growth Taxa de Conversão de Lead 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -2021,7 +2024,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth vendas_por_a15_mensal 2025": {
+      "Marketing Growth Vendas por IA 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -2048,7 +2051,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Operações monitoramento_cross_funcional_mensal 2025": {
+      "Operações Monitoramento Cross-Funcional 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -2186,6 +2189,30 @@ export type Database = {
         }
         Relationships: []
       }
+      "RD SUMMIT": {
+        Row: {
+          diferenca: number | null
+          id: number
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
       "RH consistencia de feedbacks de liderança - 80%": {
         Row: {
           id: number
@@ -2234,7 +2261,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH headcount_receita_mensal 2025": {
+      "RH Headcount vs Receita 2025": {
         Row: {
           id: number
           mes: string
@@ -2282,7 +2309,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH turnover_mensal 2025": {
+      "RH Turnover 2025": {
         Row: {
           id: number
           mes: string
