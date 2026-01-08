@@ -78,35 +78,34 @@ export function MonthlyChartCarousel({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   
-  const totalSlides = metrics.length + 1; // +1 for summary slide
-  const isSummarySlide = currentIndex === metrics.length;
+  const totalSlides = metrics.length; // Only individual metrics, no summary
   
-  const currentInterval = isSummarySlide ? summaryIntervalMs : slideIntervalMs;
-
   // Auto-advance slides
   useEffect(() => {
+    if (totalSlides === 0) return;
+    
     setProgress(0);
     
     const progressInterval = setInterval(() => {
       setProgress(prev => {
-        const increment = 100 / (currentInterval / 100);
+        const increment = 100 / (slideIntervalMs / 100);
         return Math.min(prev + increment, 100);
       });
     }, 100);
 
     const slideTimer = setTimeout(() => {
       setCurrentIndex(prev => (prev + 1) % totalSlides);
-    }, currentInterval);
+    }, slideIntervalMs);
 
     return () => {
       clearInterval(progressInterval);
       clearTimeout(slideTimer);
     };
-  }, [currentIndex, currentInterval, totalSlides]);
+  }, [currentIndex, slideIntervalMs, totalSlides]);
 
   // Individual metric chart data with variation calculation
   const singleMetricData = useMemo(() => {
-    if (isSummarySlide || !metrics[currentIndex]) return [];
+    if (!metrics[currentIndex]) return [];
     
     const metric = metrics[currentIndex];
     return metric.dados.map((d, i) => {
@@ -121,26 +120,9 @@ export function MonthlyChartCarousel({
         variacao: variation,
       };
     });
-  }, [currentIndex, metrics, isSummarySlide]);
+  }, [currentIndex, metrics]);
 
-  // Summary chart data - all metrics combined
-  const summaryData = useMemo(() => {
-    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
-                   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    
-    return months.map((mes) => {
-      const result: Record<string, any> = { mes: mes.substring(0, 3) };
-      
-      metrics.forEach((m, i) => {
-        const data = m.dados.find(d => d.mes === mes);
-        result[`metric_${i}`] = data?.concluido ?? 0;
-      });
-      
-      return result;
-    });
-  }, [metrics]);
-
-  const currentMetric = !isSummarySlide ? metrics[currentIndex] : null;
+  const currentMetric = metrics[currentIndex] ?? null;
 
   return (
     <Card className="bg-card border-border">
@@ -148,16 +130,10 @@ export function MonthlyChartCarousel({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground">
-              {isSummarySlide 
-                ? "Evolução Mensal - Visão Consolidada" 
-                : `Evolução Mensal - ${currentMetric?.nome}`
-              }
+              {`Evolução Mensal - ${currentMetric?.nome ?? ''}`}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              {isSummarySlide 
-                ? `${metrics.length} indicadores comparados` 
-                : `${currentMetric?.categoria} · Slide ${currentIndex + 1} de ${totalSlides}`
-              }
+              {`${currentMetric?.categoria ?? ''} · Slide ${currentIndex + 1} de ${totalSlides}`}
             </p>
           </div>
           
@@ -183,50 +159,7 @@ export function MonthlyChartCarousel({
       <CardContent>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
-            {isSummarySlide ? (
-              // Summary view - all metrics as lines
-              <ComposedChart data={summaryData} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  stroke="hsl(var(--border))" 
-                  opacity={0.3}
-                  vertical={false}
-                />
-                <XAxis 
-                  dataKey="mes" 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                  tickLine={false}
-                />
-                <YAxis 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(value) => `${value}%`}
-                  domain={[0, 'auto']}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend 
-                  wrapperStyle={{ fontSize: '11px' }}
-                  formatter={(value, entry: any) => {
-                    const index = parseInt(value.replace('metric_', ''));
-                    return metrics[index]?.nome.substring(0, 15) + '...' || value;
-                  }}
-                />
-                {metrics.map((m, i) => (
-                  <Line
-                    key={`line-${i}`}
-                    type="monotone"
-                    dataKey={`metric_${i}`}
-                    name={`metric_${i}`}
-                    stroke={COLORS[i % COLORS.length]}
-                    strokeWidth={2}
-                    dot={{ fill: COLORS[i % COLORS.length], strokeWidth: 0, r: 3 }}
-                    activeDot={{ r: 5, strokeWidth: 0 }}
-                  />
-                ))}
-              </ComposedChart>
-            ) : (
+            {currentMetric && (
               // Individual metric view
               <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 40 }}>
                 <CartesianGrid 
@@ -310,29 +243,25 @@ export function MonthlyChartCarousel({
         </div>
         
         {/* Linha vermelha de referência abaixo do gráfico */}
-        {!isSummarySlide && (
-          <div className="mx-5 -mt-6 mb-2">
-            <div className="h-[3px] bg-[hsl(338,85%,55%)] rounded-full" />
-          </div>
-        )}
+        <div className="mx-5 -mt-6 mb-2">
+          <div className="h-[3px] bg-[hsl(338,85%,55%)] rounded-full" />
+        </div>
 
-        {/* Legend for individual slides */}
-        {!isSummarySlide && (
-          <div className="flex items-center justify-center gap-6 mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-primary" />
-              <span className="text-sm text-muted-foreground">Valor Realizado</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142, 76%, 45%)' }} />
-              <span className="text-sm text-muted-foreground">Crescimento</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0, 84%, 60%)' }} />
-              <span className="text-sm text-muted-foreground">Decrescimento</span>
-            </div>
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-6 mt-4">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-primary" />
+            <span className="text-sm text-muted-foreground">Valor Realizado</span>
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142, 76%, 45%)' }} />
+            <span className="text-sm text-muted-foreground">Crescimento</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0, 84%, 60%)' }} />
+            <span className="text-sm text-muted-foreground">Decrescimento</span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
