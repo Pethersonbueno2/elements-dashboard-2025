@@ -320,21 +320,34 @@ export function MonthlyChartCarousel({
                 <LabelList 
                   dataKey="variacao" 
                   position="insideBottom"
-                  content={({ x, y, width, height, value }: any) => {
+                  content={({ x, y, width, height, value, index }: any) => {
                     if (value === null || value === undefined) return null;
                     const sign = value >= 0 ? '+' : '';
                     const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    const previsto = singleMetricData[index]?.previsto ?? 0;
                     return (
-                      <text
-                        x={x + (width / 2)}
-                        y={y + height + 32}
-                        textAnchor="middle"
-                        fill={color}
-                        fontSize={11}
-                        fontWeight={700}
-                      >
-                        {`${sign}${value.toFixed(1)}%`}
-                      </text>
+                      <g>
+                        <text
+                          x={x + (width / 2)}
+                          y={y + height + 24}
+                          textAnchor="middle"
+                          fill={color}
+                          fontSize={11}
+                          fontWeight={700}
+                        >
+                          {`${sign}${value.toFixed(1)}%`}
+                        </text>
+                        <text
+                          x={x + (width / 2)}
+                          y={y + height + 38}
+                          textAnchor="middle"
+                          fill="hsl(var(--muted-foreground))"
+                          fontSize={9}
+                          fontWeight={500}
+                        >
+                          {`Meta: ${formatValueWithDecimals(previsto, metricUnit)}`}
+                        </text>
+                      </g>
                     );
                   }}
                 />
