@@ -164,7 +164,7 @@ const Index = () => {
         </header>
 
         {/* KPI Cards - Responsive grid */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 mb-4 md:mb-5">
+        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3 mb-4 md:mb-5">
           <KPICardNew
             title="Total Indicadores"
             value={summaryKPIs.total.toString()}
@@ -200,14 +200,6 @@ const Index = () => {
             icon={<DollarSign className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
             iconBgColor="bg-purple-600"
             delay={200}
-          />
-          <KPICardNew
-            title="Variação"
-            value={`${summaryKPIs.variance >= 0 ? '+' : ''}${summaryKPIs.variance.toFixed(1)}%`}
-            icon={<AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor={summaryKPIs.variance >= 0 ? "bg-emerald-600" : "bg-rose-600"}
-            valueColor={summaryKPIs.variance >= 0 ? "positive" : "negative"}
-            delay={250}
           />
         </section>
 
