@@ -72,15 +72,20 @@ export function DonutChart({ title, data, centerLabel, centerValue }: DonutChart
           )}
         </div>
         
-        {/* Legend */}
-        <div className="mt-4 flex flex-wrap gap-3 justify-center">
+        {/* Legend with values */}
+        <div className="mt-4 space-y-1.5">
           {data.map((item, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full" 
-                style={{ backgroundColor: item.color }}
-              />
-              <span className="text-xs text-muted-foreground">{item.name}</span>
+            <div key={index} className="flex items-center justify-between gap-2 px-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div 
+                  className="w-2.5 h-2.5 rounded-full flex-shrink-0" 
+                  style={{ backgroundColor: item.color }}
+                />
+                <span className="text-xs text-muted-foreground truncate">{item.name}</span>
+              </div>
+              <span className="text-xs font-semibold text-foreground tabular-nums">
+                {item.value.toLocaleString('pt-BR')}
+              </span>
             </div>
           ))}
         </div>
