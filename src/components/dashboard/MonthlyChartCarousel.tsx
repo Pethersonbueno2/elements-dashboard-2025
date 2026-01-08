@@ -15,6 +15,8 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Pause, Play } from "lucide-react";
 import { type Metric } from "@/data/dashboardData";
 
 interface MonthlyChartCarouselProps {
@@ -112,12 +114,13 @@ export function MonthlyChartCarousel({
 }: MonthlyChartCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   
   const totalSlides = metrics.length; // Only individual metrics, no summary
   
   // Auto-advance slides
   useEffect(() => {
-    if (totalSlides === 0) return;
+    if (totalSlides === 0 || isPaused) return;
     
     setProgress(0);
     
@@ -136,7 +139,7 @@ export function MonthlyChartCarousel({
       clearInterval(progressInterval);
       clearTimeout(slideTimer);
     };
-  }, [currentIndex, slideIntervalMs, totalSlides]);
+  }, [currentIndex, slideIntervalMs, totalSlides, isPaused]);
 
   // Individual metric chart data with variation calculation
   const singleMetricData = useMemo(() => {
@@ -229,6 +232,20 @@ export function MonthlyChartCarousel({
             </p>
           </div>
           
+          {/* Pause button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsPaused(!isPaused)}
+            className="h-8 w-8 mr-2"
+          >
+            {isPaused ? (
+              <Play className="h-4 w-4" />
+            ) : (
+              <Pause className="h-4 w-4" />
+            )}
+          </Button>
+          
           {/* Slide indicators */}
           <div className="flex items-center gap-2">
             {Array.from({ length: Math.min(totalSlides, 10) }).map((_, i) => (
@@ -317,48 +334,37 @@ export function MonthlyChartCarousel({
                     );
                   }}
                 />
-                <LabelList 
-                  dataKey="variacao" 
-                  position="insideBottom"
-                  content={({ x, y, width, height, value, index }: any) => {
-                    if (value === null || value === undefined) return null;
-                    const sign = value >= 0 ? '+' : '';
-                    const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-                    const previsto = singleMetricData[index]?.previsto ?? 0;
-                    return (
-                      <g>
-                        <text
-                          x={x + (width / 2)}
-                          y={y + height + 24}
-                          textAnchor="middle"
-                          fill={color}
-                          fontSize={11}
-                          fontWeight={700}
-                        >
-                          {`${sign}${value.toFixed(1)}%`}
-                        </text>
-                        <text
-                          x={x + (width / 2)}
-                          y={y + height + 38}
-                          textAnchor="middle"
-                          fill="hsl(var(--muted-foreground))"
-                          fontSize={9}
-                          fontWeight={500}
-                        >
-                          {`Meta: ${formatValueWithDecimals(previsto, metricUnit)}`}
-                        </text>
-                      </g>
-                    );
-                  }}
-                />
               </Bar>
+              
+              {/* Reference line at bottom */}
+              <ReferenceLine 
+                yAxisId="left" 
+                y={0} 
+                stroke="hsl(338, 85%, 55%)" 
+                strokeWidth={3}
+              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
         
-        {/* Linha vermelha de referência abaixo do gráfico */}
-        <div className="mx-5 -mt-6 mb-2">
-          <div className="h-[3px] bg-[hsl(338,85%,55%)] rounded-full" />
+        {/* Porcentagens e metas abaixo da linha vermelha */}
+        <div className="flex justify-around mx-5 -mt-4 mb-2">
+          {singleMetricData.map((item, index) => {
+            const value = item.variacao;
+            if (value === null || value === undefined) return <div key={index} className="flex-1 text-center" />;
+            const sign = value >= 0 ? '+' : '';
+            const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+            return (
+              <div key={index} className="flex-1 text-center">
+                <p style={{ color }} className="text-xs font-bold">
+                  {`${sign}${value.toFixed(1)}%`}
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  {`Meta: ${formatValueWithDecimals(item.previsto, metricUnit)}`}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Legend */}
