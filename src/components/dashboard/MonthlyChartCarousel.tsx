@@ -281,20 +281,20 @@ export function MonthlyChartCarousel({
                   dataKey="percentual"
                   name="% Concluído"
                   stroke="hsl(338, 85%, 55%)"
-                  strokeWidth={2}
-                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 0, r: 5 }}
-                  activeDot={{ r: 7, strokeWidth: 0 }}
+                  strokeWidth={3}
+                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 2, stroke: 'hsl(var(--card))', r: 6 }}
+                  activeDot={{ r: 8, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
                 >
                   <LabelList 
                     dataKey="percentual" 
-                    position="top" 
+                    position="bottom" 
                     formatter={(value: number) => formatPercentage(value)}
                     style={{ 
                       fill: 'hsl(338, 85%, 55%)', 
-                      fontSize: '11px', 
-                      fontWeight: 600 
+                      fontSize: '12px', 
+                      fontWeight: 700 
                     }}
-                    offset={10}
+                    offset={8}
                   />
                 </Line>
               </ComposedChart>
