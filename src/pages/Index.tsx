@@ -217,6 +217,7 @@ const Index = () => {
         slideIntervalMs={12000} 
         summaryIntervalMs={25000}
         categoria={selectedCategory !== "Todas" ? selectedCategory : undefined}
+        onExitTVMode={() => setIsTVMode(false)}
       />
     );
   }
