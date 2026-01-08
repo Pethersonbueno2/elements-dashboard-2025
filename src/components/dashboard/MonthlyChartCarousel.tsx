@@ -71,6 +71,15 @@ const getMetricUnit = (meta: string): string => {
   return '';
 };
 
+// Verifica se é métrica de receita
+const isRevenueMetric = (nome: string): boolean => {
+  const lowerNome = nome.toLowerCase();
+  return lowerNome.includes('receita') || 
+         lowerNome.includes('faturamento') || 
+         lowerNome.includes('ebitda') ||
+         lowerNome.includes('ticket');
+};
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -134,16 +143,32 @@ export function MonthlyChartCarousel({
     if (!metrics[currentIndex]) return [];
     
     const metric = metrics[currentIndex];
+    const useRevenueCalc = isRevenueMetric(metric.nome);
+    
     return metric.dados.map((d, i) => {
-      const prevValue = i > 0 ? (metric.dados[i - 1].concluido ?? 0) : null;
-      const currentValue = d.concluido ?? 0;
-      const variation = prevValue !== null ? currentValue - prevValue : null;
+      const realizado = d.realizado ?? 0;
+      const previsto = d.previsto ?? 0;
+      
+      // Para métricas de receita: % realizado vs previsto
+      // Para outras: variação percentual vs mês anterior
+      let variacao: number | null = null;
+      
+      if (useRevenueCalc) {
+        // Calcula % do realizado em relação ao previsto
+        variacao = previsto > 0 ? ((realizado / previsto) - 1) * 100 : 0;
+      } else {
+        // Variação vs mês anterior
+        const prevValue = i > 0 ? (metric.dados[i - 1].concluido ?? 0) : null;
+        const currentValue = d.concluido ?? 0;
+        variacao = prevValue !== null ? currentValue - prevValue : null;
+      }
       
       return {
         mes: d.mes.substring(0, 3),
-        valor: d.realizado ?? 0,
-        percentual: currentValue,
-        variacao: variation,
+        valor: realizado,
+        percentual: d.concluido ?? 0,
+        variacao: variacao,
+        previsto: previsto,
       };
     });
   }, [currentIndex, metrics]);
