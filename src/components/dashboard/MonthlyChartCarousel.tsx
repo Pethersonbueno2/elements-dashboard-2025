@@ -176,15 +176,42 @@ export function MonthlyChartCarousel({
     });
   }, [currentIndex, metrics]);
 
+  // Extrai meta do nome da métrica (ex: "60MI" de "Receita Líquida - 60MI")
+  const extractMetaFromName = (meta: string): number | null => {
+    // Procura padrões como "60MI", "60Mi", "R$7.370.000", ">90%", etc.
+    const patterns = [
+      /(\d+(?:[.,]\d+)?)\s*Mi/i,  // 60Mi, 60MI
+      /(\d+(?:[.,]\d+)?)\s*Bi/i,  // 1Bi
+      /R\$\s*(\d+(?:[.,]\d+)*)/i,  // R$7.370.000
+      />?\s*(\d+(?:[.,]\d+)?)\s*%/,  // >90%, 25%
+      /<?\s*(\d+(?:[.,]\d+)?)\s*%/,  // <2%
+      /(\d+(?:[.,]\d+)?)\s*dias?/i,  // 10 dias
+      /(\d+(?:[.,]\d+)?)\s*h/i,  // 2h
+    ];
+    
+    for (const pattern of patterns) {
+      const match = meta.match(pattern);
+      if (match) {
+        const value = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
+        // Se é em milhões
+        if (/Mi/i.test(meta)) return value * 1000000;
+        if (/Bi/i.test(meta)) return value * 1000000000;
+        return value;
+      }
+    }
+    return null;
+  };
+
   // Calcula totais para exibir Realizado vs Meta
   const totals = useMemo(() => {
-    if (!metrics[currentIndex]) return { realizado: 0, previsto: 0 };
+    if (!metrics[currentIndex]) return { realizado: 0, previsto: 0, metaFromName: null };
     
     const metric = metrics[currentIndex];
     const totalRealizado = metric.dados.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
     const totalPrevisto = metric.dados.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
+    const metaFromName = extractMetaFromName(metric.meta);
     
-    return { realizado: totalRealizado, previsto: totalPrevisto };
+    return { realizado: totalRealizado, previsto: totalPrevisto, metaFromName };
   }, [currentIndex, metrics]);
 
   const currentMetric = metrics[currentIndex] ?? null;
@@ -228,7 +255,7 @@ export function MonthlyChartCarousel({
           <div className="text-right mr-4">
             <p className="text-xs text-muted-foreground">Total Realizado / Meta</p>
             <p className="text-lg font-bold text-foreground">
-              {formatValueWithDecimals(totals.realizado, metricUnit)} <span className="text-muted-foreground font-normal">/ {formatValueWithDecimals(totals.previsto, metricUnit)}</span>
+              {formatValueWithDecimals(totals.realizado, metricUnit)} <span className="text-muted-foreground font-normal">/ {formatValueWithDecimals(totals.metaFromName ?? totals.previsto, metricUnit)}</span>
             </p>
           </div>
           
