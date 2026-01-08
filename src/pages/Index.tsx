@@ -122,18 +122,23 @@ const Index = () => {
     ];
 
     if (selectedCategory !== "Todas") {
-      // Show metrics within category
+      // Show metrics within category - calculate average percentage
       return filteredMetrics.slice(0, 6).map((m, i) => {
-        const total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+        const validData = m.dados.filter(d => d.concluido !== null && d.concluido !== undefined);
+        const avgPercentage = validData.length > 0 
+          ? validData.reduce((acc, d) => acc + (d.concluido ?? 0), 0) / validData.length
+          : 0;
+        
         return {
           name: m.nome.substring(0, 20) + (m.nome.length > 20 ? "..." : ""),
-          value: total,
+          value: avgPercentage,
           color: colors[i % colors.length],
+          isPercentage: true,
         };
       });
     }
 
-    // Group by category
+    // Group by category - show total in currency
     const categoryTotals: Record<string, number> = {};
     metrics.forEach(m => {
       const total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
@@ -146,6 +151,7 @@ const Index = () => {
         name: name.substring(0, 15) + (name.length > 15 ? "..." : ""),
         value,
         color: colors[i % colors.length],
+        isPercentage: false,
       }));
   }, [metrics, filteredMetrics, selectedCategory]);
 

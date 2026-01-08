@@ -5,6 +5,7 @@ interface DonutDataItem {
   name: string;
   value: number;
   color: string;
+  isPercentage?: boolean;
 }
 
 interface DonutChartProps {
@@ -13,6 +14,20 @@ interface DonutChartProps {
   centerLabel?: string;
   centerValue?: string;
 }
+
+const formatValue = (value: number, isPercentage?: boolean): string => {
+  if (isPercentage) {
+    return `${value.toFixed(1)}%`;
+  }
+  // Currency format
+  if (value >= 1000000) {
+    return `R$ ${(value / 1000000).toFixed(2)} Mi`;
+  }
+  if (value >= 1000) {
+    return `R$ ${(value / 1000).toFixed(1)} K`;
+  }
+  return `R$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}`;
+};
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -84,7 +99,7 @@ export function DonutChart({ title, data, centerLabel, centerValue }: DonutChart
                 <span className="text-xs text-muted-foreground truncate">{item.name}</span>
               </div>
               <span className="text-xs font-semibold text-foreground tabular-nums">
-                {item.value.toLocaleString('pt-BR')}
+                {formatValue(item.value, item.isPercentage)}
               </span>
             </div>
           ))}
