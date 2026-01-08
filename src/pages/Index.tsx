@@ -13,6 +13,7 @@ import {
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { KPICardNew } from "@/components/dashboard/KPICardNew";
 import { MonthlyChart } from "@/components/dashboard/MonthlyChart";
+import { MonthlyChartCarousel } from "@/components/dashboard/MonthlyChartCarousel";
 import { DonutChart } from "@/components/dashboard/DonutChart";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { HorizontalBarChart } from "@/components/dashboard/HorizontalBarChart";
@@ -328,12 +329,12 @@ const Index = () => {
           />
         </section>
 
-        {/* Main Chart */}
+        {/* Main Chart - Carousel */}
         <section className="mb-5">
-          <MonthlyChart 
-            title="Evolução Mensal - Realizado vs Meta" 
-            data={monthlyChartData}
-            subtitle="Valor acumulado ● % de conclusão"
+          <MonthlyChartCarousel 
+            metrics={filteredMetrics.slice(0, 8)}
+            slideIntervalMs={10000}
+            summaryIntervalMs={60000}
           />
         </section>
 
