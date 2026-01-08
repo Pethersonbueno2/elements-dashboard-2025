@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { 
   LayoutDashboard, 
   BarChart3, 
@@ -9,7 +8,11 @@ import {
   Truck,
   FlaskConical,
   Megaphone,
-  DollarSign
+  DollarSign,
+  Package,
+  Headphones,
+  Cog,
+  Palette
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,33 +23,37 @@ interface SidebarProps {
 
 const menuItems = [
   { id: "Todas", label: "Dashboard", icon: LayoutDashboard },
-  { id: "B2B e B2BC", label: "B2B & B2BC", icon: Building2 },
-  { id: "B2C Digital", label: "B2C Digital", icon: TrendingUp },
   { id: "Financeiro", label: "Financeiro", icon: DollarSign },
-  { id: "Marketing", label: "Marketing", icon: Megaphone },
+  { id: "Marketing Growth", label: "Marketing Growth", icon: TrendingUp },
+  { id: "Marketing Branding", label: "Marketing Branding", icon: Palette },
+  { id: "B2B e B2BC", label: "B2B e B2BC", icon: Building2 },
+  { id: "B2C Digital", label: "B2C Digital", icon: Package },
   { id: "Logística", label: "Logística", icon: Truck },
+  { id: "Compras Internacionais", label: "Compras Int.", icon: Package },
   { id: "P&D", label: "P&D", icon: FlaskConical },
+  { id: "Operações", label: "Operações", icon: Cog },
+  { id: "Atendimento", label: "Atendimento", icon: Headphones },
   { id: "RH", label: "RH", icon: Users },
 ];
 
 export function Sidebar({ onCategoryChange, selectedCategory }: SidebarProps) {
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-40">
+    <aside className="fixed left-0 top-0 h-screen w-56 bg-sidebar border-r border-sidebar-border flex flex-col z-40">
       {/* Logo */}
-      <div className="p-6 border-b border-sidebar-border">
+      <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="font-bold text-sidebar-foreground">Elements</h1>
+            <h1 className="font-bold text-sidebar-foreground text-sm">Elements</h1>
             <p className="text-xs text-muted-foreground">Dashboard 2025</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = selectedCategory === item.id;
@@ -56,23 +63,23 @@ export function Sidebar({ onCategoryChange, selectedCategory }: SidebarProps) {
               key={item.id}
               onClick={() => onCategoryChange(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all",
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                 isActive 
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" 
+                  ? "bg-primary text-primary-foreground" 
                   : "text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
-              <Icon className="w-5 h-5" />
-              {item.label}
+              <Icon className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">{item.label}</span>
             </button>
           );
         })}
       </nav>
 
       {/* Settings */}
-      <div className="p-4 border-t border-sidebar-border">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-all">
-          <Settings className="w-5 h-5" />
+      <div className="p-2 border-t border-sidebar-border">
+        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-all">
+          <Settings className="w-4 h-4" />
           Configurações
         </button>
       </div>
