@@ -145,16 +145,16 @@ const Index = () => {
       }));
   }, [metrics, filteredMetrics, selectedCategory]);
 
-  // Table data from metrics
+  // Table data from metrics - ALL indicators
   const tableData = useMemo(() => {
-    return filteredMetrics.slice(0, 6).map((m, index) => {
+    return filteredMetrics.map((m, index) => {
       const lastData = [...m.dados].reverse().find(d => d.realizado !== null);
       const totalRealizado = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
       const totalPrevisto = m.dados.reduce((acc, d) => acc + (d.previsto ?? 0), 0);
       
       return {
         id: index + 1,
-        nome: m.nome.substring(0, 25) + (m.nome.length > 25 ? "..." : ""),
+        nome: m.nome,
         previsto: totalPrevisto,
         realizado: totalRealizado,
         concluido: lastData?.concluido ?? 0,
