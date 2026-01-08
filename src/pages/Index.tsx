@@ -56,6 +56,12 @@ const Index = () => {
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
+  // Metas fixas para métricas específicas (conforme planilha)
+  const fixedMetas: Record<string, { previsto: number; realizado: number }> = {
+    "receita-b2b": { previsto: 61622991, realizado: 39353316 },
+    "receita-b2bc": { previsto: 15815042, realizado: 8681962 },
+  };
+
   // Extrai meta do nome da métrica (ex: "60MI" de "Receita Líquida - 60MI")
   const extractMetaFromName = (meta: string): number | null => {
     const patterns = [
@@ -95,12 +101,20 @@ const Index = () => {
     }, 0) / (metricsWithData.length || 1);
 
     const totalRealized = metricsWithData.reduce((acc, m) => {
+      // Usa valor fixo se disponível
+      if (fixedMetas[m.id]) {
+        return acc + fixedMetas[m.id].realizado;
+      }
       const sum = m.dados.reduce((s, d) => s + (d.realizado ?? 0), 0);
       return acc + sum;
     }, 0);
 
     // Usa meta extraída do nome se disponível, senão soma os previstos
     const totalPrevisto = metricsWithData.reduce((acc, m) => {
+      // Usa valor fixo se disponível
+      if (fixedMetas[m.id]) {
+        return acc + fixedMetas[m.id].previsto;
+      }
       const metaFromName = extractMetaFromName(m.meta);
       if (metaFromName !== null) {
         return acc + metaFromName;
