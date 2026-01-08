@@ -27,21 +27,22 @@ interface DataTableProps {
 
 export function DataTable({ title, columns, data, highlightColumn }: DataTableProps) {
   return (
-    <Card className="bg-card border-border">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold text-foreground">
+    <Card className="bg-card border-border h-full flex flex-col">
+      <CardHeader className="pb-2 pt-3 px-3 flex-shrink-0">
+        <CardTitle className="text-sm font-semibold text-foreground flex items-center justify-between">
           {title}
+          <span className="text-xs font-normal text-muted-foreground">{data.length} itens</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
+      <CardContent className="p-0 flex-1 overflow-hidden">
+        <div className="overflow-y-auto max-h-[280px]">
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 bg-card z-10">
               <TableRow className="border-border hover:bg-transparent">
                 {columns.map((col) => (
                   <TableHead 
                     key={col.key}
-                    className={`text-muted-foreground font-medium text-xs ${
+                    className={`text-muted-foreground font-medium text-[10px] uppercase py-1.5 px-2 ${
                       col.align === "right" ? "text-right" : 
                       col.align === "center" ? "text-center" : "text-left"
                     }`}
@@ -52,25 +53,37 @@ export function DataTable({ title, columns, data, highlightColumn }: DataTablePr
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((row, index) => (
+              {data.map((row) => (
                 <TableRow 
                   key={row.id} 
-                  className="border-border hover:bg-secondary/30"
+                  className="border-border/50 hover:bg-secondary/30"
                 >
                   {columns.map((col) => {
                     const value = row[col.key];
                     const formattedValue = col.format ? col.format(value) : value;
                     const isHighlight = col.key === highlightColumn;
                     
+                    // Color coding for completion percentage
+                    let highlightColor = "text-primary";
+                    if (isHighlight && typeof value === "number") {
+                      if (value >= 100) highlightColor = "text-emerald-500";
+                      else if (value >= 80) highlightColor = "text-amber-500";
+                      else highlightColor = "text-rose-500";
+                    }
+                    
                     return (
                       <TableCell 
                         key={col.key}
-                        className={`text-sm py-3 ${
+                        className={`text-[11px] py-1 px-2 ${
                           col.align === "right" ? "text-right" : 
                           col.align === "center" ? "text-center" : "text-left"
-                        } ${isHighlight ? "text-primary font-semibold" : "text-foreground"}`}
+                        } ${isHighlight ? `${highlightColor} font-semibold` : "text-foreground"}`}
                       >
-                        {formattedValue}
+                        {col.key === "nome" ? (
+                          <span className="line-clamp-1" title={String(formattedValue)}>
+                            {formattedValue}
+                          </span>
+                        ) : formattedValue}
                       </TableCell>
                     );
                   })}
