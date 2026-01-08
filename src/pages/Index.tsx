@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -18,17 +18,49 @@ import { DonutChart } from "@/components/dashboard/DonutChart";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { HorizontalBarChart } from "@/components/dashboard/HorizontalBarChart";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
+import { ClickUpConfig } from "@/components/dashboard/ClickUpConfig";
 import { Button } from "@/components/ui/button";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
+import { useClickUp } from "@/hooks/useClickUp";
 
 const MONTHS = ["Todos", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
                "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 const Index = () => {
-  const [metrics] = useState<Metric[]>(initialMetrics);
+  const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [selectedMonth, setSelectedMonth] = useState("Todos");
   const [isTVMode, setIsTVMode] = useState(false);
+  
+  const { metrics: clickUpMetrics, isConfigured, fetchTasks } = useClickUp();
+  
+  // Sync ClickUp data on mount if configured
+  useEffect(() => {
+    if (isConfigured) {
+      fetchTasks();
+    }
+  }, [isConfigured, fetchTasks]);
+  
+  // Update metrics when ClickUp data changes
+  useEffect(() => {
+    if (clickUpMetrics.length > 0) {
+      // Transform ClickUp metrics to dashboard format
+      const transformed: Metric[] = clickUpMetrics.map((m) => ({
+        id: m.id,
+        nome: m.nome,
+        categoria: m.categoria,
+        meta: `${m.percentualConcluido}%`,
+        dados: [{
+          mes: m.mes,
+          previsto: m.previsto,
+          realizado: m.realizado,
+          diferenca: m.diferenca,
+          concluido: m.percentualConcluido,
+        }],
+      }));
+      setMetrics(transformed);
+    }
+  }, [clickUpMetrics]);
 
   // Filter metrics for TV mode based on selected category
   const tvMetrics = useMemo(() => {
@@ -265,6 +297,7 @@ const Index = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <ClickUpConfig />
             <Button
               variant="outline"
               size="sm"
