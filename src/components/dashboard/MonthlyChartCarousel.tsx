@@ -124,16 +124,37 @@ export function MonthlyChartCarousel({
 
   const currentMetric = metrics[currentIndex] ?? null;
 
+  // Return early if no metrics
+  if (!currentMetric || totalSlides === 0) {
+    return (
+      <Card className="bg-card border-border">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-semibold text-foreground">
+            Evolução Mensal
+          </CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            Nenhum indicador disponível
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+            Carregando dados...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-card border-border">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground">
-              {`Evolução Mensal - ${currentMetric?.nome ?? ''}`}
+              {`Evolução Mensal - ${currentMetric.nome}`}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              {`${currentMetric?.categoria ?? ''} · Slide ${currentIndex + 1} de ${totalSlides}`}
+              {`${currentMetric.categoria} · Slide ${currentIndex + 1} de ${totalSlides}`}
             </p>
           </div>
           
@@ -159,86 +180,83 @@ export function MonthlyChartCarousel({
       <CardContent>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
-            {currentMetric && (
-              // Individual metric view
-              <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 40 }}>
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  stroke="hsl(var(--border))" 
-                  opacity={0.3}
-                  vertical={false}
-                />
-                <XAxis 
-                  dataKey="mes" 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                  tickLine={false}
-                />
-                <YAxis 
-                  yAxisId="left"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(value) => formatValue(value)}
-                />
-                <YAxis 
-                  yAxisId="right"
-                  orientation="right"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(value) => `${value}%`}
-                  domain={[0, 'auto']}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar 
-                  yAxisId="left"
+            <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 40 }}>
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="hsl(var(--border))" 
+                opacity={0.3}
+                vertical={false}
+              />
+              <XAxis 
+                dataKey="mes" 
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={false}
+              />
+              <YAxis 
+                yAxisId="left"
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(value) => formatValue(value)}
+              />
+              <YAxis 
+                yAxisId="right"
+                orientation="right"
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(value) => `${value}%`}
+                domain={[0, 'auto']}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar 
+                yAxisId="left"
+                dataKey="valor" 
+                name="Valor Realizado"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={50}
+              >
+                {singleMetricData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill="hsl(var(--primary))"
+                    opacity={0.9}
+                  />
+                ))}
+                <LabelList 
                   dataKey="valor" 
-                  name="Valor Realizado"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={50}
-                >
-                  {singleMetricData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill="hsl(var(--primary))"
-                      opacity={0.9}
-                    />
-                  ))}
-                  <LabelList 
-                    dataKey="valor" 
-                    position="top" 
-                    formatter={(value: number) => formatValue(value)}
-                    style={{ 
-                      fill: 'hsl(var(--foreground))', 
-                      fontSize: '11px', 
-                      fontWeight: 600 
-                    }}
-                  />
-                  <LabelList 
-                    dataKey="variacao" 
-                    position="insideBottom"
-                    content={({ x, y, width, height, value }: any) => {
-                      if (value === null || value === undefined) return null;
-                      const sign = value >= 0 ? '+' : '';
-                      const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-                      return (
-                        <text
-                          x={x + (width / 2)}
-                          y={y + height + 32}
-                          textAnchor="middle"
-                          fill={color}
-                          fontSize={11}
-                          fontWeight={700}
-                        >
-                          {`${sign}${value.toFixed(0)}%`}
-                        </text>
-                      );
-                    }}
-                  />
-                </Bar>
-              </ComposedChart>
-            )}
+                  position="top" 
+                  formatter={(value: number) => formatValue(value)}
+                  style={{ 
+                    fill: 'hsl(var(--foreground))', 
+                    fontSize: '11px', 
+                    fontWeight: 600 
+                  }}
+                />
+                <LabelList 
+                  dataKey="variacao" 
+                  position="insideBottom"
+                  content={({ x, y, width, height, value }: any) => {
+                    if (value === null || value === undefined) return null;
+                    const sign = value >= 0 ? '+' : '';
+                    const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    return (
+                      <text
+                        x={x + (width / 2)}
+                        y={y + height + 32}
+                        textAnchor="middle"
+                        fill={color}
+                        fontSize={11}
+                        fontWeight={700}
+                      >
+                        {`${sign}${value.toFixed(0)}%`}
+                      </text>
+                    );
+                  }}
+                />
+              </Bar>
+            </ComposedChart>
           </ResponsiveContainer>
         </div>
         
