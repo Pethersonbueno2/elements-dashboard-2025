@@ -4,11 +4,10 @@ import {
   TrendingUp, 
   Target,
   Tv,
-  Clock,
   BarChart3,
-  Receipt,
-  PiggyBank,
-  CreditCard,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
   Home
 } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
@@ -22,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
 const Index = () => {
-  const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
+  const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [isTVMode, setIsTVMode] = useState(false);
 
@@ -36,71 +35,157 @@ const Index = () => {
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
-  // Calculate summary KPIs
+  // Calculate summary KPIs based on filtered metrics
   const summaryKPIs = useMemo(() => {
     const totalMetrics = filteredMetrics.length;
-    const achievedMetrics = filteredMetrics.filter(m => {
-      const lastData = m.dados.find(d => d.realizado !== null);
-      return lastData && (lastData.concluido ?? 0) >= 100;
+    
+    // Get metrics with valid data
+    const metricsWithData = filteredMetrics.filter(m => 
+      m.dados.some(d => d.realizado !== null)
+    );
+    
+    const achievedMetrics = metricsWithData.filter(m => {
+      const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
+      return lastValidData && (lastValidData.concluido ?? 0) >= 100;
     }).length;
     
-    const avgCompletion = filteredMetrics.reduce((acc, m) => {
-      const lastData = m.dados.find(d => d.realizado !== null);
-      return acc + (lastData?.concluido ?? 0);
-    }, 0) / (totalMetrics || 1);
+    const avgCompletion = metricsWithData.reduce((acc, m) => {
+      const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
+      return acc + (lastValidData?.concluido ?? 0);
+    }, 0) / (metricsWithData.length || 1);
+
+    // Sum realized values
+    const totalRealized = metricsWithData.reduce((acc, m) => {
+      const sum = m.dados.reduce((s, d) => s + (d.realizado ?? 0), 0);
+      return acc + sum;
+    }, 0);
+
+    const totalPrevisto = metricsWithData.reduce((acc, m) => {
+      const sum = m.dados.reduce((s, d) => s + (d.previsto ?? 0), 0);
+      return acc + sum;
+    }, 0);
 
     return {
       total: totalMetrics,
       achieved: achievedMetrics,
+      pending: metricsWithData.length - achievedMetrics,
       avgCompletion: avgCompletion.toFixed(1),
-      pending: totalMetrics - achievedMetrics,
+      totalRealized,
+      totalPrevisto,
+      variance: totalPrevisto > 0 ? ((totalRealized - totalPrevisto) / totalPrevisto * 100) : 0,
     };
   }, [filteredMetrics]);
 
-  // Sample monthly chart data
+  // Monthly chart data from actual metrics
   const monthlyChartData = useMemo(() => {
-    const months = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", 
-                   "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
-    return months.map((mes, i) => ({
-      mes,
-      valor: 500000000 + Math.random() * 200000000,
-      percentual: 537 + Math.random() * 20,
-    }));
-  }, []);
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+                   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    return months.map((mes) => {
+      const monthData = filteredMetrics.reduce((acc, m) => {
+        const data = m.dados.find(d => d.mes === mes);
+        return {
+          realizado: acc.realizado + (data?.realizado ?? 0),
+          previsto: acc.previsto + (data?.previsto ?? 0),
+        };
+      }, { realizado: 0, previsto: 0 });
 
-  // Sample donut chart data
-  const regionData = [
-    { name: "Grande Vitória", value: 6430000000, color: "hsl(259, 100%, 60%)" },
-    { name: "Outras localidades", value: 960000000, color: "hsl(200, 85%, 55%)" },
-  ];
+      const percentual = monthData.previsto > 0 
+        ? (monthData.realizado / monthData.previsto) * 100 
+        : 0;
 
-  // Sample table data
-  const tableData = [
-    { id: 1, nome: "Loja 4", grande_vitoria: 1637301996.62, outras: 0, total: 1637301996.62 },
-    { id: 2, nome: "Loja 1", grande_vitoria: 1406053493.16, outras: 0, total: 1406053493.16 },
-    { id: 3, nome: "Loja 2", grande_vitoria: 999596466.48, outras: 0, total: 999596466.48 },
-    { id: 4, nome: "Loja 5", grande_vitoria: 967188556.93, outras: 0, total: 967188556.93 },
-    { id: 5, nome: "Loja 7", grande_vitoria: 752093196.41, outras: 0, total: 752093196.41 },
-  ];
+      return {
+        mes: mes.substring(0, 3),
+        valor: monthData.realizado,
+        percentual,
+      };
+    });
+  }, [filteredMetrics]);
+
+  // Category distribution for donut chart
+  const categoryData = useMemo(() => {
+    const colors = [
+      "hsl(259, 100%, 60%)",
+      "hsl(200, 85%, 55%)", 
+      "hsl(142, 76%, 45%)",
+      "hsl(38, 92%, 55%)",
+      "hsl(338, 85%, 55%)",
+      "hsl(280, 70%, 50%)",
+    ];
+
+    if (selectedCategory !== "Todas") {
+      // Show metrics within category
+      return filteredMetrics.slice(0, 6).map((m, i) => {
+        const total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+        return {
+          name: m.nome.substring(0, 20) + (m.nome.length > 20 ? "..." : ""),
+          value: total,
+          color: colors[i % colors.length],
+        };
+      });
+    }
+
+    // Group by category
+    const categoryTotals: Record<string, number> = {};
+    metrics.forEach(m => {
+      const total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+      categoryTotals[m.categoria] = (categoryTotals[m.categoria] || 0) + total;
+    });
+
+    return Object.entries(categoryTotals)
+      .slice(0, 6)
+      .map(([name, value], i) => ({
+        name: name.substring(0, 15) + (name.length > 15 ? "..." : ""),
+        value,
+        color: colors[i % colors.length],
+      }));
+  }, [metrics, filteredMetrics, selectedCategory]);
+
+  // Table data from metrics
+  const tableData = useMemo(() => {
+    return filteredMetrics.slice(0, 6).map((m, index) => {
+      const lastData = [...m.dados].reverse().find(d => d.realizado !== null);
+      const totalRealizado = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+      const totalPrevisto = m.dados.reduce((acc, d) => acc + (d.previsto ?? 0), 0);
+      
+      return {
+        id: index + 1,
+        nome: m.nome.substring(0, 25) + (m.nome.length > 25 ? "..." : ""),
+        previsto: totalPrevisto,
+        realizado: totalRealizado,
+        concluido: lastData?.concluido ?? 0,
+      };
+    });
+  }, [filteredMetrics]);
 
   const tableColumns = [
-    { key: "nome", label: "Nome Loja", align: "left" as const },
-    { key: "grande_vitoria", label: "Grande Vitória", align: "right" as const, format: (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) },
-    { key: "outras", label: "Outras localidades", align: "right" as const, format: (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) },
-    { key: "total", label: "Total", align: "right" as const, format: (v: number) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) },
+    { key: "nome", label: "Indicador", align: "left" as const },
+    { key: "previsto", label: "Previsto", align: "right" as const, format: (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 0 }) },
+    { key: "realizado", label: "Realizado", align: "right" as const, format: (v: number) => v.toLocaleString('pt-BR', { maximumFractionDigits: 0 }) },
+    { key: "concluido", label: "% Concluído", align: "right" as const, format: (v: number) => `${v.toFixed(1)}%` },
   ];
 
-  // Sample horizontal bar data
-  const groupData = [
-    { label: "Venda Bruta d...", value: 1.15, formattedValue: "1.15 Bi" },
-    { label: "Venda Líquida...", value: 1.06, formattedValue: "1.06 Bi" },
-    { label: "CMV de merc...", value: 0.86, formattedValue: "0.86 Bi" },
-    { label: "Margem + Bo...", value: 0.26, formattedValue: "0.26 Bi" },
-    { label: "Margem Líqui...", value: 0.25, formattedValue: "0.25 Bi" },
-    { label: "Total Despesas", value: 0.24, formattedValue: "0.24 Bi" },
-    { label: "Margem Com...", value: 0.22, formattedValue: "0.22 Bi" },
-    { label: "TOTAL Despes...", value: 0.21, formattedValue: "0.21 Bi" },
-  ];
+  // Horizontal bar data - top performing metrics
+  const topMetrics = useMemo(() => {
+    return filteredMetrics
+      .map(m => {
+        const lastData = [...m.dados].reverse().find(d => d.realizado !== null);
+        return {
+          label: m.nome.substring(0, 18) + (m.nome.length > 18 ? "..." : ""),
+          value: lastData?.concluido ?? 0,
+          formattedValue: `${(lastData?.concluido ?? 0).toFixed(1)}%`,
+        };
+      })
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 8);
+  }, [filteredMetrics]);
+
+  const formatValue = (value: number): string => {
+    if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
+    if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
+    if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
+    return value.toFixed(0);
+  };
 
   // TV Mode
   if (isTVMode) {
@@ -127,14 +212,13 @@ const Index = () => {
         <header className="flex items-center justify-between mb-5">
           <div>
             <h1 className="text-xl font-bold text-foreground uppercase tracking-wide">
-              {selectedCategory === "Todas" ? "EVOLUÇÃO MENSAL DAS CONTAS" : selectedCategory.toUpperCase()}
+              {selectedCategory === "Todas" ? "PAINEL DE INDICADORES" : selectedCategory.toUpperCase()}
             </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {filteredMetrics.length} indicadores · Dados 2025
+            </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-card border border-border rounded-lg p-1">
-              <Button variant="ghost" size="sm" className="text-xs">2024</Button>
-              <Button variant="default" size="sm" className="text-xs">2025</Button>
-            </div>
             <Button
               variant="outline"
               size="sm"
@@ -154,46 +238,47 @@ const Index = () => {
         {/* KPI Cards */}
         <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
           <KPICardNew
-            title="Receita Líquida"
-            value="1,25 Bi"
-            icon={<DollarSign className="w-5 h-5 text-primary-foreground" />}
-            iconBgColor="bg-emerald-600"
+            title="Total Indicadores"
+            value={summaryKPIs.total.toString()}
+            icon={<Target className="w-5 h-5 text-primary-foreground" />}
+            iconBgColor="bg-primary"
             delay={0}
           />
           <KPICardNew
-            title="D. Não Recorrentes"
-            value="9,58 Mi"
-            icon={<Receipt className="w-5 h-5 text-primary-foreground" />}
-            iconBgColor="bg-primary"
+            title="Metas Atingidas"
+            value={summaryKPIs.achieved.toString()}
+            icon={<CheckCircle2 className="w-5 h-5 text-primary-foreground" />}
+            iconBgColor="bg-emerald-600"
             delay={50}
           />
           <KPICardNew
-            title="Despesas Financeiras"
-            value="23,78 Mi"
-            icon={<CreditCard className="w-5 h-5 text-primary-foreground" />}
-            iconBgColor="bg-cyan-600"
+            title="Pendentes"
+            value={summaryKPIs.pending.toString()}
+            icon={<Clock className="w-5 h-5 text-primary-foreground" />}
+            iconBgColor="bg-amber-600"
             delay={100}
           />
           <KPICardNew
-            title="Despesas Totais"
-            value="241,54 Mi"
-            icon={<PiggyBank className="w-5 h-5 text-primary-foreground" />}
-            iconBgColor="bg-teal-600"
+            title="Média Conclusão"
+            value={`${summaryKPIs.avgCompletion}%`}
+            icon={<TrendingUp className="w-5 h-5 text-primary-foreground" />}
+            iconBgColor="bg-cyan-600"
+            valueColor={parseFloat(summaryKPIs.avgCompletion) >= 100 ? "positive" : "default"}
             delay={150}
           />
           <KPICardNew
-            title="EBITDA"
-            value="6,47 Mi"
-            icon={<TrendingUp className="w-5 h-5 text-primary-foreground" />}
+            title="Total Realizado"
+            value={formatValue(summaryKPIs.totalRealized)}
+            icon={<DollarSign className="w-5 h-5 text-primary-foreground" />}
             iconBgColor="bg-purple-600"
             delay={200}
           />
           <KPICardNew
-            title="Lucro Líquido"
-            value="-38,63 Mi"
-            icon={<Target className="w-5 h-5 text-primary-foreground" />}
-            iconBgColor="bg-rose-600"
-            valueColor="negative"
+            title="Variação"
+            value={`${summaryKPIs.variance >= 0 ? '+' : ''}${summaryKPIs.variance.toFixed(1)}%`}
+            icon={<AlertCircle className="w-5 h-5 text-primary-foreground" />}
+            iconBgColor={summaryKPIs.variance >= 0 ? "bg-emerald-600" : "bg-rose-600"}
+            valueColor={summaryKPIs.variance >= 0 ? "positive" : "negative"}
             delay={250}
           />
         </section>
@@ -201,9 +286,9 @@ const Index = () => {
         {/* Main Chart */}
         <section className="mb-5">
           <MonthlyChart 
-            title="Realizado e Variação Mensal" 
+            title="Evolução Mensal - Realizado vs Meta" 
             data={monthlyChartData}
-            subtitle="Valor ● % da Receita Bruta"
+            subtitle="Valor acumulado ● % de conclusão"
           />
         </section>
 
@@ -211,24 +296,25 @@ const Index = () => {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Donut Chart */}
           <DonutChart 
-            title="Região" 
-            data={regionData}
-            centerValue="7,39 Bi"
+            title={selectedCategory === "Todas" ? "Por Categoria" : "Por Indicador"} 
+            data={categoryData}
+            centerValue={formatValue(summaryKPIs.totalRealized)}
             centerLabel="Total"
           />
 
           {/* Data Table */}
           <DataTable 
-            title="" 
+            title="Indicadores Detalhados" 
             columns={tableColumns}
             data={tableData}
-            highlightColumn="total"
+            highlightColumn="concluido"
           />
 
           {/* Horizontal Bar Chart */}
           <HorizontalBarChart 
-            title="Grupo da Conta" 
-            data={groupData}
+            title="Top Performance (%)" 
+            data={topMetrics}
+            maxValue={200}
           />
         </section>
       </main>
