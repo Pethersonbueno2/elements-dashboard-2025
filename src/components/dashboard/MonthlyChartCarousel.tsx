@@ -34,15 +34,32 @@ const COLORS = [
   "hsl(320, 75%, 55%)",
 ];
 
+// Formata valor com decimais quando necessário
+const formatValueWithDecimals = (value: number, unit: string): string => {
+  const prefix = unit === 'R$' ? 'R$ ' : '';
+  const suffix = unit === 'R$' ? '' : ` ${unit}`;
+  
+  if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}Bi${suffix}`;
+  if (value >= 1000000) return `${prefix}${(value / 1000000).toFixed(2)}Mi${suffix}`;
+  if (value >= 1000) return `${prefix}${(value / 1000).toFixed(1)}K${suffix}`;
+  
+  // Para valores pequenos, mostra decimais
+  if (value % 1 !== 0) {
+    return `${prefix}${value.toFixed(2)}${suffix}`;
+  }
+  return `${prefix}${value.toFixed(0)}${suffix}`;
+};
+
 const formatValue = (value: number): string => {
-  if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
-  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
-  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+  if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)}Bi`;
+  if (value >= 1000000) return `${(value / 1000000).toFixed(2)}Mi`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+  if (value % 1 !== 0) return value.toFixed(2);
   return value.toFixed(0);
 };
 
 const formatPercentage = (value: number): string => {
-  return `${value.toFixed(0)}%`;
+  return `${value.toFixed(1)}%`;
 };
 
 // Extrai a unidade de medida da meta
@@ -51,7 +68,6 @@ const getMetricUnit = (meta: string): string => {
   if (meta.includes('R$')) return 'R$';
   if (meta.toLowerCase().includes('dia')) return 'dias';
   if (meta.toLowerCase().includes('h')) return 'h';
-  if (meta.toLowerCase().includes('s')) return 's';
   return '';
 };
 
@@ -144,6 +160,7 @@ export function MonthlyChartCarousel({
   }, [currentIndex, metrics]);
 
   const currentMetric = metrics[currentIndex] ?? null;
+  const metricUnit = currentMetric ? getMetricUnit(currentMetric.meta) : '';
 
   // Return early if no metrics
   if (!currentMetric || totalSlides === 0) {
@@ -183,7 +200,7 @@ export function MonthlyChartCarousel({
           <div className="text-right mr-4">
             <p className="text-xs text-muted-foreground">Total Realizado / Meta</p>
             <p className="text-lg font-bold text-foreground">
-              {formatValue(totals.realizado)} <span className="text-muted-foreground font-normal">/ {formatValue(totals.previsto)}</span>
+              {formatValueWithDecimals(totals.realizado, metricUnit)} <span className="text-muted-foreground font-normal">/ {formatValueWithDecimals(totals.previsto, metricUnit)}</span>
             </p>
           </div>
           
@@ -259,11 +276,20 @@ export function MonthlyChartCarousel({
                 <LabelList 
                   dataKey="valor" 
                   position="top" 
-                  formatter={(value: number) => formatValue(value)}
-                  style={{ 
-                    fill: 'hsl(var(--foreground))', 
-                    fontSize: '11px', 
-                    fontWeight: 600 
+                  content={({ x, y, width, value }: any) => {
+                    if (value === null || value === undefined) return null;
+                    return (
+                      <text
+                        x={x + (width / 2)}
+                        y={y - 8}
+                        textAnchor="middle"
+                        fill="hsl(var(--foreground))"
+                        fontSize={11}
+                        fontWeight={600}
+                      >
+                        {formatValueWithDecimals(value, metricUnit)}
+                      </text>
+                    );
                   }}
                 />
                 <LabelList 
@@ -282,7 +308,7 @@ export function MonthlyChartCarousel({
                         fontSize={11}
                         fontWeight={700}
                       >
-                        {`${sign}${value.toFixed(0)}%`}
+                        {`${sign}${value.toFixed(1)}%`}
                       </text>
                     );
                   }}
