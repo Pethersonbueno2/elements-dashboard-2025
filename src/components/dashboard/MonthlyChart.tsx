@@ -7,7 +7,8 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  Cell
+  Cell,
+  LabelList
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -24,10 +25,14 @@ interface MonthlyChartProps {
 }
 
 const formatValue = (value: number): string => {
-  if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
-  if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
-  if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
+  if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
   return value.toFixed(0);
+};
+
+const formatPercentage = (value: number): string => {
+  return `${value.toFixed(0)}%`;
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -127,6 +132,16 @@ export function MonthlyChart({ title, data, subtitle }: MonthlyChartProps) {
                     opacity={0.9}
                   />
                 ))}
+                <LabelList 
+                  dataKey="valor" 
+                  position="top" 
+                  formatter={(value: number) => formatValue(value)}
+                  style={{ 
+                    fill: 'hsl(var(--foreground))', 
+                    fontSize: '11px', 
+                    fontWeight: 600 
+                  }}
+                />
               </Bar>
               <Line
                 yAxisId="right"
@@ -135,9 +150,21 @@ export function MonthlyChart({ title, data, subtitle }: MonthlyChartProps) {
                 name="% Receita"
                 stroke="hsl(338, 85%, 55%)"
                 strokeWidth={2}
-                dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, strokeWidth: 0 }}
-              />
+                dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 0, r: 5 }}
+                activeDot={{ r: 7, strokeWidth: 0 }}
+              >
+                <LabelList 
+                  dataKey="percentual" 
+                  position="top" 
+                  formatter={(value: number) => formatPercentage(value)}
+                  style={{ 
+                    fill: 'hsl(338, 85%, 55%)', 
+                    fontSize: '11px', 
+                    fontWeight: 600 
+                  }}
+                  offset={10}
+                />
+              </Line>
             </ComposedChart>
           </ResponsiveContainer>
         </div>
