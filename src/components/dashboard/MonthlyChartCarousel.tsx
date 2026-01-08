@@ -257,31 +257,6 @@ export function MonthlyChartCarousel({
                   domain={[0, 'auto']}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar 
-                  yAxisId="left"
-                  dataKey="valor" 
-                  name="Valor Realizado"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={50}
-                >
-                  {singleMetricData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill="hsl(var(--primary))"
-                      opacity={0.9}
-                    />
-                  ))}
-                  <LabelList 
-                    dataKey="valor" 
-                    position="top" 
-                    formatter={(value: number) => formatValue(value)}
-                    style={{ 
-                      fill: 'hsl(var(--foreground))', 
-                      fontSize: '11px', 
-                      fontWeight: 600 
-                    }}
-                  />
-                </Bar>
                 <Line
                   yAxisId="right"
                   type="linear"
@@ -314,6 +289,31 @@ export function MonthlyChartCarousel({
                     }}
                   />
                 </Line>
+                <Bar 
+                  yAxisId="left"
+                  dataKey="valor" 
+                  name="Valor Realizado"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={50}
+                >
+                  {singleMetricData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill="hsl(var(--primary))"
+                      opacity={0.9}
+                    />
+                  ))}
+                  <LabelList 
+                    dataKey="valor" 
+                    position="top" 
+                    formatter={(value: number) => formatValue(value)}
+                    style={{ 
+                      fill: 'hsl(var(--foreground))', 
+                      fontSize: '11px', 
+                      fontWeight: 600 
+                    }}
+                  />
+                </Bar>
               </ComposedChart>
             )}
           </ResponsiveContainer>
