@@ -36,13 +36,11 @@ const COLORS = [
 const formatValue = (value: number): string => {
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
-  if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
-  if (value < 100) return value.toFixed(1);
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
   return value.toFixed(0);
 };
 
 const formatPercentage = (value: number): string => {
-  if (value < 10) return `${value.toFixed(1)}%`;
   return `${value.toFixed(0)}%`;
 };
 
@@ -117,43 +115,21 @@ export function MonthlyChartCarousel({
     }));
   }, [currentIndex, metrics, isSummarySlide]);
 
-  // Summary chart data - grouped by category with average performance
+  // Summary chart data - all metrics combined
   const summaryData = useMemo(() => {
-    // Group metrics by category
-    const categoryGroups: Record<string, Metric[]> = {};
-    metrics.forEach(m => {
-      if (!categoryGroups[m.categoria]) {
-        categoryGroups[m.categoria] = [];
-      }
-      categoryGroups[m.categoria].push(m);
-    });
-
-    // Calculate average performance per category
-    return Object.entries(categoryGroups).map(([categoria, categoryMetrics], index) => {
-      // Calculate average % concluído across all months for this category
-      let totalConcluido = 0;
-      let count = 0;
+    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+                   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    return months.map((mes) => {
+      const result: Record<string, any> = { mes: mes.substring(0, 3) };
       
-      categoryMetrics.forEach(m => {
-        m.dados.forEach(d => {
-          if (d.concluido !== null && d.concluido !== undefined) {
-            totalConcluido += d.concluido;
-            count++;
-          }
-        });
+      metrics.forEach((m, i) => {
+        const data = m.dados.find(d => d.mes === mes);
+        result[`metric_${i}`] = data?.concluido ?? 0;
       });
       
-      const avgConcluido = count > 0 ? totalConcluido / count : 0;
-      const indicadoresCount = categoryMetrics.length;
-      
-      return {
-        categoria: categoria.length > 12 ? categoria.substring(0, 12) + '...' : categoria,
-        categoriaFull: categoria,
-        performance: avgConcluido,
-        indicadores: indicadoresCount,
-        colorIndex: index,
-      };
-    }).sort((a, b) => b.performance - a.performance);
+      return result;
+    });
   }, [metrics]);
 
   const currentMetric = !isSummarySlide ? metrics[currentIndex] : null;
@@ -200,76 +176,47 @@ export function MonthlyChartCarousel({
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             {isSummarySlide ? (
-              // Summary view - horizontal bar chart by category
-              <ComposedChart 
-                data={summaryData} 
-                layout="vertical"
-                margin={{ top: 20, right: 80, left: 100, bottom: 10 }}
-              >
+              // Summary view - all metrics as lines
+              <ComposedChart data={summaryData} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
                   stroke="hsl(var(--border))" 
                   opacity={0.3}
-                  horizontal={false}
+                  vertical={false}
                 />
                 <XAxis 
-                  type="number"
+                  dataKey="mes" 
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  axisLine={false}
                   tickLine={false}
                   tickFormatter={(value) => `${value}%`}
                   domain={[0, 'auto']}
                 />
-                <YAxis 
-                  type="category"
-                  dataKey="categoria"
-                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 11, fontWeight: 500 }}
-                  axisLine={false}
-                  tickLine={false}
-                  width={95}
-                />
-                <Tooltip 
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      return (
-                        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-                          <p className="text-sm font-semibold text-foreground mb-1">{data.categoriaFull}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Performance média: <span className="font-bold text-primary">{data.performance.toFixed(1)}%</span>
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {data.indicadores} indicador{data.indicadores > 1 ? 'es' : ''}
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
+                <Tooltip content={<CustomTooltip />} />
+                <Legend 
+                  wrapperStyle={{ fontSize: '11px' }}
+                  formatter={(value, entry: any) => {
+                    const index = parseInt(value.replace('metric_', ''));
+                    return metrics[index]?.nome.substring(0, 15) + '...' || value;
                   }}
                 />
-                <Bar 
-                  dataKey="performance" 
-                  name="Performance Média"
-                  radius={[0, 6, 6, 0]}
-                  maxBarSize={35}
-                >
-                  {summaryData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={COLORS[entry.colorIndex % COLORS.length]}
-                    />
-                  ))}
-                  <LabelList 
-                    dataKey="performance" 
-                    position="right"
-                    formatter={(value: number) => `${value.toFixed(1)}%`}
-                    style={{ 
-                      fill: 'hsl(var(--foreground))', 
-                      fontSize: '12px', 
-                      fontWeight: 600 
-                    }}
+                {metrics.map((m, i) => (
+                  <Line
+                    key={`line-${i}`}
+                    type="monotone"
+                    dataKey={`metric_${i}`}
+                    name={`metric_${i}`}
+                    stroke={COLORS[i % COLORS.length]}
+                    strokeWidth={2}
+                    dot={{ fill: COLORS[i % COLORS.length], strokeWidth: 0, r: 3 }}
+                    activeDot={{ r: 5, strokeWidth: 0 }}
                   />
-                </Bar>
+                ))}
               </ComposedChart>
             ) : (
               // Individual metric view
@@ -328,6 +275,28 @@ export function MonthlyChartCarousel({
                     }}
                   />
                 </Bar>
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="percentual"
+                  name="% Concluído"
+                  stroke="hsl(338, 85%, 55%)"
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 0, r: 5 }}
+                  activeDot={{ r: 7, strokeWidth: 0 }}
+                >
+                  <LabelList 
+                    dataKey="percentual" 
+                    position="top" 
+                    formatter={(value: number) => formatPercentage(value)}
+                    style={{ 
+                      fill: 'hsl(338, 85%, 55%)', 
+                      fontSize: '11px', 
+                      fontWeight: 600 
+                    }}
+                    offset={10}
+                  />
+                </Line>
               </ComposedChart>
             )}
           </ResponsiveContainer>
@@ -340,21 +309,10 @@ export function MonthlyChartCarousel({
               <div className="w-4 h-4 rounded bg-primary" />
               <span className="text-sm text-muted-foreground">Valor Realizado</span>
             </div>
-          </div>
-        )}
-
-        {/* Legend for summary slide */}
-        {isSummarySlide && (
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
-            {summaryData.map((item, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded" 
-                  style={{ backgroundColor: COLORS[item.colorIndex % COLORS.length] }} 
-                />
-                <span className="text-xs text-muted-foreground">{item.categoriaFull}</span>
-              </div>
-            ))}
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'hsl(338, 85%, 55%)' }} />
+              <span className="text-sm text-muted-foreground">% Concluído</span>
+            </div>
           </div>
         )}
       </CardContent>
