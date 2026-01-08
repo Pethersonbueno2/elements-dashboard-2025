@@ -271,7 +271,7 @@ export function MonthlyChartCarousel({
       <CardContent>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 40 }}>
+            <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 70 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="hsl(var(--border))" 
@@ -281,7 +281,7 @@ export function MonthlyChartCarousel({
               <XAxis 
                 dataKey="mes" 
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
+                axisLine={{ stroke: 'hsl(338, 85%, 55%)', strokeWidth: 3 }}
                 tickLine={false}
               />
               <YAxis 
@@ -334,39 +334,45 @@ export function MonthlyChartCarousel({
                     );
                   }}
                 />
+                <LabelList 
+                  dataKey="variacao" 
+                  position="bottom"
+                  content={({ x, y, width, height, value, index }: any) => {
+                    if (value === null || value === undefined) return null;
+                    const sign = value >= 0 ? '+' : '';
+                    const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    const previsto = singleMetricData[index]?.previsto ?? 0;
+                    return (
+                      <g>
+                        <text
+                          x={x + (width / 2)}
+                          y={y + height + 32}
+                          textAnchor="middle"
+                          fill={color}
+                          fontSize={11}
+                          fontWeight={700}
+                        >
+                          {`${sign}${value.toFixed(1)}%`}
+                        </text>
+                        <text
+                          x={x + (width / 2)}
+                          y={y + height + 46}
+                          textAnchor="middle"
+                          fill="hsl(var(--muted-foreground))"
+                          fontSize={9}
+                          fontWeight={500}
+                        >
+                          {`Meta: ${formatValueWithDecimals(previsto, metricUnit)}`}
+                        </text>
+                      </g>
+                    );
+                  }}
+                />
               </Bar>
-              
-              {/* Reference line at bottom */}
-              <ReferenceLine 
-                yAxisId="left" 
-                y={0} 
-                stroke="hsl(338, 85%, 55%)" 
-                strokeWidth={3}
-              />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
         
-        {/* Porcentagens e metas abaixo da linha vermelha */}
-        <div className="flex justify-around mx-5 -mt-4 mb-2">
-          {singleMetricData.map((item, index) => {
-            const value = item.variacao;
-            if (value === null || value === undefined) return <div key={index} className="flex-1 text-center" />;
-            const sign = value >= 0 ? '+' : '';
-            const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-            return (
-              <div key={index} className="flex-1 text-center">
-                <p style={{ color }} className="text-xs font-bold">
-                  {`${sign}${value.toFixed(1)}%`}
-                </p>
-                <p className="text-[10px] text-muted-foreground">
-                  {`Meta: ${formatValueWithDecimals(item.previsto, metricUnit)}`}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
         {/* Legend */}
         <div className="flex items-center justify-center gap-6 mt-4">
           <div className="flex items-center gap-2">
