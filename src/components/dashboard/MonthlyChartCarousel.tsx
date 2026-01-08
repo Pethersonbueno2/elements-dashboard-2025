@@ -217,10 +217,10 @@ export function MonthlyChartCarousel({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground">
-              {`Evolução Mensal - ${currentMetric.nome} ${getMetricUnit(currentMetric.meta)}`}
+              {`${currentMetric.nome} ${getMetricUnit(currentMetric.meta)}`}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              {`${currentMetric.categoria} · Meta: ${currentMetric.meta} · Slide ${currentIndex + 1} de ${totalSlides}`}
+              {`${currentMetric.categoria} · Meta: ${currentMetric.meta}`}
             </p>
           </div>
           
