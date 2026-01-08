@@ -103,16 +103,23 @@ export function MonthlyChartCarousel({
     };
   }, [currentIndex, currentInterval, totalSlides]);
 
-  // Individual metric chart data
+  // Individual metric chart data with variation calculation
   const singleMetricData = useMemo(() => {
     if (isSummarySlide || !metrics[currentIndex]) return [];
     
     const metric = metrics[currentIndex];
-    return metric.dados.map(d => ({
-      mes: d.mes.substring(0, 3),
-      valor: d.realizado ?? 0,
-      percentual: d.concluido ?? 0,
-    }));
+    return metric.dados.map((d, i) => {
+      const prevValue = i > 0 ? (metric.dados[i - 1].concluido ?? 0) : null;
+      const currentValue = d.concluido ?? 0;
+      const variation = prevValue !== null ? currentValue - prevValue : null;
+      
+      return {
+        mes: d.mes.substring(0, 3),
+        valor: d.realizado ?? 0,
+        percentual: currentValue,
+        variacao: variation,
+      };
+    });
   }, [currentIndex, metrics, isSummarySlide]);
 
   // Summary chart data - all metrics combined
@@ -277,24 +284,34 @@ export function MonthlyChartCarousel({
                 </Bar>
                 <Line
                   yAxisId="right"
-                  type="monotone"
+                  type="linear"
                   dataKey="percentual"
                   name="% Concluído"
                   stroke="hsl(338, 85%, 55%)"
-                  strokeWidth={3}
-                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 2, stroke: 'hsl(var(--card))', r: 6 }}
-                  activeDot={{ r: 8, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 2, stroke: 'hsl(var(--card))', r: 5 }}
+                  activeDot={{ r: 7, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
                 >
                   <LabelList 
-                    dataKey="percentual" 
-                    position="bottom" 
-                    formatter={(value: number) => formatPercentage(value)}
-                    style={{ 
-                      fill: 'hsl(338, 85%, 55%)', 
-                      fontSize: '12px', 
-                      fontWeight: 700 
+                    dataKey="variacao" 
+                    position="top" 
+                    content={({ x, y, value }: any) => {
+                      if (value === null || value === undefined) return null;
+                      const sign = value >= 0 ? '+' : '';
+                      const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                      return (
+                        <text
+                          x={x}
+                          y={y - 12}
+                          textAnchor="middle"
+                          fill={color}
+                          fontSize={11}
+                          fontWeight={700}
+                        >
+                          {`${sign}${value.toFixed(0)}%`}
+                        </text>
+                      );
                     }}
-                    offset={8}
                   />
                 </Line>
               </ComposedChart>
