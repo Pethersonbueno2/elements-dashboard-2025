@@ -100,7 +100,13 @@ const Index = () => {
       return acc + (lastValidData?.concluido ?? 0);
     }, 0) / (metricsWithData.length || 1);
 
-    const totalRealized = metricsWithData.reduce((acc, m) => {
+    // Para categoria B2B e B2BC, usa apenas as métricas de receita com valores fixos
+    const isB2BCategory = selectedCategory === "B2B e B2BC";
+    const receitaMetrics = isB2BCategory 
+      ? metricsWithData.filter(m => m.id === "receita-b2b" || m.id === "receita-b2bc")
+      : metricsWithData;
+
+    const totalRealized = receitaMetrics.reduce((acc, m) => {
       // Usa valor fixo se disponível
       if (fixedMetas[m.id]) {
         return acc + fixedMetas[m.id].realizado;
@@ -110,7 +116,7 @@ const Index = () => {
     }, 0);
 
     // Usa meta extraída do nome se disponível, senão soma os previstos
-    const totalPrevisto = metricsWithData.reduce((acc, m) => {
+    const totalPrevisto = receitaMetrics.reduce((acc, m) => {
       // Usa valor fixo se disponível
       if (fixedMetas[m.id]) {
         return acc + fixedMetas[m.id].previsto;
