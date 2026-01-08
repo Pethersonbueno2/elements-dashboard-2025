@@ -25,10 +25,14 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [isTVMode, setIsTVMode] = useState(false);
 
-  // Filter metrics for B2B e B2BC category for TV mode
-  const b2bMetrics = useMemo(() => {
-    return metrics.filter((m) => m.categoria === "B2B e B2BC");
-  }, [metrics]);
+  // Filter metrics for TV mode based on selected category
+  const tvMetrics = useMemo(() => {
+    if (selectedCategory === "Todas") {
+      // Show all metrics grouped, or just first 10 for performance
+      return metrics.slice(0, 12);
+    }
+    return metrics.filter((m) => m.categoria === selectedCategory);
+  }, [metrics, selectedCategory]);
 
   const filteredMetrics = useMemo(() => {
     if (selectedCategory === "Todas") return metrics;
@@ -191,9 +195,10 @@ const Index = () => {
   if (isTVMode) {
     return (
       <TVCarousel 
-        metrics={b2bMetrics} 
-        slideIntervalMs={10000} 
-        summaryIntervalMs={20000} 
+        metrics={tvMetrics} 
+        slideIntervalMs={12000} 
+        summaryIntervalMs={25000}
+        categoria={selectedCategory !== "Todas" ? selectedCategory : undefined}
       />
     );
   }
