@@ -56,6 +56,26 @@ const Index = () => {
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
+  // Extrai meta do nome da métrica (ex: "60MI" de "Receita Líquida - 60MI")
+  const extractMetaFromName = (meta: string): number | null => {
+    const patterns = [
+      /(\d+(?:[.,]\d+)?)\s*Mi/i,
+      /(\d+(?:[.,]\d+)?)\s*Bi/i,
+      /R\$\s*(\d+(?:[.,]\d+)*)/i,
+    ];
+    
+    for (const pattern of patterns) {
+      const match = meta.match(pattern);
+      if (match) {
+        const value = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
+        if (/Mi/i.test(meta)) return value * 1000000;
+        if (/Bi/i.test(meta)) return value * 1000000000;
+        return value;
+      }
+    }
+    return null;
+  };
+
   // Calculate summary KPIs based on filtered metrics
   const summaryKPIs = useMemo(() => {
     const totalMetrics = filteredMetrics.length;
@@ -79,7 +99,12 @@ const Index = () => {
       return acc + sum;
     }, 0);
 
+    // Usa meta extraída do nome se disponível, senão soma os previstos
     const totalPrevisto = metricsWithData.reduce((acc, m) => {
+      const metaFromName = extractMetaFromName(m.meta);
+      if (metaFromName !== null) {
+        return acc + metaFromName;
+      }
       const sum = m.dados.reduce((s, d) => s + (d.previsto ?? 0), 0);
       return acc + sum;
     }, 0);
