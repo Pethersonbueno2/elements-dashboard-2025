@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
   Cell,
   LabelList,
-  Legend
+  Legend,
+  ReferenceLine
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -257,38 +258,13 @@ export function MonthlyChartCarousel({
                   domain={[0, 'auto']}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Line
-                  yAxisId="right"
-                  type="linear"
-                  dataKey="percentual"
-                  name="% Concluído"
-                  stroke="hsl(338, 85%, 55%)"
-                  strokeWidth={2}
-                  dot={{ fill: 'hsl(338, 85%, 55%)', strokeWidth: 2, stroke: 'hsl(var(--card))', r: 5 }}
-                  activeDot={{ r: 7, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
-                >
-                  <LabelList 
-                    dataKey="variacao" 
-                    position="top" 
-                    content={({ x, y, value }: any) => {
-                      if (value === null || value === undefined) return null;
-                      const sign = value >= 0 ? '+' : '';
-                      const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-                      return (
-                        <text
-                          x={x}
-                          y={y - 12}
-                          textAnchor="middle"
-                          fill={color}
-                          fontSize={11}
-                          fontWeight={700}
-                        >
-                          {`${sign}${value.toFixed(0)}%`}
-                        </text>
-                      );
-                    }}
-                  />
-                </Line>
+                <ReferenceLine 
+                  yAxisId="left" 
+                  y={0} 
+                  stroke="hsl(338, 85%, 55%)" 
+                  strokeWidth={3}
+                  label=""
+                />
                 <Bar 
                   yAxisId="left"
                   dataKey="valor" 
@@ -313,6 +289,27 @@ export function MonthlyChartCarousel({
                       fontWeight: 600 
                     }}
                   />
+                  <LabelList 
+                    dataKey="variacao" 
+                    position="insideBottom"
+                    content={({ x, y, width, height, value }: any) => {
+                      if (value === null || value === undefined) return null;
+                      const sign = value >= 0 ? '+' : '';
+                      const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                      return (
+                        <text
+                          x={x + (width / 2)}
+                          y={y + height + 18}
+                          textAnchor="middle"
+                          fill={color}
+                          fontSize={11}
+                          fontWeight={700}
+                        >
+                          {`${sign}${value.toFixed(0)}%`}
+                        </text>
+                      );
+                    }}
+                  />
                 </Bar>
               </ComposedChart>
             )}
@@ -327,8 +324,12 @@ export function MonthlyChartCarousel({
               <span className="text-sm text-muted-foreground">Valor Realizado</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'hsl(338, 85%, 55%)' }} />
-              <span className="text-sm text-muted-foreground">% Concluído</span>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142, 76%, 45%)' }} />
+              <span className="text-sm text-muted-foreground">Crescimento</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0, 84%, 60%)' }} />
+              <span className="text-sm text-muted-foreground">Decrescimento</span>
             </div>
           </div>
         )}
