@@ -228,7 +228,7 @@ export function MonthlyChartCarousel({
               </ComposedChart>
             ) : (
               // Individual metric view
-              <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
+              <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 40 }}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
                   stroke="hsl(var(--border))" 
@@ -258,13 +258,6 @@ export function MonthlyChartCarousel({
                   domain={[0, 'auto']}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <ReferenceLine 
-                  yAxisId="left" 
-                  y={0} 
-                  stroke="hsl(338, 85%, 55%)" 
-                  strokeWidth={3}
-                  label=""
-                />
                 <Bar 
                   yAxisId="left"
                   dataKey="valor" 
@@ -299,7 +292,7 @@ export function MonthlyChartCarousel({
                       return (
                         <text
                           x={x + (width / 2)}
-                          y={y + height + 18}
+                          y={y + height + 32}
                           textAnchor="middle"
                           fill={color}
                           fontSize={11}
@@ -315,6 +308,13 @@ export function MonthlyChartCarousel({
             )}
           </ResponsiveContainer>
         </div>
+        
+        {/* Linha vermelha de referência abaixo do gráfico */}
+        {!isSummarySlide && (
+          <div className="mx-5 -mt-6 mb-2">
+            <div className="h-[3px] bg-[hsl(338,85%,55%)] rounded-full" />
+          </div>
+        )}
 
         {/* Legend for individual slides */}
         {!isSummarySlide && (
