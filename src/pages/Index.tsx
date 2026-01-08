@@ -20,9 +20,13 @@ import { TVCarousel } from "@/components/dashboard/TVCarousel";
 import { Button } from "@/components/ui/button";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
+const MONTHS = ["Todos", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", 
+               "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
 const Index = () => {
   const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [selectedMonth, setSelectedMonth] = useState("Todos");
   const [isTVMode, setIsTVMode] = useState(false);
 
   // Filter metrics for TV mode based on selected category
@@ -145,22 +149,36 @@ const Index = () => {
       }));
   }, [metrics, filteredMetrics, selectedCategory]);
 
-  // Table data from metrics - ALL indicators
+  // Table data from metrics - ALL indicators with month filter
   const tableData = useMemo(() => {
     return filteredMetrics.map((m, index) => {
-      const lastData = [...m.dados].reverse().find(d => d.realizado !== null);
-      const totalRealizado = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
-      const totalPrevisto = m.dados.reduce((acc, d) => acc + (d.previsto ?? 0), 0);
-      
-      return {
-        id: index + 1,
-        nome: m.nome,
-        previsto: totalPrevisto,
-        realizado: totalRealizado,
-        concluido: lastData?.concluido ?? 0,
-      };
+      if (selectedMonth === "Todos") {
+        // Macro view - aggregate all months
+        const lastData = [...m.dados].reverse().find(d => d.realizado !== null);
+        const totalRealizado = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+        const totalPrevisto = m.dados.reduce((acc, d) => acc + (d.previsto ?? 0), 0);
+        
+        return {
+          id: index + 1,
+          nome: m.nome,
+          previsto: totalPrevisto,
+          realizado: totalRealizado,
+          concluido: lastData?.concluido ?? 0,
+        };
+      } else {
+        // Micro view - specific month
+        const monthData = m.dados.find(d => d.mes === selectedMonth);
+        
+        return {
+          id: index + 1,
+          nome: m.nome,
+          previsto: monthData?.previsto ?? 0,
+          realizado: monthData?.realizado ?? 0,
+          concluido: monthData?.concluido ?? 0,
+        };
+      }
     });
-  }, [filteredMetrics]);
+  }, [filteredMetrics, selectedMonth]);
 
   const tableColumns = [
     { key: "nome", label: "Indicador", align: "left" as const },
@@ -313,6 +331,9 @@ const Index = () => {
             columns={tableColumns}
             data={tableData}
             highlightColumn="concluido"
+            months={MONTHS}
+            selectedMonth={selectedMonth}
+            onMonthChange={setSelectedMonth}
           />
 
           {/* Horizontal Bar Chart */}

@@ -7,6 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "lucide-react";
 
 interface TableDataRow {
   id: string | number;
@@ -23,15 +31,43 @@ interface DataTableProps {
   }[];
   data: TableDataRow[];
   highlightColumn?: string;
+  months?: string[];
+  selectedMonth?: string;
+  onMonthChange?: (month: string) => void;
 }
 
-export function DataTable({ title, columns, data, highlightColumn }: DataTableProps) {
+export function DataTable({ 
+  title, 
+  columns, 
+  data, 
+  highlightColumn,
+  months,
+  selectedMonth,
+  onMonthChange 
+}: DataTableProps) {
   return (
     <Card className="bg-card border-border h-full flex flex-col">
       <CardHeader className="pb-2 pt-3 px-3 flex-shrink-0">
-        <CardTitle className="text-sm font-semibold text-foreground flex items-center justify-between">
-          {title}
-          <span className="text-xs font-normal text-muted-foreground">{data.length} itens</span>
+        <CardTitle className="text-sm font-semibold text-foreground flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            {title}
+            <span className="text-xs font-normal text-muted-foreground">{data.length} itens</span>
+          </div>
+          {months && onMonthChange && (
+            <Select value={selectedMonth} onValueChange={onMonthChange}>
+              <SelectTrigger className="h-7 text-xs w-full">
+                <Calendar className="w-3 h-3 mr-1.5 text-muted-foreground" />
+                <SelectValue placeholder="Selecione o mês" />
+              </SelectTrigger>
+              <SelectContent>
+                {months.map((month) => (
+                  <SelectItem key={month} value={month} className="text-xs">
+                    {month === "Todos" ? "📊 Visão Acumulada (Macro)" : `📅 ${month}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0 flex-1 overflow-hidden">
