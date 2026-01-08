@@ -45,6 +45,16 @@ const formatPercentage = (value: number): string => {
   return `${value.toFixed(0)}%`;
 };
 
+// Extrai a unidade de medida da meta
+const getMetricUnit = (meta: string): string => {
+  if (meta.includes('%')) return '%';
+  if (meta.includes('R$')) return 'R$';
+  if (meta.toLowerCase().includes('dia')) return 'dias';
+  if (meta.toLowerCase().includes('h')) return 'h';
+  if (meta.toLowerCase().includes('s')) return 's';
+  return '';
+};
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -122,6 +132,17 @@ export function MonthlyChartCarousel({
     });
   }, [currentIndex, metrics]);
 
+  // Calcula totais para exibir Realizado vs Meta
+  const totals = useMemo(() => {
+    if (!metrics[currentIndex]) return { realizado: 0, previsto: 0 };
+    
+    const metric = metrics[currentIndex];
+    const totalRealizado = metric.dados.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
+    const totalPrevisto = metric.dados.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
+    
+    return { realizado: totalRealizado, previsto: totalPrevisto };
+  }, [currentIndex, metrics]);
+
   const currentMetric = metrics[currentIndex] ?? null;
 
   // Return early if no metrics
@@ -151,16 +172,24 @@ export function MonthlyChartCarousel({
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold text-foreground">
-              {`Evolução Mensal - ${currentMetric.nome}`}
+              {`Evolução Mensal - ${currentMetric.nome} ${getMetricUnit(currentMetric.meta)}`}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              {`${currentMetric.categoria} · Slide ${currentIndex + 1} de ${totalSlides}`}
+              {`${currentMetric.categoria} · Meta: ${currentMetric.meta} · Slide ${currentIndex + 1} de ${totalSlides}`}
+            </p>
+          </div>
+          
+          {/* Total Realizado vs Meta */}
+          <div className="text-right mr-4">
+            <p className="text-xs text-muted-foreground">Total Realizado / Meta</p>
+            <p className="text-lg font-bold text-foreground">
+              {formatValue(totals.realizado)} <span className="text-muted-foreground font-normal">/ {formatValue(totals.previsto)}</span>
             </p>
           </div>
           
           {/* Slide indicators */}
           <div className="flex items-center gap-2">
-            {Array.from({ length: totalSlides }).map((_, i) => (
+            {Array.from({ length: Math.min(totalSlides, 10) }).map((_, i) => (
               <div
                 key={i}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
@@ -170,6 +199,9 @@ export function MonthlyChartCarousel({
                 }`}
               />
             ))}
+            {totalSlides > 10 && (
+              <span className="text-xs text-muted-foreground">+{totalSlides - 10}</span>
+            )}
           </div>
         </div>
         
