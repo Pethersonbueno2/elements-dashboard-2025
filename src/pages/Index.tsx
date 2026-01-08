@@ -110,7 +110,7 @@ const Index = () => {
     });
   }, [filteredMetrics]);
 
-  // Category distribution for donut chart
+  // Category distribution for donut chart - synced with month filter
   const categoryData = useMemo(() => {
     const colors = [
       "hsl(259, 100%, 60%)",
@@ -122,26 +122,41 @@ const Index = () => {
     ];
 
     if (selectedCategory !== "Todas") {
-      // Show metrics within category - calculate average percentage
+      // Show metrics within category - calculate percentage based on month filter
       return filteredMetrics.slice(0, 6).map((m, i) => {
-        const validData = m.dados.filter(d => d.concluido !== null && d.concluido !== undefined);
-        const avgPercentage = validData.length > 0 
-          ? validData.reduce((acc, d) => acc + (d.concluido ?? 0), 0) / validData.length
-          : 0;
+        let percentage: number;
+        
+        if (selectedMonth === "Todos") {
+          // Average of all months
+          const validData = m.dados.filter(d => d.concluido !== null && d.concluido !== undefined);
+          percentage = validData.length > 0 
+            ? validData.reduce((acc, d) => acc + (d.concluido ?? 0), 0) / validData.length
+            : 0;
+        } else {
+          // Specific month
+          const monthData = m.dados.find(d => d.mes === selectedMonth);
+          percentage = monthData?.concluido ?? 0;
+        }
         
         return {
           name: m.nome.substring(0, 20) + (m.nome.length > 20 ? "..." : ""),
-          value: avgPercentage,
+          value: percentage,
           color: colors[i % colors.length],
           isPercentage: true,
         };
       });
     }
 
-    // Group by category - show total in currency
+    // Group by category - show total in currency based on month filter
     const categoryTotals: Record<string, number> = {};
     metrics.forEach(m => {
-      const total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+      let total: number;
+      if (selectedMonth === "Todos") {
+        total = m.dados.reduce((acc, d) => acc + (d.realizado ?? 0), 0);
+      } else {
+        const monthData = m.dados.find(d => d.mes === selectedMonth);
+        total = monthData?.realizado ?? 0;
+      }
       categoryTotals[m.categoria] = (categoryTotals[m.categoria] || 0) + total;
     });
 
@@ -153,7 +168,7 @@ const Index = () => {
         color: colors[i % colors.length],
         isPercentage: false,
       }));
-  }, [metrics, filteredMetrics, selectedCategory]);
+  }, [metrics, filteredMetrics, selectedCategory, selectedMonth]);
 
   // Table data from metrics - ALL indicators with month filter
   const tableData = useMemo(() => {
