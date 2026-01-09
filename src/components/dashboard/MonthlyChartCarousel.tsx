@@ -399,7 +399,7 @@ export function MonthlyChartCarousel({
                     return (
                       <text
                         x={x + (width / 2)}
-                        y={280}
+                        y={295}
                         textAnchor="middle"
                         fill="hsl(var(--muted-foreground))"
                         fontSize={10}
@@ -425,7 +425,7 @@ export function MonthlyChartCarousel({
                     return (
                       <text
                         x={x + (width / 2)}
-                        y={298}
+                        y={313}
                         textAnchor="middle"
                         fill={color}
                         fontSize={10}
