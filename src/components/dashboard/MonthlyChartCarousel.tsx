@@ -185,9 +185,9 @@ export function MonthlyChartCarousel({
       if (previsto > 0) {
         if (lowerIsBetter) {
           // Para métricas onde menor é melhor (Turnover, Churn, etc.)
-          // Se realizado > previsto = negativo (ruim)
-          // Se realizado < previsto = positivo (bom)
-          variacao = ((previsto - realizado) / previsto) * 100;
+          // Fórmula: 100 + ((previsto - realizado) / previsto * 100)
+          // Exemplo: meta 10%, realizado 1% → 100 + 90 = 190%
+          variacao = 100 + ((previsto - realizado) / previsto) * 100;
         } else {
           // Para métricas onde maior é melhor (Receita, Vendas, etc.)
           // Se realizado > previsto = positivo (bom)
@@ -196,7 +196,7 @@ export function MonthlyChartCarousel({
         }
       } else if (realizado > 0 && previsto === 0) {
         // Se não há meta mas há realizado
-        variacao = lowerIsBetter ? -100 : 100;
+        variacao = lowerIsBetter ? 100 : 100;
       } else {
         variacao = 0;
       }
