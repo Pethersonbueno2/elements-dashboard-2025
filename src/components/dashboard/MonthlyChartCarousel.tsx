@@ -74,13 +74,31 @@ const getMetricUnit = (meta: string): string => {
   return '';
 };
 
-// Verifica se é métrica de receita
-const isRevenueMetric = (nome: string): boolean => {
+// Verifica se a meta é "menor que" (onde menor é melhor)
+const isLowerBetterMetric = (meta: string, nome: string): boolean => {
+  const lowerMeta = meta.toLowerCase();
   const lowerNome = nome.toLowerCase();
-  return lowerNome.includes('receita') || 
-         lowerNome.includes('faturamento') || 
-         lowerNome.includes('ebitda') ||
-         lowerNome.includes('ticket');
+  
+  // Métricas com < na meta (ex: < 10%, <2h, <3)
+  if (lowerMeta.includes('<')) return true;
+  
+  // Métricas conhecidas onde menor é melhor
+  if (lowerNome.includes('turnover')) return true;
+  if (lowerNome.includes('churn')) return true;
+  if (lowerNome.includes('ruptura')) return true;
+  if (lowerNome.includes('avaria')) return true;
+  if (lowerNome.includes('ciclo de venda')) return true;
+  if (lowerNome.includes('tempo de primeira resposta')) return true;
+  if (lowerNome.includes('prazo')) return true;
+  if (lowerNome.includes('lead time')) return true;
+  if (lowerNome.includes('cpl') || lowerNome.includes('cpa')) return true;
+  if (lowerNome.includes('custo por lead')) return true;
+  if (lowerNome.includes('despesa')) return true;
+  if (lowerNome.includes('endividamento')) return true;
+  if (lowerNome.includes('alavancagem')) return true;
+  if (lowerNome.includes('time to fill')) return true;
+  
+  return false;
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -155,24 +173,32 @@ export function MonthlyChartCarousel({
     if (!metrics[currentIndex]) return [];
     
     const metric = metrics[currentIndex];
-    const useRevenueCalc = isRevenueMetric(metric.nome);
+    const lowerIsBetter = isLowerBetterMetric(metric.meta, metric.nome);
     
     return metric.dados.map((d, i) => {
       const realizado = d.realizado ?? 0;
       const previsto = d.previsto ?? 0;
       
-      // Para métricas de receita: % realizado vs previsto
-      // Para outras: variação percentual vs mês anterior
+      // Calcula a variação percentual
       let variacao: number | null = null;
       
-      if (useRevenueCalc) {
-        // Calcula % do realizado em relação ao previsto
-        variacao = previsto > 0 ? ((realizado / previsto) - 1) * 100 : 0;
+      if (previsto > 0) {
+        if (lowerIsBetter) {
+          // Para métricas onde menor é melhor (Turnover, Churn, etc.)
+          // Se realizado > previsto = negativo (ruim)
+          // Se realizado < previsto = positivo (bom)
+          variacao = ((previsto - realizado) / previsto) * 100;
+        } else {
+          // Para métricas onde maior é melhor (Receita, Vendas, etc.)
+          // Se realizado > previsto = positivo (bom)
+          // Se realizado < previsto = negativo (ruim)
+          variacao = ((realizado - previsto) / previsto) * 100;
+        }
+      } else if (realizado > 0 && previsto === 0) {
+        // Se não há meta mas há realizado
+        variacao = lowerIsBetter ? -100 : 100;
       } else {
-        // Variação vs mês anterior
-        const prevValue = i > 0 ? (metric.dados[i - 1].concluido ?? 0) : null;
-        const currentValue = d.concluido ?? 0;
-        variacao = prevValue !== null ? currentValue - prevValue : null;
+        variacao = 0;
       }
       
       return {
