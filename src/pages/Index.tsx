@@ -24,6 +24,12 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [currentSlideMetric, setCurrentSlideMetric] = useState<Metric | null>(null);
+
+  // Callback para atualizar a métrica atual do slide
+  const handleSlideChange = useCallback((index: number, metric: Metric | null) => {
+    setCurrentSlideMetric(metric);
+  }, []);
 
   // Fullscreen toggle
   const toggleFullscreen = useCallback(() => {
@@ -85,6 +91,22 @@ const Index = () => {
     }
     return null;
   };
+
+  // KPIs da métrica atual do slide
+  const currentMetricKPIs = useMemo(() => {
+    if (!currentSlideMetric) return null;
+    
+    const m = currentSlideMetric;
+    const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
+    const isAchieved = lastValidData && (lastValidData.concluido ?? 0) >= 100;
+    const completion = lastValidData?.concluido ?? 0;
+    
+    return {
+      nome: m.nome,
+      isAchieved,
+      completion: completion.toFixed(1),
+    };
+  }, [currentSlideMetric]);
 
   // Calculate summary KPIs based on filtered metrics
   const summaryKPIs = useMemo(() => {
@@ -222,25 +244,25 @@ const Index = () => {
             delay={0}
           />
           <KPICardNew
-            title="Metas Atingidas"
-            value={summaryKPIs.achieved.toString()}
+            title={currentMetricKPIs ? "Meta Atingida" : "Metas Atingidas"}
+            value={currentMetricKPIs ? (currentMetricKPIs.isAchieved ? "Sim" : "Não") : summaryKPIs.achieved.toString()}
             icon={<CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-emerald-600"
+            iconBgColor={currentMetricKPIs?.isAchieved ? "bg-emerald-600" : (currentMetricKPIs ? "bg-red-600" : "bg-emerald-600")}
             delay={50}
           />
           <KPICardNew
-            title="Pendentes"
-            value={summaryKPIs.pending.toString()}
+            title={currentMetricKPIs ? "Status" : "Pendentes"}
+            value={currentMetricKPIs ? (currentMetricKPIs.isAchieved ? "Concluído" : "Pendente") : summaryKPIs.pending.toString()}
             icon={<Clock className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-amber-600"
+            iconBgColor={currentMetricKPIs?.isAchieved ? "bg-emerald-600" : "bg-amber-600"}
             delay={100}
           />
           <KPICardNew
-            title="Média Conclusão"
-            value={`${summaryKPIs.avgCompletion}%`}
+            title={currentMetricKPIs ? "% Conclusão" : "Média Conclusão"}
+            value={currentMetricKPIs ? `${currentMetricKPIs.completion}%` : `${summaryKPIs.avgCompletion}%`}
             icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
             iconBgColor="bg-cyan-600"
-            valueColor={parseFloat(summaryKPIs.avgCompletion) >= 100 ? "positive" : "default"}
+            valueColor={parseFloat(currentMetricKPIs?.completion ?? summaryKPIs.avgCompletion) >= 100 ? "positive" : "default"}
             delay={150}
           />
           {showTotais && (
@@ -269,6 +291,7 @@ const Index = () => {
             metrics={filteredMetrics.slice(0, 8)}
             slideIntervalMs={10000}
             summaryIntervalMs={60000}
+            onSlideChange={handleSlideChange}
           />
         </section>
       </main>
