@@ -331,9 +331,9 @@ export function MonthlyChartCarousel({
       </CardHeader>
       
       <CardContent>
-        <div className="h-[320px]">
+        <div className="h-[340px]">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={singleMetricData} margin={{ top: 25, right: 10, left: 10, bottom: 45 }}>
+            <ComposedChart data={singleMetricData} margin={{ top: 30, right: 10, left: 10, bottom: 60 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="hsl(var(--border))" 
@@ -370,6 +370,7 @@ export function MonthlyChartCarousel({
                     opacity={0.9}
                   />
                 ))}
+                {/* Realizado - acima da barra */}
                 <LabelList 
                   dataKey="valor" 
                   position="top" 
@@ -389,26 +390,48 @@ export function MonthlyChartCarousel({
                     );
                   }}
                 />
+                {/* Previsto - abaixo do mês */}
                 <LabelList 
-                  dataKey="variacao" 
+                  dataKey="previsto" 
                   position="bottom"
                   content={({ x, width, value }: any) => {
-                    if (value === null || value === undefined) return null;
-                    // Verde se >= 100% (meta atingida), vermelho se < 100%
-                    const isPositive = value >= 100;
-                    const color = isPositive ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-                    // Posição fixa abaixo do eixo X
-                    const chartBottom = 275; // altura do gráfico - margem
+                    if (value === null || value === undefined || value === 0) return null;
                     return (
                       <text
                         x={x + (width / 2)}
-                        y={chartBottom}
+                        y={280}
+                        textAnchor="middle"
+                        fill="hsl(var(--muted-foreground))"
+                        fontSize={10}
+                      >
+                        {formatValueWithDecimals(value, metricUnit)}
+                      </text>
+                    );
+                  }}
+                />
+                {/* Diferença - abaixo do previsto */}
+                <LabelList 
+                  dataKey="variacao" 
+                  position="bottom"
+                  content={({ x, width, value, index }: any) => {
+                    const entry = singleMetricData[index];
+                    if (!entry || entry.previsto === 0) return null;
+                    
+                    const diferenca = entry.valor - entry.previsto;
+                    const isPositive = diferenca >= 0;
+                    const color = isPositive ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    const displayValue = diferenca >= 0 ? diferenca : diferenca;
+                    
+                    return (
+                      <text
+                        x={x + (width / 2)}
+                        y={298}
                         textAnchor="middle"
                         fill={color}
                         fontSize={10}
                         fontWeight={700}
                       >
-                        {`${value.toFixed(0)}%`}
+                        {diferenca >= 0 ? formatValueWithDecimals(diferenca, metricUnit) : formatValueWithDecimals(diferenca, metricUnit)}
                       </text>
                     );
                   }}
