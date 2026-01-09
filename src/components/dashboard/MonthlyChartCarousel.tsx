@@ -404,7 +404,7 @@ export function MonthlyChartCarousel({
                         fill="hsl(var(--muted-foreground))"
                         fontSize={10}
                       >
-                        {formatValueWithDecimals(value, metricUnit)}
+                        {`Previsto: ${formatValueWithDecimals(value, metricUnit)}`}
                       </text>
                     );
                   }}
