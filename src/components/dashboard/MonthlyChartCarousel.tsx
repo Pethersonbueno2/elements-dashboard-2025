@@ -331,9 +331,9 @@ export function MonthlyChartCarousel({
       </CardHeader>
       
       <CardContent>
-        <div className="h-[350px]">
+        <div className="h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={singleMetricData} margin={{ top: 30, right: 30, left: 20, bottom: 70 }}>
+            <ComposedChart data={singleMetricData} margin={{ top: 25, right: 10, left: 10, bottom: 45 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="hsl(var(--border))" 
@@ -342,25 +342,18 @@ export function MonthlyChartCarousel({
               />
               <XAxis 
                 dataKey="mes" 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={{ stroke: 'hsl(338, 85%, 55%)', strokeWidth: 3 }}
                 tickLine={false}
+                dy={5}
               />
               <YAxis 
                 yAxisId="left"
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) => formatValue(value)}
-              />
-              <YAxis 
-                yAxisId="right"
-                orientation="right"
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(value) => `${value}%`}
-                domain={[0, 'auto']}
+                width={40}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar 
@@ -399,18 +392,20 @@ export function MonthlyChartCarousel({
                 <LabelList 
                   dataKey="variacao" 
                   position="bottom"
-                  content={({ x, y, width, height, value, index }: any) => {
+                  content={({ x, width, value }: any) => {
                     if (value === null || value === undefined) return null;
                     // Verde se >= 100% (meta atingida), vermelho se < 100%
                     const isPositive = value >= 100;
                     const color = isPositive ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    // Posição fixa abaixo do eixo X
+                    const chartBottom = 275; // altura do gráfico - margem
                     return (
                       <text
                         x={x + (width / 2)}
-                        y={y + height + 32}
+                        y={chartBottom}
                         textAnchor="middle"
                         fill={color}
-                        fontSize={11}
+                        fontSize={10}
                         fontWeight={700}
                       >
                         {`${value.toFixed(0)}%`}
