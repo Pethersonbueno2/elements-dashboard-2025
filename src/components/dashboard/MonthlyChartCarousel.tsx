@@ -401,8 +401,12 @@ export function MonthlyChartCarousel({
                   position="bottom"
                   content={({ x, y, width, height, value, index }: any) => {
                     if (value === null || value === undefined) return null;
+                    const lowerIsBetter = currentMetric ? isLowerBetterMetric(currentMetric.meta, currentMetric.nome) : false;
                     const sign = value >= 0 ? '+' : '';
-                    const color = value >= 0 ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
+                    // Para métricas "menor é melhor": verde se >= 100% (meta atingida)
+                    // Para métricas normais: verde se >= 0 (atingiu ou superou)
+                    const isPositive = lowerIsBetter ? value >= 100 : value >= 0;
+                    const color = isPositive ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
                     const previsto = singleMetricData[index]?.previsto ?? 0;
                     return (
                       <g>
