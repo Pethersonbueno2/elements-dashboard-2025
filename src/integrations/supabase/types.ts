@@ -623,7 +623,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - prazo_entrega_lead_time_mensal - 2025": {
+      "Compras Internacionais - Prazo Médio de Entrega (Lead Time) - ": {
         Row: {
           diferenca: number | null
           id: number
@@ -650,7 +650,37 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - reducao_custos_aquisicao_mensal - 2025": {
+      "Compras Internacionais - Qualidade do Fornecedor - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          metrica_desempenho: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Compras Internacionais - Redução de Custos de Aquisição - 3": {
         Row: {
           diferenca: number | null
           id: number
@@ -1001,7 +1031,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  custos_variaveis_mensal - 2025": {
+      "Legacy -  Custos Variaveis - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1028,7 +1058,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  ebitda_mensal - 2025": {
+      "Legacy -  EBITDA - R$ 1.599.070 - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1055,7 +1085,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  investimento_trafego_mensal - 2025": {
+      "Legacy -  investimento em Trafego - R$ 1.340.000": {
         Row: {
           diferenca: number | null
           id: number
@@ -1082,7 +1112,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  oportunidades_leads_mensal - 2025": {
+      "Legacy -  Número total de Oportunidades (Leads) - 15740": {
         Row: {
           diferenca: number | null
           id: number
@@ -1136,7 +1166,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  roas_mensal - 2025": {
+      "Legacy -  ROAS (Retorno sobre o investimento em Publicidade) - ": {
         Row: {
           diferenca: number | null
           id: number
@@ -1163,7 +1193,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  ticket_medio_mensal - 2025": {
+      "Legacy -  Ticket Médio": {
         Row: {
           diferenca: number | null
           id: number
@@ -1190,7 +1220,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - custo_por_lead_mensal - 2025": {
+      "Legacy - Custo por Lead (CPL Médio) - 1330": {
         Row: {
           diferenca: number | null
           id: number
@@ -1217,7 +1247,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - despesa_fixa_mensal - 2025": {
+      "Legacy - Despesa Fixa - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1244,7 +1274,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - faturamento_trafego_mensal - 2025": {
+      "Legacy - Faturamento Gerado pelo Tráfego R$6.475.000": {
         Row: {
           diferenca: number | null
           id: number
@@ -1265,6 +1295,33 @@ export type Database = {
           diferenca?: number | null
           id?: number
           mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "Logistica - Acuracidade de Estoque - 95%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
@@ -1361,7 +1418,67 @@ export type Database = {
         }
         Relationships: []
       }
+      "Logistica - Meta Frete Regiao - Sul 4%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          regiao: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          regiao?: string
+        }
+        Relationships: []
+      }
       "Logistica - Meta Frete Sudeste 5%": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Prazo de Entrega - Centro Oeste - 7 dias -": {
         Row: {
           diferenca: number | null
           id: number
@@ -1451,6 +1568,66 @@ export type Database = {
         }
         Relationships: []
       }
+      "Logistica - Prazo de Entrega Padrão - Nordeste - 12 dias": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
+      "Logistica - Prazo de Entrega Padrão - Norte 12 dias": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+          Região: string
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região: string
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+          Região?: string
+        }
+        Relationships: []
+      }
       "Logistica acuracidade_estoque_mensal 2025": {
         Row: {
           diferenca: number | null
@@ -1502,36 +1679,6 @@ export type Database = {
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-        }
-        Relationships: []
-      }
-      "Logistica Meta Frete Regiao - Sul 4%": {
-        Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-          regiao: string
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao: string
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao?: string
         }
         Relationships: []
       }
@@ -1619,7 +1766,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - alcance_mensal - 2025": {
+      "Marketing Branding - Alcance - 100%": {
         Row: {
           diferenca: number | null
           id: number
@@ -1646,7 +1793,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - brand_search_mensal - 2025": {
+      "Marketing Branding - Brand Search - 25%": {
         Row: {
           diferenca: number | null
           id: number
@@ -1673,7 +1820,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - engajamento_mensal - 2025": {
+      "Marketing Branding - Engajamento - 25%": {
         Row: {
           diferenca: number | null
           id: number
@@ -1700,7 +1847,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - nps_satisfacao_mensal - 2025": {
+      "Marketing Branding - Experiência - NPS Satisfação (Indicaç": {
         Row: {
           diferenca: number | null
           id: number
@@ -1727,7 +1874,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - share_of_voice_mensal - 2025": {
+      "Marketing Branding - Share of Voice - 25% - 2025": {
         Row: {
           diferenca: number | null
           id: number
@@ -1754,7 +1901,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - trafego_organico_mensal - 2025": {
+      "Marketing Branding - Trafego Organico - 20%": {
         Row: {
           diferenca: number | null
           id: number

@@ -62,6 +62,10 @@ const Index = () => {
     "receita-b2bc": { previsto: 15815042, realizado: 8681962 },
   };
 
+  // Categorias que devem mostrar Total Previsto e Total Realizado
+  const categoriasComTotais = ["B2B e B2BC", "B2C Digital", "Legacy"];
+  const showTotais = categoriasComTotais.includes(selectedCategory);
+
   // Extrai meta do nome da métrica (ex: "60MI" de "Receita Líquida - 60MI")
   const extractMetaFromName = (meta: string): number | null => {
     const patterns = [
@@ -138,7 +142,7 @@ const Index = () => {
       totalPrevisto,
       variance: totalPrevisto > 0 ? ((totalRealized - totalPrevisto) / totalPrevisto * 100) : 0,
     };
-  }, [filteredMetrics]);
+  }, [filteredMetrics, selectedCategory]);
 
   const formatValue = (value: number): string => {
     if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
@@ -239,20 +243,24 @@ const Index = () => {
             valueColor={parseFloat(summaryKPIs.avgCompletion) >= 100 ? "positive" : "default"}
             delay={150}
           />
-          <KPICardNew
-            title="Total Previsto"
-            value={formatValue(summaryKPIs.totalPrevisto)}
-            icon={<Target className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-blue-600"
-            delay={200}
-          />
-          <KPICardNew
-            title="Total Realizado"
-            value={formatValue(summaryKPIs.totalRealized)}
-            icon={<DollarSign className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-purple-600"
-            delay={250}
-          />
+          {showTotais && (
+            <KPICardNew
+              title="Total Previsto"
+              value={formatValue(summaryKPIs.totalPrevisto)}
+              icon={<Target className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
+              iconBgColor="bg-blue-600"
+              delay={200}
+            />
+          )}
+          {showTotais && (
+            <KPICardNew
+              title="Total Realizado"
+              value={formatValue(summaryKPIs.totalRealized)}
+              icon={<DollarSign className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
+              iconBgColor="bg-purple-600"
+              delay={250}
+            />
+          )}
         </section>
 
         {/* Main Chart - Carousel (now takes full remaining space) */}
