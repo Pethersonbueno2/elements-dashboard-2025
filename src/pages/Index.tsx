@@ -244,17 +244,17 @@ const Index = () => {
             delay={0}
           />
           <KPICardNew
-            title={currentMetricKPIs ? "Meta Atingida" : "Metas Atingidas"}
-            value={currentMetricKPIs ? (currentMetricKPIs.isAchieved ? "Sim" : "Não") : summaryKPIs.achieved.toString()}
+            title="Metas Atingidas"
+            value={summaryKPIs.achieved.toString()}
             icon={<CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor={currentMetricKPIs?.isAchieved ? "bg-emerald-600" : (currentMetricKPIs ? "bg-red-600" : "bg-emerald-600")}
+            iconBgColor="bg-emerald-600"
             delay={50}
           />
           <KPICardNew
-            title={currentMetricKPIs ? "Status" : "Pendentes"}
-            value={currentMetricKPIs ? (currentMetricKPIs.isAchieved ? "Concluído" : "Pendente") : summaryKPIs.pending.toString()}
+            title="Pendentes"
+            value={summaryKPIs.pending.toString()}
             icon={<Clock className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor={currentMetricKPIs?.isAchieved ? "bg-emerald-600" : "bg-amber-600"}
+            iconBgColor="bg-amber-600"
             delay={100}
           />
           <KPICardNew
