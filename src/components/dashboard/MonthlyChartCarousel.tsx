@@ -23,6 +23,7 @@ interface MonthlyChartCarouselProps {
   metrics: Metric[];
   slideIntervalMs?: number;
   summaryIntervalMs?: number;
+  onSlideChange?: (index: number, metric: Metric | null) => void;
 }
 
 const COLORS = [
@@ -110,13 +111,21 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function MonthlyChartCarousel({ 
   metrics, 
   slideIntervalMs = 10000,
-  summaryIntervalMs = 60000 
+  summaryIntervalMs = 60000,
+  onSlideChange
 }: MonthlyChartCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   
   const totalSlides = metrics.length; // Only individual metrics, no summary
+  
+  // Notify parent of slide changes
+  useEffect(() => {
+    if (onSlideChange) {
+      onSlideChange(currentIndex, metrics[currentIndex] ?? null);
+    }
+  }, [currentIndex, metrics, onSlideChange]);
   
   // Auto-advance slides
   useEffect(() => {
