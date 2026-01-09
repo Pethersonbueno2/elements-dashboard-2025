@@ -190,15 +190,15 @@ export function MonthlyChartCarousel({
           variacao = 100 + ((previsto - realizado) / previsto) * 100;
         } else {
           // Para métricas onde maior é melhor (Receita, Vendas, etc.)
-          // Se realizado > previsto = positivo (bom)
-          // Se realizado < previsto = negativo (ruim)
-          variacao = ((realizado - previsto) / previsto) * 100;
+          // Fórmula: (realizado / previsto) * 100
+          // Exemplo: previsto 1, realizado 5 → 500% (atingiu 500% da meta)
+          variacao = (realizado / previsto) * 100;
         }
       } else if (realizado > 0 && previsto === 0) {
-        // Se não há meta mas há realizado
-        variacao = lowerIsBetter ? 100 : 100;
+        // Se não há meta mas há realizado, não mostra variação
+        variacao = null;
       } else {
-        variacao = 0;
+        variacao = null;
       }
       
       return {
@@ -401,36 +401,20 @@ export function MonthlyChartCarousel({
                   position="bottom"
                   content={({ x, y, width, height, value, index }: any) => {
                     if (value === null || value === undefined) return null;
-                    const lowerIsBetter = currentMetric ? isLowerBetterMetric(currentMetric.meta, currentMetric.nome) : false;
-                    const sign = value >= 0 ? '+' : '';
-                    // Para métricas "menor é melhor": verde se >= 100% (meta atingida)
-                    // Para métricas normais: verde se >= 0 (atingiu ou superou)
-                    const isPositive = lowerIsBetter ? value >= 100 : value >= 0;
+                    // Verde se >= 100% (meta atingida), vermelho se < 100%
+                    const isPositive = value >= 100;
                     const color = isPositive ? 'hsl(142, 76%, 45%)' : 'hsl(0, 84%, 60%)';
-                    const previsto = singleMetricData[index]?.previsto ?? 0;
                     return (
-                      <g>
-                        <text
-                          x={x + (width / 2)}
-                          y={y + height + 32}
-                          textAnchor="middle"
-                          fill={color}
-                          fontSize={11}
-                          fontWeight={700}
-                        >
-                          {`${sign}${value.toFixed(1)}%`}
-                        </text>
-                        <text
-                          x={x + (width / 2)}
-                          y={y + height + 46}
-                          textAnchor="middle"
-                          fill="hsl(var(--muted-foreground))"
-                          fontSize={9}
-                          fontWeight={500}
-                        >
-                          {`Meta: ${formatValueWithDecimals(previsto, metricUnit)}`}
-                        </text>
-                      </g>
+                      <text
+                        x={x + (width / 2)}
+                        y={y + height + 32}
+                        textAnchor="middle"
+                        fill={color}
+                        fontSize={11}
+                        fontWeight={700}
+                      >
+                        {`${value.toFixed(0)}%`}
+                      </text>
                     );
                   }}
                 />
