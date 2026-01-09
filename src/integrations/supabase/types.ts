@@ -1478,6 +1478,33 @@ export type Database = {
         }
         Relationships: []
       }
+      "Logistica - Performance de Transp e Entrega - 2025": {
+        Row: {
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
       "Logistica - Prazo de Entrega - Centro Oeste - 7 dias -": {
         Row: {
           diferenca: number | null
@@ -1628,61 +1655,7 @@ export type Database = {
         }
         Relationships: []
       }
-      "Logistica acuracidade_estoque_mensal 2025": {
-        Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
       "Logistica indice_avaria_mensal 2025": {
-        Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "Logistica performance_transp_entregas_mensal 2025": {
         Row: {
           diferenca: number | null
           id: number
