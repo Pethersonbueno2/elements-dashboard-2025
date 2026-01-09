@@ -12,7 +12,9 @@ import {
   Package,
   Headphones,
   Cog,
-  Palette
+  Palette,
+  Landmark,
+  ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,11 +31,12 @@ const menuItems = [
   { id: "B2B e B2BC", label: "B2B e B2BC", icon: Building2 },
   { id: "B2C Digital", label: "B2C Digital", icon: Package },
   { id: "Logística", label: "Logística", icon: Truck },
-  { id: "Compras Internacionais", label: "Compras Int.", icon: Package },
+  { id: "Compras internacionais", label: "Compras Int.", icon: ShoppingCart },
   { id: "P&D", label: "P&D", icon: FlaskConical },
   { id: "Operações", label: "Operações", icon: Cog },
   { id: "Atendimento", label: "Atendimento", icon: Headphones },
   { id: "RH", label: "RH", icon: Users },
+  { id: "Legacy", label: "Legacy", icon: Landmark },
 ];
 
 export function Sidebar({ onCategoryChange, selectedCategory }: SidebarProps) {
