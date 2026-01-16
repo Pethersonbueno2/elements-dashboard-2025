@@ -7,10 +7,66 @@
 @import "@fontsource/outfit/600.css";
 @import "@fontsource/outfit/700.css";
 
-/* Elements Dashboard - Dark Navy Theme with #6734FF */
+/* Elements Dashboard - Dark/Light Theme with #6734FF */
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 259 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 259 20% 95%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 200 85% 45%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 259 100% 60%;
+
+    --radius: 0.75rem;
+
+    /* Custom chart colors */
+    --chart-positive: 142 76% 36%;
+    --chart-negative: 0 72% 51%;
+    --chart-line: 338 85% 55%;
+
+    /* Sidebar */
+    --sidebar-background: 220 14% 96%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 259 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 259 20% 92%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 259 100% 60%;
+  }
+
+  .dark {
     --background: 220 45% 8%;
     --foreground: 210 40% 98%;
 
@@ -47,8 +103,6 @@
     --border: 220 40% 18%;
     --input: 220 40% 18%;
     --ring: 259 100% 60%;
-
-    --radius: 0.75rem;
 
     /* Custom chart colors */
     --chart-positive: 142 76% 45%;

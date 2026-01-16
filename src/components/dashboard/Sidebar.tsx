@@ -7,13 +7,11 @@ import {
   Building2,
   Truck,
   FlaskConical,
-  Megaphone,
   DollarSign,
   Package,
   Headphones,
   Cog,
   Palette,
-  Landmark,
   ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -35,8 +33,7 @@ const menuItems = [
   { id: "P&D", label: "P&D", icon: FlaskConical },
   { id: "Operações", label: "Operações", icon: Cog },
   { id: "Atendimento", label: "Atendimento", icon: Headphones },
-  { id: "RH", label: "RH", icon: Users },
-  { id: "Legacy", label: "Legacy", icon: Landmark },
+  { id: "People", label: "People", icon: Users },
 ];
 
 export function Sidebar({ onCategoryChange, selectedCategory }: SidebarProps) {
