@@ -24,9 +24,8 @@ export const categorias = [
   "Operações",
   "Compras internacionais",
   "Logística",
-  "RH",
+  "People",
   "P&D",
-  "Legacy",
 ];
 
 export const initialMetrics: Metric[] = [

@@ -6,12 +6,14 @@ import {
 } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { PeriodFilter, type PeriodType } from "@/components/dashboard/PeriodFilter";
+import { MonthFilter, type MonthType } from "@/components/dashboard/MonthFilter";
 import { IndicatorSelect } from "@/components/dashboard/IndicatorSelect";
 import { IndicatorKPICard } from "@/components/dashboard/IndicatorKPICard";
 import { ComparativeChart } from "@/components/dashboard/ComparativeChart";
 import { AggregatedEvolutionChart } from "@/components/dashboard/AggregatedEvolutionChart";
 import { MonthlyDetailTable } from "@/components/dashboard/MonthlyDetailTable";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
@@ -31,6 +33,13 @@ const getMonthIndex = (period: PeriodType): number => {
   }
 };
 
+// Mapeia nome do mês para índice
+const monthNameToIndex: Record<string, number> = {
+  "Janeiro": 0, "Fevereiro": 1, "Março": 2, "Abril": 3,
+  "Maio": 4, "Junho": 5, "Julho": 6, "Agosto": 7,
+  "Setembro": 8, "Outubro": 9, "Novembro": 10, "Dezembro": 11
+};
+
 // Formata valores monetários
 const formatValue = (value: number): string => {
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
@@ -43,6 +52,7 @@ const Index = () => {
   const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
+  const [selectedMonth, setSelectedMonth] = useState<MonthType>("all");
   const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -65,10 +75,18 @@ const Index = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Filter metrics by category
+  // Filter metrics by category (excluding Legacy, mapping RH to People)
   const categoryFilteredMetrics = useMemo(() => {
-    if (selectedCategory === "Todas") return metrics;
-    return metrics.filter((m) => m.categoria === selectedCategory);
+    let filtered = metrics.filter((m) => m.categoria !== "Legacy");
+    
+    // Map RH category to People
+    filtered = filtered.map((m) => ({
+      ...m,
+      categoria: m.categoria === "RH" ? "People" : m.categoria,
+    }));
+    
+    if (selectedCategory === "Todas") return filtered;
+    return filtered.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
   // Filter by specific indicator if selected
@@ -77,19 +95,28 @@ const Index = () => {
     return categoryFilteredMetrics.filter((m) => m.id === selectedIndicator);
   }, [categoryFilteredMetrics, selectedIndicator]);
 
-  // Filter metrics data by period
+  // Filter metrics data by period and/or specific month
   const filteredMetrics = useMemo(() => {
-    const startIndex = getMonthIndex(selectedPeriod);
-    
-    if (selectedPeriod === "Todos") {
-      return indicatorFilteredMetrics;
+    let result = indicatorFilteredMetrics;
+
+    // Apply specific month filter first
+    if (selectedMonth !== "all") {
+      const monthIndex = monthNameToIndex[selectedMonth];
+      result = result.map((metric) => ({
+        ...metric,
+        dados: metric.dados.filter((_, index) => index === monthIndex),
+      }));
+    } else if (selectedPeriod !== "Todos") {
+      // Apply period filter only if no specific month selected
+      const startIndex = getMonthIndex(selectedPeriod);
+      result = result.map((metric) => ({
+        ...metric,
+        dados: metric.dados.slice(startIndex),
+      }));
     }
 
-    return indicatorFilteredMetrics.map((metric) => ({
-      ...metric,
-      dados: metric.dados.slice(startIndex),
-    }));
-  }, [indicatorFilteredMetrics, selectedPeriod]);
+    return result;
+  }, [indicatorFilteredMetrics, selectedPeriod, selectedMonth]);
 
   // Calculate KPIs for top 4 indicators
   const topKPIs = useMemo(() => {
@@ -161,11 +188,14 @@ const Index = () => {
         {/* Header */}
         <header className="mb-6">
           {/* Top bar with accent line */}
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
-            <span className="text-xs text-orange-500 uppercase tracking-wider font-medium">
-              INDICADORES DE PERFORMANCE
-            </span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 bg-primary rounded-full"></div>
+              <span className="text-xs text-primary uppercase tracking-wider font-medium">
+                INDICADORES DE PERFORMANCE
+              </span>
+            </div>
+            <ThemeToggle />
           </div>
           
           {/* Title */}
@@ -178,10 +208,22 @@ const Index = () => {
 
           {/* Filters Row */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <PeriodFilter 
-              selected={selectedPeriod} 
-              onChange={setSelectedPeriod} 
-            />
+            <div className="flex flex-wrap items-center gap-4">
+              <PeriodFilter 
+                selected={selectedPeriod} 
+                onChange={(period) => {
+                  setSelectedPeriod(period);
+                  if (period !== "Todos") setSelectedMonth("all"); // Reset month when period changes
+                }} 
+              />
+              <MonthFilter
+                selected={selectedMonth}
+                onChange={(month) => {
+                  setSelectedMonth(month);
+                  if (month !== "all") setSelectedPeriod("Todos"); // Reset period when month selected
+                }}
+              />
+            </div>
             
             <div className="flex items-center gap-4">
               <IndicatorSelect
@@ -195,7 +237,7 @@ const Index = () => {
                   variant="outline"
                   size="sm"
                   onClick={toggleFullscreen}
-                  className="gap-2"
+                  className="gap-2 h-8"
                 >
                   {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                 </Button>
@@ -203,10 +245,10 @@ const Index = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsTVMode(true)}
-                  className="gap-2"
+                  className="gap-2 h-8"
                 >
                   <Tv className="w-4 h-4" />
-                  <span className="hidden sm:inline">Modo TV</span>
+                  <span className="hidden sm:inline text-xs">Modo TV</span>
                 </Button>
               </div>
             </div>
@@ -215,7 +257,7 @@ const Index = () => {
 
         {/* KPI Cards Row */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {topKPIs.map((kpi, index) => (
+          {topKPIs.map((kpi) => (
             <IndicatorKPICard
               key={kpi.id}
               title={kpi.title}
