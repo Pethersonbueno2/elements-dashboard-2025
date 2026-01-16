@@ -1,35 +1,51 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { 
-  DollarSign, 
-  TrendingUp, 
-  Target,
   Tv,
-  BarChart3,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-  Home,
   Maximize,
   Minimize
 } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { KPICardNew } from "@/components/dashboard/KPICardNew";
-import { MonthlyChartCarousel } from "@/components/dashboard/MonthlyChartCarousel";
+import { PeriodFilter, type PeriodType } from "@/components/dashboard/PeriodFilter";
+import { IndicatorSelect } from "@/components/dashboard/IndicatorSelect";
+import { IndicatorKPICard } from "@/components/dashboard/IndicatorKPICard";
+import { ComparativeChart } from "@/components/dashboard/ComparativeChart";
+import { AggregatedEvolutionChart } from "@/components/dashboard/AggregatedEvolutionChart";
+import { MonthlyDetailTable } from "@/components/dashboard/MonthlyDetailTable";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
 import { Button } from "@/components/ui/button";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
+// Mapeia os meses para facilitar filtro por período
+const getMonthIndex = (period: PeriodType): number => {
+  const currentMonth = new Date().getMonth(); // 0-11
+  
+  switch (period) {
+    case "30":
+      return Math.max(0, currentMonth - 1);
+    case "60":
+      return Math.max(0, currentMonth - 2);
+    case "90":
+      return Math.max(0, currentMonth - 3);
+    default:
+      return 0; // Todos
+  }
+};
+
+// Formata valores monetários
+const formatValue = (value: number): string => {
+  if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
+  if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
+  return value.toFixed(0);
+};
+
 const Index = () => {
   const [metrics] = useState<Metric[]>(initialMetrics);
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
+  const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentSlideMetric, setCurrentSlideMetric] = useState<Metric | null>(null);
-
-  // Callback para atualizar a métrica atual do slide
-  const handleSlideChange = useCallback((index: number, metric: Metric | null) => {
-    setCurrentSlideMetric(metric);
-  }, []);
 
   // Fullscreen toggle
   const toggleFullscreen = useCallback(() => {
@@ -49,135 +65,79 @@ const Index = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Filter metrics for TV mode based on selected category
-  const tvMetrics = useMemo(() => {
-    if (selectedCategory === "Todas") {
-      return metrics.slice(0, 12);
-    }
-    return metrics.filter((m) => m.categoria === selectedCategory);
-  }, [metrics, selectedCategory]);
-
-  const filteredMetrics = useMemo(() => {
+  // Filter metrics by category
+  const categoryFilteredMetrics = useMemo(() => {
     if (selectedCategory === "Todas") return metrics;
     return metrics.filter((m) => m.categoria === selectedCategory);
   }, [metrics, selectedCategory]);
 
-  // Metas fixas para métricas específicas (conforme planilha)
-  const fixedMetas: Record<string, { previsto: number; realizado: number }> = {
-    "receita-b2b": { previsto: 61622991, realizado: 39353316 },
-    "receita-b2bc": { previsto: 15815042, realizado: 8681962 },
-  };
+  // Filter by specific indicator if selected
+  const indicatorFilteredMetrics = useMemo(() => {
+    if (selectedIndicator === "all") return categoryFilteredMetrics;
+    return categoryFilteredMetrics.filter((m) => m.id === selectedIndicator);
+  }, [categoryFilteredMetrics, selectedIndicator]);
 
-  // Categorias que devem mostrar Total Previsto e Total Realizado
-  const categoriasComTotais = ["B2B e B2BC", "B2C Digital", "Legacy"];
-  const showTotais = categoriasComTotais.includes(selectedCategory);
-
-  // Extrai meta do nome da métrica (ex: "60MI" de "Receita Líquida - 60MI")
-  const extractMetaFromName = (meta: string): number | null => {
-    const patterns = [
-      /(\d+(?:[.,]\d+)?)\s*Mi/i,
-      /(\d+(?:[.,]\d+)?)\s*Bi/i,
-      /R\$\s*(\d+(?:[.,]\d+)*)/i,
-    ];
+  // Filter metrics data by period
+  const filteredMetrics = useMemo(() => {
+    const startIndex = getMonthIndex(selectedPeriod);
     
-    for (const pattern of patterns) {
-      const match = meta.match(pattern);
-      if (match) {
-        const value = parseFloat(match[1].replace(/\./g, '').replace(',', '.'));
-        if (/Mi/i.test(meta)) return value * 1000000;
-        if (/Bi/i.test(meta)) return value * 1000000000;
-        return value;
-      }
+    if (selectedPeriod === "Todos") {
+      return indicatorFilteredMetrics;
     }
-    return null;
-  };
 
-  // KPIs da métrica atual do slide
-  const currentMetricKPIs = useMemo(() => {
-    if (!currentSlideMetric) return null;
-    
-    const m = currentSlideMetric;
-    const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
-    const isAchieved = lastValidData && (lastValidData.concluido ?? 0) >= 100;
-    const completion = lastValidData?.concluido ?? 0;
-    
-    return {
-      nome: m.nome,
-      isAchieved,
-      completion: completion.toFixed(1),
-    };
-  }, [currentSlideMetric]);
+    return indicatorFilteredMetrics.map((metric) => ({
+      ...metric,
+      dados: metric.dados.slice(startIndex),
+    }));
+  }, [indicatorFilteredMetrics, selectedPeriod]);
 
-  // Calculate summary KPIs based on filtered metrics
-  const summaryKPIs = useMemo(() => {
-    const totalMetrics = filteredMetrics.length;
+  // Calculate KPIs for top 4 indicators
+  const topKPIs = useMemo(() => {
+    // Pega os primeiros 4 indicadores filtrados para exibir como KPI cards
+    const topMetrics = filteredMetrics.slice(0, 4);
     
-    const metricsWithData = filteredMetrics.filter(m => 
-      m.dados.some(d => d.realizado !== null)
-    );
-    
-    const achievedMetrics = metricsWithData.filter(m => {
-      const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
-      return lastValidData && (lastValidData.concluido ?? 0) >= 100;
-    }).length;
-    
-    const avgCompletion = metricsWithData.reduce((acc, m) => {
-      const lastValidData = [...m.dados].reverse().find(d => d.realizado !== null);
-      return acc + (lastValidData?.concluido ?? 0);
-    }, 0) / (metricsWithData.length || 1);
-
-    // Para categoria B2B e B2BC, usa apenas as métricas de receita com valores fixos
-    const isB2BCategory = selectedCategory === "B2B e B2BC";
-    const receitaMetrics = isB2BCategory 
-      ? metricsWithData.filter(m => m.id === "receita-b2b" || m.id === "receita-b2bc")
-      : metricsWithData;
-
-    const totalRealized = receitaMetrics.reduce((acc, m) => {
-      // Usa valor fixo se disponível
-      if (fixedMetas[m.id]) {
-        return acc + fixedMetas[m.id].realizado;
+    return topMetrics.map((metric) => {
+      const lastValidData = [...metric.dados].reverse().find(d => d.realizado !== null);
+      const totalRealizado = metric.dados.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
+      const totalPrevisto = metric.dados.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
+      
+      // Calcula percentual de conclusão
+      let percentage = 0;
+      if (lastValidData && lastValidData.concluido !== null) {
+        percentage = lastValidData.concluido;
+      } else if (totalPrevisto > 0) {
+        percentage = (totalRealizado / totalPrevisto) * 100;
       }
-      const sum = m.dados.reduce((s, d) => s + (d.realizado ?? 0), 0);
-      return acc + sum;
-    }, 0);
 
-    // Usa meta extraída do nome se disponível, senão soma os previstos
-    const totalPrevisto = receitaMetrics.reduce((acc, m) => {
-      // Usa valor fixo se disponível
-      if (fixedMetas[m.id]) {
-        return acc + fixedMetas[m.id].previsto;
+      // Valor principal - usa o último realizado ou percentual
+      let displayValue = "";
+      const meta = metric.meta.toLowerCase();
+      
+      if (meta.includes('%') || meta.includes('>') && !meta.includes('r$')) {
+        displayValue = `${percentage.toFixed(1)}%`;
+      } else if (totalRealizado > 0) {
+        displayValue = formatValue(totalRealizado);
+      } else {
+        displayValue = `${percentage.toFixed(1)}%`;
       }
-      const metaFromName = extractMetaFromName(m.meta);
-      if (metaFromName !== null) {
-        return acc + metaFromName;
-      }
-      const sum = m.dados.reduce((s, d) => s + (d.previsto ?? 0), 0);
-      return acc + sum;
-    }, 0);
 
-    return {
-      total: totalMetrics,
-      achieved: achievedMetrics,
-      pending: metricsWithData.length - achievedMetrics,
-      avgCompletion: avgCompletion.toFixed(1),
-      totalRealized,
-      totalPrevisto,
-      variance: totalPrevisto > 0 ? ((totalRealized - totalPrevisto) / totalPrevisto * 100) : 0,
-    };
-  }, [filteredMetrics, selectedCategory]);
-
-  const formatValue = (value: number): string => {
-    if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
-    if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
-    if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
-    return value.toFixed(0);
-  };
+      return {
+        id: metric.id,
+        title: metric.nome.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, ''),
+        value: displayValue,
+        meta: metric.meta,
+        percentage,
+        previsto: formatValue(totalPrevisto),
+        realizado: formatValue(totalRealizado),
+      };
+    });
+  }, [filteredMetrics]);
 
   // TV Mode
   if (isTVMode) {
     return (
       <TVCarousel 
-        metrics={tvMetrics} 
+        metrics={filteredMetrics.slice(0, 12)} 
         slideIntervalMs={12000} 
         summaryIntervalMs={25000}
         categoria={selectedCategory !== "Todas" ? selectedCategory : undefined}
@@ -197,101 +157,97 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <main className={`flex-1 p-4 md:p-5 lg:p-6 transition-all duration-300 ${isFullscreen ? 'ml-0' : 'ml-56'}`}>
+      <main className={`flex-1 p-4 md:p-6 transition-all duration-300 ${isFullscreen ? 'ml-0' : 'ml-56'}`}>
         {/* Header */}
-        <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-5">
-          <div>
-            <h1 className="text-lg md:text-xl font-bold text-foreground uppercase tracking-wide">
-              {selectedCategory === "Todas" ? "PAINEL DE INDICADORES" : selectedCategory.toUpperCase()}
-            </h1>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">
-              {filteredMetrics.length} indicadores · Dados 2025
-            </p>
+        <header className="mb-6">
+          {/* Top bar with accent line */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
+            <span className="text-xs text-orange-500 uppercase tracking-wider font-medium">
+              INDICADORES DE PERFORMANCE
+            </span>
           </div>
-          <div className="flex items-center gap-2 md:gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleFullscreen}
-              className="gap-2"
-            >
-              {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
-              <span className="hidden sm:inline">{isFullscreen ? 'Sair Fullscreen' : 'Fullscreen'}</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsTVMode(true)}
-              className="gap-2"
-            >
-              <Tv className="w-4 h-4" />
-              <span className="hidden sm:inline">Modo TV</span>
-            </Button>
-            <div className="hidden md:flex items-center gap-4 text-muted-foreground">
-              <Home className="w-5 h-5 cursor-pointer hover:text-foreground transition-colors" />
-              <BarChart3 className="w-5 h-5 cursor-pointer hover:text-foreground transition-colors" />
+          
+          {/* Title */}
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
+            2025 — {selectedCategory === "Todas" ? "Painel Geral" : selectedCategory}
+          </h1>
+          <p className="text-sm text-muted-foreground mb-4">
+            Comparativo Previsto vs Realizado por Mês
+          </p>
+
+          {/* Filters Row */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <PeriodFilter 
+              selected={selectedPeriod} 
+              onChange={setSelectedPeriod} 
+            />
+            
+            <div className="flex items-center gap-4">
+              <IndicatorSelect
+                metrics={categoryFilteredMetrics}
+                selected={selectedIndicator}
+                onChange={setSelectedIndicator}
+              />
+              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleFullscreen}
+                  className="gap-2"
+                >
+                  {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsTVMode(true)}
+                  className="gap-2"
+                >
+                  <Tv className="w-4 h-4" />
+                  <span className="hidden sm:inline">Modo TV</span>
+                </Button>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* KPI Cards - Responsive grid */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 mb-4 md:mb-5">
-          <KPICardNew
-            title="Total Indicadores"
-            value={summaryKPIs.total.toString()}
-            icon={<Target className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-primary"
-            delay={0}
-          />
-          <KPICardNew
-            title="Metas Atingidas"
-            value={summaryKPIs.achieved.toString()}
-            icon={<CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-emerald-600"
-            delay={50}
-          />
-          <KPICardNew
-            title="Pendentes"
-            value={summaryKPIs.pending.toString()}
-            icon={<Clock className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-amber-600"
-            delay={100}
-          />
-          <KPICardNew
-            title={currentMetricKPIs ? "% Conclusão" : "Média Conclusão"}
-            value={currentMetricKPIs ? `${currentMetricKPIs.completion}%` : `${summaryKPIs.avgCompletion}%`}
-            icon={<TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-            iconBgColor="bg-cyan-600"
-            valueColor={parseFloat(currentMetricKPIs?.completion ?? summaryKPIs.avgCompletion) >= 100 ? "positive" : "default"}
-            delay={150}
-          />
-          {showTotais && (
-            <KPICardNew
-              title="Total Previsto"
-              value={formatValue(summaryKPIs.totalPrevisto)}
-              icon={<Target className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-              iconBgColor="bg-blue-600"
-              delay={200}
+        {/* KPI Cards Row */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {topKPIs.map((kpi, index) => (
+            <IndicatorKPICard
+              key={kpi.id}
+              title={kpi.title}
+              value={kpi.value}
+              meta={kpi.meta}
+              percentage={kpi.percentage}
+              previstoValue={kpi.previsto}
+              realizadoValue={kpi.realizado}
             />
-          )}
-          {showTotais && (
-            <KPICardNew
-              title="Total Realizado"
-              value={formatValue(summaryKPIs.totalRealized)}
-              icon={<DollarSign className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />}
-              iconBgColor="bg-purple-600"
-              delay={250}
-            />
-          )}
+          ))}
         </section>
 
-        {/* Main Chart - Carousel (now takes full remaining space) */}
-        <section className={`${isFullscreen ? 'h-[calc(100vh-220px)]' : ''}`}>
-          <MonthlyChartCarousel 
-            metrics={filteredMetrics.slice(0, 8)}
-            slideIntervalMs={10000}
-            summaryIntervalMs={60000}
-            onSlideChange={handleSlideChange}
+        {/* Charts Row */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          <ComparativeChart 
+            metrics={filteredMetrics}
+            title="Comparativo Mensal"
+            subtitle={`${selectedCategory} - Previsto vs Realizado`}
+          />
+          <AggregatedEvolutionChart 
+            metrics={filteredMetrics}
+            title="Evolução Agregada"
+            subtitle="Soma de todos os indicadores por mês"
+          />
+        </section>
+
+        {/* Detail Table */}
+        <section>
+          <MonthlyDetailTable 
+            metrics={filteredMetrics.slice(0, 5)}
+            title="Detalhamento Mensal"
+            subtitle="Valores de Previsto e Realizado por mês para cada indicador"
           />
         </section>
       </main>
