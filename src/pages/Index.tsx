@@ -11,10 +11,11 @@ import { IndicatorSelect } from "@/components/dashboard/IndicatorSelect";
 import { IndicatorKPICard } from "@/components/dashboard/IndicatorKPICard";
 import { ComparativeChart } from "@/components/dashboard/ComparativeChart";
 import { AggregatedEvolutionChart } from "@/components/dashboard/AggregatedEvolutionChart";
-import { MonthlyDetailTable } from "@/components/dashboard/MonthlyDetailTable";
+import { MonthlyDetailChart } from "@/components/dashboard/MonthlyDetailChart";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { useSupabaseMetrics } from "@/hooks/useSupabaseMetrics";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
 // Mapeia os meses para facilitar filtro por período
@@ -49,7 +50,17 @@ const formatValue = (value: number): string => {
 };
 
 const Index = () => {
-  const [metrics] = useState<Metric[]>(initialMetrics);
+  // Busca dados do Supabase
+  const { data: supabaseMetrics, isLoading, error } = useSupabaseMetrics();
+  
+  // Usa dados do Supabase se disponíveis, senão usa dados locais
+  const metrics = useMemo(() => {
+    if (supabaseMetrics && supabaseMetrics.length > 0) {
+      return supabaseMetrics;
+    }
+    return initialMetrics;
+  }, [supabaseMetrics]);
+
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
   const [selectedMonth, setSelectedMonth] = useState<MonthType>("all");
@@ -75,15 +86,9 @@ const Index = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Filter metrics by category (excluding Legacy, mapping RH to People)
+  // Filter metrics by category
   const categoryFilteredMetrics = useMemo(() => {
-    let filtered = metrics.filter((m) => m.categoria !== "Legacy");
-    
-    // Map RH category to People
-    filtered = filtered.map((m) => ({
-      ...m,
-      categoria: m.categoria === "RH" ? "People" : m.categoria,
-    }));
+    let filtered = metrics;
     
     if (selectedCategory === "Todas") return filtered;
     return filtered.filter((m) => m.categoria === selectedCategory);
@@ -204,6 +209,8 @@ const Index = () => {
           </h1>
           <p className="text-sm text-muted-foreground mb-4">
             Comparativo Previsto vs Realizado por Mês
+            {isLoading && <span className="ml-2 text-xs">(Carregando dados do Supabase...)</span>}
+            {error && <span className="ml-2 text-xs text-destructive">(Usando dados locais)</span>}
           </p>
 
           {/* Filters Row */}
@@ -284,10 +291,10 @@ const Index = () => {
           />
         </section>
 
-        {/* Detail Table */}
+        {/* Detail Chart (replaces table) */}
         <section>
-          <MonthlyDetailTable 
-            metrics={filteredMetrics.slice(0, 5)}
+          <MonthlyDetailChart 
+            metrics={filteredMetrics}
             title="Detalhamento Mensal"
             subtitle="Valores de Previsto e Realizado por mês para cada indicador"
           />
