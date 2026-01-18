@@ -12,6 +12,7 @@ import {
   LabelList,
 } from "recharts";
 import { type Metric } from "@/data/dashboardData";
+import { Clock } from "lucide-react";
 
 interface MonthlyDetailChartProps {
   metrics: Metric[];
@@ -27,8 +28,24 @@ const formatValue = (value: number | null): string => {
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-  if (value % 1 !== 0) return value.toFixed(1);
+  if (value % 1 !== 0) return value.toFixed(2);
   return value.toFixed(0);
+};
+
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "Não informado";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return dateString;
+  }
 };
 
 // Componente de label customizado para exibir valores
@@ -51,10 +68,17 @@ const CustomLabel = (props: any) => {
 };
 
 // Tooltip customizado
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, inverso }: any) => {
   if (active && payload && payload.length) {
     const previsto = payload.find((p: any) => p.dataKey === 'previsto');
     const realizado = payload.find((p: any) => p.dataKey === 'realizado');
+
+    // Lógica para determinar se meta foi atingida
+    const metaAtingida = previsto && realizado && previsto.value != null && realizado.value != null
+      ? inverso 
+        ? realizado.value <= previsto.value // Para métricas inversas, menor é melhor
+        : realizado.value >= previsto.value // Para métricas normais, maior é melhor
+      : false;
 
     return (
       <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
@@ -69,15 +93,22 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             Realizado: <span className="font-medium">{formatValue(realizado.value)}</span>
           </p>
         )}
-        {previsto && realizado && previsto.value && realizado.value && (
-          <p className={`text-xs mt-1 ${realizado.value >= previsto.value ? 'text-success' : 'text-orange-500'}`}>
-            {realizado.value >= previsto.value ? '✓ Meta atingida' : '⚠ Abaixo da meta'}
+        {previsto && realizado && previsto.value != null && realizado.value != null && (
+          <p className={`text-xs mt-1 ${metaAtingida ? 'text-success' : 'text-orange-500'}`}>
+            {metaAtingida ? '✓ Meta atingida' : '⚠ Abaixo da meta'}
+            {inverso && <span className="text-muted-foreground ml-1">(quanto menor, melhor)</span>}
           </p>
         )}
       </div>
     );
   }
   return null;
+};
+
+// Função para verificar se meta foi atingida considerando inversão
+const isMetaAtingida = (previsto: number | null, realizado: number | null, inverso?: boolean): boolean => {
+  if (previsto === null || realizado === null) return false;
+  return inverso ? realizado <= previsto : realizado >= previsto;
 };
 
 export function MonthlyDetailChart({
@@ -115,12 +146,15 @@ export function MonthlyDetailChart({
 
   // Gráfico individual por indicador
   const indicatorCharts = useMemo(() => {
-    return metrics.slice(0, 4).map((metric) => {
+    return metrics.slice(0, 6).map((metric) => {
+      const inverso = metric.inverso || false;
+      
       const data = metric.dados.map((d, index) => ({
-        month: months[index],
+        month: months[index] || d.mes?.substring(0, 3).toUpperCase() || 'N/A',
         previsto: d.previsto,
         realizado: d.realizado,
-        atingido: d.realizado !== null && d.previsto !== null && d.realizado >= d.previsto,
+        atingido: isMetaAtingida(d.previsto, d.realizado, inverso),
+        atualizadoEm: d.atualizadoEm,
       }));
 
       return {
@@ -128,6 +162,8 @@ export function MonthlyDetailChart({
         nome: metric.nome.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, ''),
         meta: metric.meta,
         data,
+        inverso,
+        ultimaAtualizacao: metric.ultimaAtualizacao,
       };
     });
   }, [metrics]);
@@ -175,7 +211,7 @@ export function MonthlyDetailChart({
         </div>
 
         {/* Legenda */}
-        <div className="flex items-center justify-center gap-6 text-xs">
+        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded bg-primary" />
             <span className="text-muted-foreground">Previsto</span>
@@ -191,16 +227,27 @@ export function MonthlyDetailChart({
         </div>
 
         {/* Grid de gráficos por indicador */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {indicatorCharts.map((chart) => (
             <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-medium text-foreground truncate">
-                  {chart.nome}
-                </h4>
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                  Meta: {chart.meta}
-                </span>
+              <div className="flex flex-col gap-1 mb-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
+                    {chart.nome}
+                  </h4>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                    Meta: {chart.meta}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <Clock className="w-3 h-3" />
+                  <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
+                  {chart.inverso && (
+                    <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
+                      ↓ Menor = Melhor
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="h-32">
                 <ResponsiveContainer width="100%" height="100%">
@@ -213,7 +260,7 @@ export function MonthlyDetailChart({
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip inverso={chart.inverso} />} />
                     <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
                       <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
                     </Bar>

@@ -4,6 +4,7 @@ export interface MetricData {
   realizado: number | null;
   diferenca: number | null;
   concluido: number | null;
+  atualizadoEm?: string | null;
 }
 
 export interface Metric {
@@ -12,6 +13,8 @@ export interface Metric {
   meta: string;
   categoria: string;
   dados: MetricData[];
+  ultimaAtualizacao?: string | null;
+  inverso?: boolean;
 }
 
 export const categorias = [
