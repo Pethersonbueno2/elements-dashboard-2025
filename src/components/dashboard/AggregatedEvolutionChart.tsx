@@ -27,18 +27,36 @@ const formatValue = (value: number): string => {
   return value.toFixed(0);
 };
 
-const CustomLabel = (props: any) => {
-  const { x, y, value, index } = props;
+const CustomLabelPrevisto = (props: any) => {
+  const { x, y, value } = props;
   if (value === 0 || value === null || value === undefined) return null;
   
   return (
     <text
       x={x}
-      y={y - 8}
-      fill="hsl(var(--foreground))"
+      y={y - 20}
+      fill="hsl(var(--primary))"
       textAnchor="middle"
-      fontSize={10}
-      fontWeight={500}
+      fontSize={9}
+      fontWeight={600}
+    >
+      {formatValue(value)}
+    </text>
+  );
+};
+
+const CustomLabelRealizado = (props: any) => {
+  const { x, y, value } = props;
+  if (value === 0 || value === null || value === undefined) return null;
+  
+  return (
+    <text
+      x={x}
+      y={y + 15}
+      fill="hsl(142 76% 36%)"
+      textAnchor="middle"
+      fontSize={9}
+      fontWeight={600}
     >
       {formatValue(value)}
     </text>
@@ -74,17 +92,35 @@ export function AggregatedEvolutionChart({
   subtitle = "Comparativo Previsto vs Realizado por mês",
 }: AggregatedEvolutionChartProps) {
   const chartData = useMemo(() => {
-    const months = [
+    const fullMonthNames = [
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+    const shortMonthNames = [
       "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
       "Jul", "Ago", "Set", "Out", "Nov", "Dez"
     ];
 
-    return months.map((mes, index) => {
+    // Pega os meses únicos dos dados filtrados
+    const monthsInData = new Set<string>();
+    metrics.forEach((metric) => {
+      metric.dados.forEach((d) => {
+        if (d.mes) monthsInData.add(d.mes);
+      });
+    });
+
+    // Ordena os meses na ordem correta
+    const orderedMonths = fullMonthNames.filter(m => monthsInData.has(m));
+
+    return orderedMonths.map((mesCompleto) => {
+      const index = fullMonthNames.indexOf(mesCompleto);
+      const mesAbrev = shortMonthNames[index] || mesCompleto.substring(0, 3);
+      
       let totalRealizado = 0;
       let totalPrevisto = 0;
 
       metrics.forEach((metric) => {
-        const monthData = metric.dados[index];
+        const monthData = metric.dados.find(d => d.mes === mesCompleto);
         if (monthData) {
           if (monthData.realizado !== null) {
             totalRealizado += monthData.realizado;
@@ -96,7 +132,7 @@ export function AggregatedEvolutionChart({
       });
 
       return {
-        mes,
+        mes: mesAbrev,
         previsto: totalPrevisto,
         realizado: totalRealizado,
       };
@@ -162,7 +198,7 @@ export function AggregatedEvolutionChart({
                 strokeDasharray="5 5"
                 fill="url(#colorPrevisto)"
               >
-                <LabelList content={<CustomLabel />} dataKey="previsto" position="top" />
+                <LabelList content={<CustomLabelPrevisto />} dataKey="previsto" position="top" />
               </Area>
               <Area
                 type="monotone"
@@ -172,7 +208,7 @@ export function AggregatedEvolutionChart({
                 strokeWidth={2}
                 fill="url(#colorRealizado)"
               >
-                <LabelList content={<CustomLabel />} dataKey="realizado" position="top" />
+                <LabelList content={<CustomLabelRealizado />} dataKey="realizado" position="bottom" />
               </Area>
             </AreaChart>
           </ResponsiveContainer>

@@ -523,37 +523,79 @@ export function useSupabaseMetrics() {
         const mapping = tableMapping[tableName];
         if (!mapping || data.length === 0) return;
 
-        // Ordena os dados por mês
-        const sortedData = [...data].sort((a, b) => {
-          const mesA = a.mes || a.trimestre || '';
-          const mesB = b.mes || b.trimestre || '';
-          const aIndex = monthOrder.indexOf(mesA);
-          const bIndex = monthOrder.indexOf(mesB);
-          if (aIndex === -1 && bIndex === -1) return 0;
-          if (aIndex === -1) return 1;
-          if (bIndex === -1) return -1;
-          return aIndex - bIndex;
+        // Agrupa dados por mês para evitar duplicatas (mantém previsto e atualiza realizado)
+        const monthDataMap: Map<string, {
+          previsto: number | null;
+          realizado: number | null;
+          diferenca: number | null;
+          concluido: number | null;
+          atualizadoEm: string | null;
+        }> = new Map();
+
+        // Primeiro, cria entradas para todos os 12 meses com valores nulos
+        monthOrder.forEach((mes) => {
+          monthDataMap.set(mes, {
+            previsto: null,
+            realizado: null,
+            diferenca: null,
+            concluido: null,
+            atualizadoEm: null,
+          });
         });
 
-        // Encontra a data de atualização mais recente
-        let ultimaAtualizacao: string | null = null;
-        sortedData.forEach((row) => {
-          if (row["Atualizado-em"]) {
-            if (!ultimaAtualizacao || row["Atualizado-em"] > ultimaAtualizacao) {
-              ultimaAtualizacao = row["Atualizado-em"];
+        // Depois, popula com os dados do Supabase (consolidando por mês)
+        data.forEach((row) => {
+          const mes = row.mes || row.trimestre || '';
+          if (!mes || !monthOrder.includes(mes)) return;
+
+          const existing = monthDataMap.get(mes);
+          if (existing) {
+            // Se já existe um previsto, mantém; senão, usa o novo
+            if (existing.previsto === null && row.previsto !== null) {
+              existing.previsto = row.previsto;
+            }
+            // Sempre atualiza o realizado com o valor mais recente
+            if (row.realizado !== null) {
+              existing.realizado = row.realizado;
+            }
+            // Atualiza diferença e concluído
+            if (row.diferenca !== null) {
+              existing.diferenca = row.diferenca;
+            }
+            if (row.percentual_concluido !== null) {
+              existing.concluido = row.percentual_concluido;
+            }
+            // Atualiza data de atualização se for mais recente
+            if (row["Atualizado-em"]) {
+              if (!existing.atualizadoEm || row["Atualizado-em"] > existing.atualizadoEm) {
+                existing.atualizadoEm = row["Atualizado-em"];
+              }
             }
           }
         });
 
-        // Converte para o formato MetricData
-        const metricData: MetricDataWithUpdate[] = sortedData.map((row) => ({
-          mes: row.mes || row.trimestre || 'N/A',
-          previsto: row.previsto,
-          realizado: row.realizado,
-          diferenca: row.diferenca,
-          concluido: row.percentual_concluido || null,
-          atualizadoEm: row["Atualizado-em"] || null,
-        }));
+        // Encontra a data de atualização mais recente
+        let ultimaAtualizacao: string | null = null;
+        monthDataMap.forEach((value) => {
+          if (value.atualizadoEm) {
+            if (!ultimaAtualizacao || value.atualizadoEm > ultimaAtualizacao) {
+              ultimaAtualizacao = value.atualizadoEm;
+            }
+          }
+        });
+
+        // Converte para o formato MetricData (sempre 12 meses ordenados)
+        const metricData: MetricDataWithUpdate[] = monthOrder.map((mes) => {
+          const monthData = monthDataMap.get(mes)!;
+          return {
+            mes,
+            previsto: monthData.previsto,
+            realizado: monthData.realizado,
+            diferenca: monthData.diferenca,
+            concluido: monthData.concluido,
+            atualizadoEm: monthData.atualizadoEm,
+          };
+        });
 
         // Cria o objeto Metric
         const metric: MetricWithUpdate = {

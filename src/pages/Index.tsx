@@ -18,19 +18,23 @@ import { Button } from "@/components/ui/button";
 import { useSupabaseMetrics } from "@/hooks/useSupabaseMetrics";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
-// Mapeia os meses para facilitar filtro por período
-const getMonthIndex = (period: PeriodType): number => {
-  const currentMonth = new Date().getMonth(); // 0-11
+// Retorna os índices dos meses a serem exibidos baseado no período
+const getMonthsForPeriod = (period: PeriodType): number[] => {
+  const currentMonth = new Date().getMonth(); // 0-11 (Janeiro = 0)
   
   switch (period) {
     case "30":
-      return Math.max(0, currentMonth - 1);
+      // Último mês (mês atual)
+      return [currentMonth];
     case "60":
-      return Math.max(0, currentMonth - 2);
+      // Últimos 2 meses
+      return [Math.max(0, currentMonth - 1), currentMonth];
     case "90":
-      return Math.max(0, currentMonth - 3);
+      // Últimos 3 meses
+      return [Math.max(0, currentMonth - 2), Math.max(0, currentMonth - 1), currentMonth];
     default:
-      return 0; // Todos
+      // Todos - retorna array com todos os 12 meses
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   }
 };
 
@@ -112,11 +116,11 @@ const Index = () => {
         dados: metric.dados.filter((_, index) => index === monthIndex),
       }));
     } else if (selectedPeriod !== "Todos") {
-      // Apply period filter only if no specific month selected
-      const startIndex = getMonthIndex(selectedPeriod);
+      // Apply period filter - filtra pelos meses do período selecionado
+      const monthsToShow = getMonthsForPeriod(selectedPeriod);
       result = result.map((metric) => ({
         ...metric,
-        dados: metric.dados.slice(startIndex),
+        dados: metric.dados.filter((_, index) => monthsToShow.includes(index)),
       }));
     }
 
