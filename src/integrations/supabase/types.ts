@@ -14,8 +14,9 @@ export type Database = {
   }
   public: {
     Tables: {
-      "Atendimento - Índique de Satisfacao com Atendimento  >90% - 20": {
+      "2025_atendimento_indice_de_satisfacao_com_atendimento_9": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -23,6 +24,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -30,6 +32,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -38,8 +41,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Atendimento - Reputacao Google  >4.5  - 2025": {
+      "2025_atendimento_reputacao_google_4.5": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -47,6 +51,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -54,6 +59,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -62,8 +68,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Atendimento - Reputacao Reclame Aqui > 7..6 %  - 2025": {
+      "2025_atendimento_reputacao_reclame_aqui_7.6": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -71,6 +78,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -78,6 +86,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -86,8 +95,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Atendimento - Tempo de Primeira Resposta <2h - 2025": {
+      "2025_atendimento_tempo_de_primeira_resposta_2h": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -95,6 +105,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -102,6 +113,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -110,35 +122,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B  - Ciclo de Vendas - 2025": {
+      "2025_b2b_base_ativa_saudavel_60": {
         Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "B2B - Base Ativa Saudavel - 60% - 2025": {
-        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -147,6 +133,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -155,6 +142,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -164,8 +152,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B - Churn Revendedores -1 % - 2025": {
+      "2025_b2b_churn_revendedores_1": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -174,6 +163,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -182,6 +172,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -191,8 +182,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B - Crescimento Receita Base Ativa - 5% - 2025": {
+      "2025_b2b_ciclo_de_vendas_15_dias": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -201,6 +193,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -209,6 +202,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -218,8 +212,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B - Receita - 2025": {
+      "2025_b2b_crescimento_receita_base_ativa": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -228,6 +223,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -236,6 +232,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -245,8 +242,63 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B - Taxa de Conversão - 25% - 2025": {
+      "2025_b2b_rd_summit": {
         Row: {
+          diferenca: number | null
+          id: number
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          diferenca?: number | null
+          id?: number
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_b2b_receita": {
+        Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_b2b_taxa_de_conversão_25": {
+        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
@@ -255,6 +307,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -263,6 +316,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -272,8 +326,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2B - Ticket Médio - 2025": {
+      "2025_b2b_ticket_medio": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -282,6 +337,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -290,6 +346,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -299,8 +356,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Agendas Realizadas - 2025": {
+      "2025_b2bc_agendas_realizadas": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -309,6 +367,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -317,6 +376,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -326,8 +386,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Ciclo de Vendas - 10 dias - 2025": {
+      "2025_b2bc_ciclo_de_vendas_10_dias": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -336,6 +397,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -344,6 +406,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -353,8 +416,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - NPS - 5": {
+      "2025_b2bc_nps_5": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -363,6 +427,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -371,6 +436,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -380,8 +446,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Número de Novos Clientes": {
+      "2025_b2bc_numero_de_novos_clientes": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -390,6 +457,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -398,6 +466,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -407,8 +476,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Receita - 2025": {
+      "2025_b2bc_receita": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -417,6 +487,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -425,6 +496,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -434,8 +506,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Taxa de Conversao - 25% - 2025": {
+      "2025_b2bc_taxa_de_conversao_25": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -444,6 +517,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -452,6 +526,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -461,8 +536,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2BC - Ticket Medio - 2025": {
+      "2025_b2bc_ticket_medio": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -471,6 +547,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -479,6 +556,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -488,8 +566,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2C Digital - LCP 2s - 2025": {
+      "2025_b2c_lcp_2s": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -498,6 +577,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -506,6 +586,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -515,8 +596,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2C Digital - Receita Liquida - 2025": {
+      "2025_b2c_receita_liquida": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -525,6 +607,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -533,6 +616,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -542,8 +626,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "B2C Digital - Taxa de Conversão - 1%": {
+      "2025_b2c_taxa_de_conversao": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -552,6 +637,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -560,6 +646,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -569,8 +656,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - giro_estoque_mensal - 2025": {
+      "2025_compras_internacionais_custo_de_frete_por_unidade": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -579,6 +667,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -587,6 +676,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -596,8 +686,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - indice_ruptura_estoque_mensal - 2025": {
+      "2025_compras_internacionais_giro_estoque": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -606,6 +697,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -614,6 +706,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -623,8 +716,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - Prazo Médio de Entrega (Lead Time) - ": {
+      "2025_compras_internacionais_indice_ruptura_estoque_30": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -633,6 +727,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -641,6 +736,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -650,8 +746,39 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - Qualidade do Fornecedor - 2025": {
+      "2025_compras_internacionais_prazo_medio_de_entrega": {
         Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_compras_internacionais_qualidade_do_fornecedor": {
+        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
@@ -661,6 +788,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -670,6 +798,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -680,8 +809,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Compras Internacionais - Redução de Custos de Aquisição - 3": {
+      "2025_compras_internacionais_redução_de_custos_de_aquisi": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -690,6 +820,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -698,6 +829,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -707,8 +839,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Compliance Tributário - 2025": {
+      "2025_financeiro_controladoria_resultado_financeiro": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -717,6 +850,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -725,6 +859,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -734,8 +869,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Crescimento EBITDA ? 2025": {
+      "2025_financeiro_e_controladoria_carga_tributaria_efetiva": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -744,6 +880,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -752,6 +889,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -761,8 +899,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Despesas Operacionais - 30%": {
+      "2025_financeiro_e_controladoria_compliance_tributário": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -771,6 +910,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -779,6 +919,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -788,8 +929,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  EBITDA sob Juros - >6 - 2025": {
+      "2025_financeiro_e_controladoria_crescimento_ebitda": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -798,6 +940,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -806,6 +949,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -815,8 +959,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Grau de Alavancagem Financeira <2,5": {
+      "2025_financeiro_e_controladoria_despesas_operacionais": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -825,6 +970,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -833,6 +979,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -842,8 +989,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Margem Bruta - 55%": {
+      "2025_financeiro_e_controladoria_ebtda_sob_juros": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -852,6 +1000,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -860,6 +1009,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -869,8 +1019,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Margem de Contribuição - 34%": {
+      "2025_financeiro_e_controladoria_endividamento_sobre_ebitda": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -879,6 +1030,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -887,6 +1039,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -896,8 +1049,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Margem EBITDA - 25%": {
+      "2025_financeiro_e_controladoria_grau_de_alavancagem": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -906,6 +1060,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -914,6 +1069,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -923,8 +1079,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Margem Liquida - 15% - 2025": {
+      "2025_financeiro_e_controladoria_margem_bruta_55": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -933,6 +1090,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -941,6 +1099,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -950,8 +1109,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro -  Resultado Financeiro - 2025": {
+      "2025_financeiro_e_controladoria_margem_de_contribuicao": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -960,6 +1120,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -968,6 +1129,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -977,8 +1139,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro - Carga Tributaria Efetiva": {
+      "2025_financeiro_e_controladoria_margem_ebtida": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -987,6 +1150,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -995,6 +1159,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1004,8 +1169,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Financeiro - Endividamento sobre EBITDA <3 - 2025": {
+      "2025_financeiro_e_controladoria_margem_liquida_15": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1014,6 +1180,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1022,6 +1189,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1031,8 +1199,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  Custos Variaveis - 2025": {
+      "2025_legacy_custo_por_lead_1330": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1041,6 +1210,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1049,6 +1219,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1058,8 +1229,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  EBITDA - R$ 1.599.070 - 2025": {
+      "2025_legacy_custos_variaveis": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1068,6 +1240,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1076,6 +1249,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1085,8 +1259,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  investimento em Trafego - R$ 1.340.000": {
+      "2025_legacy_despesa_fixa": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1095,6 +1270,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1103,6 +1279,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1112,8 +1289,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  Número total de Oportunidades (Leads) - 15740": {
+      "2025_legacy_ebtida_rs_1.599.070": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1122,6 +1300,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1130,6 +1309,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1139,8 +1319,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  receita Operacional Bruta - R$7.370.000": {
+      "2025_legacy_faturamento_gerado_pelo_trafego_rs_6.475.000": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1149,6 +1330,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1157,6 +1339,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1166,8 +1349,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  ROAS (Retorno sobre o investimento em Publicidade) - ": {
+      "2025_legacy_investimento_em_trafego_rs_1.340.000": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1176,6 +1360,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1184,6 +1369,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1193,8 +1379,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy -  Ticket Médio": {
+      "2025_legacy_numero_total_de_oportunidades": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1203,6 +1390,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1211,6 +1399,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1220,8 +1409,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - Custo por Lead (CPL Médio) - 1330": {
+      "2025_legacy_receita_operacional_bruta_rs_7.370.000": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1230,6 +1420,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1238,6 +1429,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1247,8 +1439,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - Despesa Fixa - 2025": {
+      "2025_legacy_roas": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1257,6 +1450,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1265,6 +1459,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1274,8 +1469,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Legacy - Faturamento Gerado pelo Tráfego R$6.475.000": {
+      "2025_legacy_ticket_medio": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1284,6 +1480,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1292,6 +1489,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1301,8 +1499,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Logistica - Acuracidade de Estoque - 95%": {
+      "2025_logistica_acuracidade_de_estoque_95": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
@@ -1311,6 +1510,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -1319,6 +1519,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
@@ -1328,335 +1529,369 @@ export type Database = {
         }
         Relationships: []
       }
-      "Logistica - Meta Frete - Centro Oeste": {
+      "2025_logistica_indice_avaria_0.1": {
         Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_logistica_meta_frete_centro_oeste": {
+        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Meta Frete Nordeste 9%": {
+      "2025_logistica_meta_frete_nordeste_": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Meta Frete Norte - 9%": {
+      "2025_logistica_meta_frete_norte_9": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Meta Frete Regiao - Sul 4%": {
+      "2025_logistica_meta_frete_sudeste": {
         Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-          regiao: string
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao: string
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao?: string
-        }
-        Relationships: []
-      }
-      "Logistica - Meta Frete Sudeste 5%": {
-        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Performance de Transp e Entrega - 2025": {
+      "2025_logistica_meta_frete_sul": {
         Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "Logistica - Prazo de Entrega - Centro Oeste - 7 dias -": {
-        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Prazo de Entrega - Sudeste - 4 dias": {
+      "2025_logistica_performance_de_transp_e_entrega": {
         Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_logistica_prazo_de_entrega_centro_oeste_7_dias": {
+        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Prazo de Entrega - Sul - 3 dias": {
+      "2025_logistica_prazo_de_entrega_padrao_nordeste_12_dia": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Prazo de Entrega Padrão - Nordeste - 12 dias": {
+      "2025_logistica_prazo_de_entrega_padrao_norte_12_dias": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica - Prazo de Entrega Padrão - Norte 12 dias": {
+      "2025_logistica_prazo_de_entrega_sudeste_4_dias": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string | null
           percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
-          Região: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string | null
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
-          Região?: string
         }
         Relationships: []
       }
-      "Logistica indice_avaria_mensal 2025": {
+      "2025_logistica_prazo_de_entrega_sul_3_dias": {
         Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string | null
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string | null
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_logistica_reducao_frete_geral": {
+        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1665,6 +1900,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1673,6 +1909,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1682,38 +1919,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Logistica prazo_entrega_regiao_mensal 2025": {
+      "2025_marketing_branding_alcance_100": {
         Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-          regiao: string
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao: string
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-          regiao?: string
-        }
-        Relationships: []
-      }
-      "Logistica reducao_frete_geral_mensal 2025": {
-        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1722,6 +1930,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1730,6 +1939,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1739,8 +1949,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Alcance - 100%": {
+      "2025_marketing_branding_brand_search_25": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1749,6 +1960,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1757,6 +1969,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1766,8 +1979,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Brand Search - 25%": {
+      "2025_marketing_branding_engajamento_25": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1776,6 +1990,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1784,6 +1999,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1793,8 +2009,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Engajamento - 25%": {
+      "2025_marketing_branding_experiência_nps_satisfacao": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1803,6 +2020,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1811,6 +2029,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1820,8 +2039,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Experiência - NPS Satisfação (Indicaç": {
+      "2025_marketing_branding_share_of_voice_25": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1830,6 +2050,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1838,6 +2059,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1847,8 +2069,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Share of Voice - 25% - 2025": {
+      "2025_marketing_branding_trafego_organico_20": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1857,6 +2080,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1865,6 +2089,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1874,8 +2099,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Branding - Trafego Organico - 20%": {
+      "2025_marketing_growth_cohort_ltv": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1884,6 +2110,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1892,6 +2119,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1901,8 +2129,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Cohort - LTV(validar dashboard) 2025": {
+      "2025_marketing_growth_cpa_rs_200": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1911,6 +2140,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1919,6 +2149,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1928,8 +2159,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth cpa R$200 2025": {
+      "2025_marketing_growth_cpl_rs_50": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1938,6 +2170,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1946,6 +2179,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1955,8 +2189,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth CPL - R$50 2025": {
+      "2025_marketing_growth_crescimento_da_Base_de_clientes": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1965,6 +2200,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -1973,6 +2209,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -1982,8 +2219,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Crescimento da Base de Clientes (novos cliente": {
+      "2025_marketing_growth_crescimento_da_receita_de_clientes": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -1992,6 +2230,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2000,6 +2239,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2009,8 +2249,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Crescimento da Receita de Clientes Existentes": {
+      "2025_marketing_growth_percentual_de_compras_indicacao": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2019,6 +2260,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2027,6 +2269,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2036,8 +2279,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Percentual de Compras originadas por indicaç": {
+      "2025_marketing_growth_projetos_realizados": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2046,6 +2290,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2054,6 +2299,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2063,8 +2309,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Projetos Realizados 2025": {
+      "2025_marketing_growth_roas": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2073,6 +2320,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2081,6 +2329,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2090,8 +2339,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth ROAS 2025": {
+      "2025_marketing_growth_taxa_de_conversão_de_lead": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2100,6 +2350,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2108,6 +2359,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2117,8 +2369,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Taxa de Conversão de Lead 2025": {
+      "2025_marketing_growth_vendas_por_ia": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2127,6 +2380,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2135,6 +2389,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2144,35 +2399,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Marketing Growth Vendas por IA 2025": {
+      "2025_operacoes_monitoramento_cross_funcional": {
         Row: {
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "Operações Monitoramento Cross-Funcional 2025": {
-        Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2182,6 +2411,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2191,6 +2421,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2201,8 +2432,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "Operações tempo de ciclo 15%": {
+      "2025_operacoes_tempo_de_ciclo": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2212,6 +2444,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2221,6 +2454,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2231,8 +2465,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "P&D - produtos Lançados - 2025": {
+      "2025_p&d_produtos_lançados": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           percentual_acima: string | null
@@ -2240,6 +2475,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           percentual_acima?: string | null
@@ -2247,6 +2483,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           percentual_acima?: string | null
@@ -2255,8 +2492,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "P&D - Projetos Realizados - 2025": {
+      "2025_p&d_projetos_realizados": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           mes: string
@@ -2265,6 +2503,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes: string
@@ -2273,6 +2512,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           mes?: string
@@ -2282,8 +2522,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "P&D tempo de desenvolvimento >90 - 120 dias": {
+      "2025_p&d_tempo_de_desenvolvimento_>90_120_dias": {
         Row: {
+          "Atualizado-em": string | null
           diferenca: number | null
           id: number
           percentual_concluido: number | null
@@ -2292,6 +2533,7 @@ export type Database = {
           trimestre: string
         }
         Insert: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           percentual_concluido?: number | null
@@ -2300,6 +2542,7 @@ export type Database = {
           trimestre: string
         }
         Update: {
+          "Atualizado-em"?: string | null
           diferenca?: number | null
           id?: number
           percentual_concluido?: number | null
@@ -2309,32 +2552,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "RD SUMMIT": {
+      "2025_people_consistencia_de_feedbacks_de_liderança": {
         Row: {
-          diferenca: number | null
-          id: number
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "RH consistencia de feedbacks de liderança - 80%": {
-        Row: {
+          "Atualizado-em": string | null
           id: number
           mes: string
           metrica_desempenho: string | null
@@ -2342,6 +2562,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           id?: number
           mes: string
           metrica_desempenho?: string | null
@@ -2349,6 +2570,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           id?: number
           mes?: string
           metrica_desempenho?: string | null
@@ -2357,8 +2579,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH eNPS >51": {
+      "2025_people_enps_51": {
         Row: {
+          "Atualizado-em": string | null
           id: number
           mes: string
           metrica_desempenho: string | null
@@ -2366,6 +2589,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           id?: number
           mes: string
           metrica_desempenho?: string | null
@@ -2373,6 +2597,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           id?: number
           mes?: string
           metrica_desempenho?: string | null
@@ -2381,8 +2606,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH Headcount vs Receita 2025": {
+      "2025_people_headcount_vs_receita": {
         Row: {
+          "Atualizado-em": string | null
           id: number
           mes: string
           metrica_desempenho: string | null
@@ -2390,6 +2616,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           id?: number
           mes: string
           metrica_desempenho?: string | null
@@ -2397,6 +2624,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           id?: number
           mes?: string
           metrica_desempenho?: string | null
@@ -2405,8 +2633,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH time to Fill - 30 dias": {
+      "2025_people_time_to_fill_30_dias": {
         Row: {
+          "Atualizado-em": string | null
           id: number
           mes: string
           metrica_desempenho: string | null
@@ -2414,6 +2643,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           id?: number
           mes: string
           metrica_desempenho?: string | null
@@ -2421,6 +2651,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           id?: number
           mes?: string
           metrica_desempenho?: string | null
@@ -2429,8 +2660,9 @@ export type Database = {
         }
         Relationships: []
       }
-      "RH Turnover 2025": {
+      "2025_people_turnover": {
         Row: {
+          "Atualizado-em": string | null
           id: number
           mes: string
           metrica_desempenho: string | null
@@ -2438,6 +2670,7 @@ export type Database = {
           realizado: number | null
         }
         Insert: {
+          "Atualizado-em"?: string | null
           id?: number
           mes: string
           metrica_desempenho?: string | null
@@ -2445,6 +2678,7 @@ export type Database = {
           realizado?: number | null
         }
         Update: {
+          "Atualizado-em"?: string | null
           id?: number
           mes?: string
           metrica_desempenho?: string | null
