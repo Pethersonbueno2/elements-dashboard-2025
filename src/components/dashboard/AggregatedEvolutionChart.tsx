@@ -7,6 +7,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
+  LabelList,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Metric } from "@/data/dashboardData";
@@ -23,6 +25,24 @@ const formatValue = (value: number): string => {
   if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
   if (value % 1 !== 0) return value.toFixed(1);
   return value.toFixed(0);
+};
+
+const CustomLabel = (props: any) => {
+  const { x, y, value, index } = props;
+  if (value === 0 || value === null || value === undefined) return null;
+  
+  return (
+    <text
+      x={x}
+      y={y - 8}
+      fill="hsl(var(--foreground))"
+      textAnchor="middle"
+      fontSize={10}
+      fontWeight={500}
+    >
+      {formatValue(value)}
+    </text>
+  );
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -51,7 +71,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function AggregatedEvolutionChart({
   metrics,
   title = "Evolução Agregada",
-  subtitle = "Soma de todos os indicadores por mês",
+  subtitle = "Comparativo Previsto vs Realizado por mês",
 }: AggregatedEvolutionChartProps) {
   const chartData = useMemo(() => {
     const months = [
@@ -61,16 +81,23 @@ export function AggregatedEvolutionChart({
 
     return months.map((mes, index) => {
       let totalRealizado = 0;
+      let totalPrevisto = 0;
 
       metrics.forEach((metric) => {
         const monthData = metric.dados[index];
-        if (monthData && monthData.realizado !== null) {
-          totalRealizado += monthData.realizado;
+        if (monthData) {
+          if (monthData.realizado !== null) {
+            totalRealizado += monthData.realizado;
+          }
+          if (monthData.previsto !== null) {
+            totalPrevisto += monthData.previsto;
+          }
         }
       });
 
       return {
         mes,
+        previsto: totalPrevisto,
         realizado: totalRealizado,
       };
     });
@@ -85,16 +112,20 @@ export function AggregatedEvolutionChart({
         <p className="text-xs text-muted-foreground">{subtitle}</p>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px]">
+        <div className="h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}
-              margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
+              margin={{ top: 30, right: 10, left: 10, bottom: 20 }}
             >
               <defs>
-                <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                <linearGradient id="colorPrevisto" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(142 76% 36%)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="hsl(142 76% 36%)" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
               <CartesianGrid
@@ -114,17 +145,35 @@ export function AggregatedEvolutionChart({
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) => formatValue(value)}
-                width={45}
+                width={50}
               />
               <Tooltip content={<CustomTooltip />} />
+              <Legend 
+                verticalAlign="top" 
+                height={36}
+                formatter={(value) => <span className="text-xs text-foreground">{value}</span>}
+              />
+              <Area
+                type="monotone"
+                dataKey="previsto"
+                name="Previsto"
+                stroke="hsl(var(--primary))"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                fill="url(#colorPrevisto)"
+              >
+                <LabelList content={<CustomLabel />} dataKey="previsto" position="top" />
+              </Area>
               <Area
                 type="monotone"
                 dataKey="realizado"
                 name="Realizado"
-                stroke="hsl(var(--primary))"
+                stroke="hsl(142 76% 36%)"
                 strokeWidth={2}
                 fill="url(#colorRealizado)"
-              />
+              >
+                <LabelList content={<CustomLabel />} dataKey="realizado" position="top" />
+              </Area>
             </AreaChart>
           </ResponsiveContainer>
         </div>
