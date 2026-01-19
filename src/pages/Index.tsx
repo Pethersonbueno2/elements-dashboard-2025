@@ -162,15 +162,15 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
       nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl')) {
     return { prefix: 'R$ ', suffix: '' };
   }
+  // Horas - Tempo de primeira resposta (deve vir antes de dias)
+  if (nomeLower.includes('primeira resposta') || nomeLower.includes('primeira_resposta') ||
+      (metaLower.includes('h') && !metaLower.includes('%')) || nomeLower.includes('hora')) {
+    return { prefix: '', suffix: ' horas' };
+  }
   // Dias
   if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda') ||
       nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de') || nomeLower.includes('lcp')) {
     return { prefix: '', suffix: ' dias' };
-  }
-  // Horas
-  if (metaLower.includes('h') && !metaLower.includes('%') || nomeLower.includes('hora') || 
-      nomeLower.includes('primeira_resposta')) {
-    return { prefix: '', suffix: 'h' };
   }
   // Percentual - mais abrangente
   if (metaLower.includes('%') || nomeLower.includes('taxa') || nomeLower.includes('margem') ||
