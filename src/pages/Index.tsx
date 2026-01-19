@@ -232,9 +232,16 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
     // Mostra todos os indicadores filtrados como KPI cards
     const topMetrics = filteredMetrics;
     
+    // Verifica se está em modo "todos os indicadores" E "todos os meses/período"
+    const isAllMonthsMode = selectedMonth === "all" && selectedPeriod === "Todos";
+    
     return topMetrics.map((metric) => {
-      // Filtra apenas os meses que têm dados válidos (não nulos)
-      const filledMonths = metric.dados.filter(d => 
+      // Para cálculo de média anual, usamos os dados originais (não filtrados)
+      // encontramos a métrica original em categoryFilteredMetrics
+      const originalMetric = categoryFilteredMetrics.find(m => m.id === metric.id) || metric;
+      
+      // Filtra apenas os meses que têm dados válidos (não nulos) dos dados originais
+      const filledMonths = originalMetric.dados.filter(d => 
         d.realizado !== null && d.previsto !== null && 
         d.realizado !== undefined && d.previsto !== undefined
       );
@@ -261,11 +268,12 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
             percentage = (displayRealizado / displayPrevisto) * 100;
           }
         }
-      } else {
-        // "Todos os meses" - calcula média das porcentagens dos meses preenchidos
+      } else if (isAllMonthsMode) {
+        // "Todos os indicadores" + "Todos os meses" - calcula MÉDIA ANUAL dos meses preenchidos
         const monthPercentages: number[] = [];
         
-        metric.dados.forEach((d) => {
+        // Usa dados ORIGINAIS (não filtrados) para calcular média anual
+        originalMetric.dados.forEach((d) => {
           if (d.realizado !== null && d.previsto !== null && 
               d.realizado !== undefined && d.previsto !== undefined) {
             // Se tem concluido, usa ele
@@ -286,10 +294,37 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           percentage = totalPercentage / monthPercentages.length;
         }
         
-        // Médias para exibição
+        // Médias anuais para exibição (previsto e realizado)
         if (filledMonths.length > 0) {
           displayRealizado = filledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / filledMonths.length;
           displayPrevisto = filledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / filledMonths.length;
+        }
+      } else {
+        // Período específico (30, 60, 90 dias) - calcula média dos meses no período
+        const periodFilledMonths = metric.dados.filter(d => 
+          d.realizado !== null && d.previsto !== null && 
+          d.realizado !== undefined && d.previsto !== undefined
+        );
+        
+        const monthPercentages: number[] = [];
+        
+        periodFilledMonths.forEach((d) => {
+          if (d.concluido !== null && d.concluido !== undefined && 
+              Number.isFinite(d.concluido) && d.concluido > 0) {
+            monthPercentages.push(d.concluido);
+          } else if (d.previsto > 0) {
+            const monthPct = (d.realizado! / d.previsto) * 100;
+            monthPercentages.push(monthPct);
+          }
+        });
+        
+        if (monthPercentages.length > 0) {
+          percentage = monthPercentages.reduce((sum, pct) => sum + pct, 0) / monthPercentages.length;
+        }
+        
+        if (periodFilledMonths.length > 0) {
+          displayRealizado = periodFilledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / periodFilledMonths.length;
+          displayPrevisto = periodFilledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / periodFilledMonths.length;
         }
       }
 
@@ -329,7 +364,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         metaAtingida,
       };
     });
-  }, [filteredMetrics, selectedMonth]);
+  }, [filteredMetrics, selectedMonth, selectedPeriod, categoryFilteredMetrics]);
 
   // TV Mode
   if (isTVMode) {
