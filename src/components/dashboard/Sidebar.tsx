@@ -23,18 +23,19 @@ interface SidebarProps {
 
 const menuItems = [
   { id: "Todas", label: "Dashboard", icon: LayoutDashboard },
-  { id: "Financeiro", label: "Financeiro", icon: DollarSign },
-  { id: "Marketing Growth", label: "Marketing Growth", icon: TrendingUp },
-  { id: "Marketing Branding", label: "Marketing Branding", icon: Palette },
-  { id: "B2B", label: "B2B", icon: Building2 },
-  { id: "B2BC", label: "B2BC", icon: Building2 },
-  { id: "B2C Digital", label: "B2C Digital", icon: Package },
-  { id: "Logística", label: "Logística", icon: Truck },
-  { id: "Compras internacionais", label: "Compras Int.", icon: ShoppingCart },
-  { id: "P&D", label: "P&D", icon: FlaskConical },
-  { id: "Operações", label: "Operações", icon: Cog },
-  { id: "Atendimento", label: "Atendimento", icon: Headphones },
-  { id: "People", label: "People", icon: Users },
+  { id: "Compras Internacionais", label: "2025 - Compras Internacionais", icon: ShoppingCart },
+  { id: "Financeiro e Controladoria", label: "2025 - Financeiro e Controladoria", icon: DollarSign },
+  { id: "B2BC", label: "2025 - B2BC", icon: Building2 },
+  { id: "B2B", label: "2025 - B2B", icon: Building2 },
+  { id: "Marketing Growth", label: "2025 - Marketing Growth", icon: TrendingUp },
+  { id: "B2C | Digital", label: "2025 - B2C | Digital", icon: Package },
+  { id: "Marketing Branding", label: "2025 - Marketing Branding", icon: Palette },
+  { id: "Legacy", label: "2025 - Legacy", icon: BarChart3 },
+  { id: "Logística", label: "2025 - Logística", icon: Truck },
+  { id: "Atendimento", label: "2025 - Atendimento", icon: Headphones },
+  { id: "Operações", label: "2025 - Operações", icon: Cog },
+  { id: "People", label: "2025 - People", icon: Users },
+  { id: "P&D", label: "2025 - P&D", icon: FlaskConical },
 ];
 
 export function Sidebar({ onCategoryChange, selectedCategory }: SidebarProps) {

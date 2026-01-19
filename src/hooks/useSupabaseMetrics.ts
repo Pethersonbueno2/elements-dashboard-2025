@@ -47,94 +47,94 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
 
   // B2B
   "2025_b2b_receita": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Receita",
     meta: "R$ 61.622.991",
   },
   "2025_b2b_base_ativa_saudavel_60": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Base Ativa Saudável",
     meta: "60%",
   },
   "2025_b2b_taxa_de_conversão_25": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Taxa de Conversão",
     meta: "25%",
   },
   "2025_b2b_ticket_medio": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Ticket Médio",
     meta: "R$ 50.000",
   },
   "2025_b2b_ciclo_de_vendas_15_dias": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Ciclo de Vendas",
     meta: "< 15 dias",
     inverso: true,
   },
   "2025_b2b_churn_revendedores_1": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Churn Revendedores",
     meta: "< 1%",
     inverso: true,
   },
   "2025_b2b_crescimento_receita_base_ativa": {
-    categoria: "B2B e B2BC",
+    categoria: "B2B",
     nome: "B2B – Crescimento Receita Base Ativa",
     meta: "5%",
   },
 
   // B2BC
   "2025_b2bc_receita": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Receita",
     meta: "R$ 15.815.042",
   },
   "2025_b2bc_numero_de_novos_clientes": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Número de Novos Clientes",
     meta: "Crescimento",
   },
   "2025_b2bc_ticket_medio": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Ticket Médio",
     meta: "R$ 16.000",
   },
   "2025_b2bc_taxa_de_conversao_25": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Taxa de Conversão",
     meta: "25%",
   },
   "2025_b2bc_ciclo_de_vendas_10_dias": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Ciclo de Vendas",
     meta: "< 10 dias",
     inverso: true,
   },
   "2025_b2bc_nps_5": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – NPS",
     meta: "> 5",
   },
   "2025_b2bc_agendas_realizadas": {
-    categoria: "B2B e B2BC",
+    categoria: "B2BC",
     nome: "B2BC – Agendas Realizadas",
     meta: "Crescimento",
   },
 
   // B2C Digital
   "2025_b2c_receita_liquida": {
-    categoria: "B2C Digital",
+    categoria: "B2C | Digital",
     nome: "B2C Digital – Receita Líquida",
     meta: "R$ 10.000.000",
   },
   "2025_b2c_taxa_de_conversao": {
-    categoria: "B2C Digital",
+    categoria: "B2C | Digital",
     nome: "B2C Digital – Taxa de Conversão",
     meta: "1%",
   },
   "2025_b2c_lcp_2s": {
-    categoria: "B2C Digital",
+    categoria: "B2C | Digital",
     nome: "B2C Digital – LCP",
     meta: "< 2s",
     inverso: true, // Quanto menor o tempo, melhor
@@ -228,66 +228,66 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
 
   // Financeiro e Controladoria
   "2025_financeiro_e_controladoria_margem_bruta_55": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem Bruta",
     meta: "55%",
   },
   "2025_financeiro_e_controladoria_margem_de_contribuicao": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem de Contribuição",
     meta: "34%",
   },
   "2025_financeiro_e_controladoria_margem_ebtida": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem EBITDA",
     meta: "25%",
   },
   "2025_financeiro_e_controladoria_margem_liquida_15": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem Líquida",
     meta: "15%",
   },
   "2025_financeiro_e_controladoria_crescimento_ebitda": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Crescimento EBITDA",
     meta: "Crescimento",
   },
   "2025_financeiro_e_controladoria_despesas_operacionais": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Despesas Operacionais",
     meta: "< 30%",
     inverso: true,
   },
   "2025_financeiro_controladoria_resultado_financeiro": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Resultado Financeiro",
     meta: "Positivo",
   },
   "2025_financeiro_e_controladoria_compliance_tributário": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Compliance Tributário",
     meta: "100%",
   },
   "2025_financeiro_e_controladoria_carga_tributaria_efetiva": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Carga Tributária Efetiva",
     meta: "< 25%",
     inverso: true,
   },
   "2025_financeiro_e_controladoria_grau_de_alavancagem": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Grau de Alavancagem Financeira",
     meta: "< 2.5",
     inverso: true,
   },
   "2025_financeiro_e_controladoria_endividamento_sobre_ebitda": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Endividamento sobre EBITDA",
     meta: "< 3",
     inverso: true,
   },
   "2025_financeiro_e_controladoria_ebtda_sob_juros": {
-    categoria: "Financeiro",
+    categoria: "Financeiro e Controladoria",
     nome: "Financeiro – EBITDA sob Juros",
     meta: "> 6",
   },
@@ -372,36 +372,36 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
 
   // Compras Internacionais
   "2025_compras_internacionais_giro_estoque": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Giro de Estoque",
     meta: "> 1",
   },
   "2025_compras_internacionais_indice_ruptura_estoque_30": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Índice Ruptura Estoque",
     meta: "< 30%",
     inverso: true,
   },
   "2025_compras_internacionais_prazo_medio_de_entrega": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Lead Time",
     meta: "< 60 dias",
     inverso: true,
   },
   "2025_compras_internacionais_qualidade_do_fornecedor": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Qualidade do Fornecedor",
     meta: "< 2%",
     inverso: true,
   },
   "2025_compras_internacionais_redução_de_custos_de_aquisi": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Redução de Custos de Aquisição",
     meta: "≤ 3%",
     inverso: true,
   },
   "2025_compras_internacionais_custo_de_frete_por_unidade": {
-    categoria: "Compras internacionais",
+    categoria: "Compras Internacionais",
     nome: "Compras Int. – Custo de Frete por Unidade",
     meta: "< R$ 75",
     inverso: true,
@@ -464,6 +464,62 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
     categoria: "People",
     nome: "People – Consistência Feedbacks Liderança",
     meta: "80%",
+  },
+
+  // Legacy
+  "2025_legacy_custo_por_lead_1330": {
+    categoria: "Legacy",
+    nome: "Legacy – Custo por Lead",
+    meta: "R$ 1.330",
+    inverso: true,
+  },
+  "2025_legacy_custos_variaveis": {
+    categoria: "Legacy",
+    nome: "Legacy – Custos Variáveis",
+    meta: "Meta Variável",
+    inverso: true,
+  },
+  "2025_legacy_despesa_fixa": {
+    categoria: "Legacy",
+    nome: "Legacy – Despesa Fixa",
+    meta: "Meta Fixa",
+    inverso: true,
+  },
+  "2025_legacy_ebtida_rs_1.599.070": {
+    categoria: "Legacy",
+    nome: "Legacy – EBITDA",
+    meta: "R$ 1.599.070",
+  },
+  "2025_legacy_faturamento_gerado_pelo_trafego_rs_6.475.000": {
+    categoria: "Legacy",
+    nome: "Legacy – Faturamento Gerado pelo Tráfego",
+    meta: "R$ 6.475.000",
+  },
+  "2025_legacy_investimento_em_trafego_rs_1.340.000": {
+    categoria: "Legacy",
+    nome: "Legacy – Investimento em Tráfego",
+    meta: "R$ 1.340.000",
+    inverso: true,
+  },
+  "2025_legacy_numero_total_de_oportunidades": {
+    categoria: "Legacy",
+    nome: "Legacy – Número Total de Oportunidades",
+    meta: "Crescimento",
+  },
+  "2025_legacy_receita_operacional_bruta_rs_7.370.000": {
+    categoria: "Legacy",
+    nome: "Legacy – Receita Operacional Bruta",
+    meta: "R$ 7.370.000",
+  },
+  "2025_legacy_roas": {
+    categoria: "Legacy",
+    nome: "Legacy – ROAS",
+    meta: "> 4",
+  },
+  "2025_legacy_ticket_medio": {
+    categoria: "Legacy",
+    nome: "Legacy – Ticket Médio",
+    meta: "Meta Ticket",
   },
 };
 
