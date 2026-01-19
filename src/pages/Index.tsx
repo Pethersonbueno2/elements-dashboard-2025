@@ -269,12 +269,22 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
 
       const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
-      // Valor principal - SEMPRE mostra porcentagem
-      const displayValue = `${safePercentage.toFixed(1)}%`;
+      // Valor principal - SEMPRE mostra porcentagem SEM arredondamento
+      const displayValue = `${safePercentage}%`;
 
       // Formata previsto e realizado com nomenclatura correta
       const previstoFormatted = formatValueWithUnit(displayPrevisto, metric.meta, metric.nome);
       const realizadoFormatted = formatValueWithUnit(displayRealizado, metric.meta, metric.nome);
+
+      // Verifica se é métrica inversa (menor é melhor)
+      const inverso = metric.inverso || false;
+      
+      // Calcula se a meta foi atingida considerando inverso
+      // Para métricas inversas: meta atingida se realizado <= previsto
+      // Para métricas normais: meta atingida se realizado >= previsto
+      const metaAtingida = inverso 
+        ? displayRealizado <= displayPrevisto 
+        : displayRealizado >= displayPrevisto;
 
       return {
         id: metric.id,
@@ -284,6 +294,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         percentage: safePercentage,
         previsto: previstoFormatted,
         realizado: realizadoFormatted,
+        inverso,
+        metaAtingida,
       };
     });
   }, [filteredMetrics, selectedMonth]);
@@ -396,6 +408,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
               percentage={kpi.percentage}
               previstoValue={kpi.previsto}
               realizadoValue={kpi.realizado}
+              inverso={kpi.inverso}
             />
           ))}
         </section>
