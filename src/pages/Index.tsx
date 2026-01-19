@@ -18,19 +18,21 @@ import { useSupabaseMetrics } from "@/hooks/useSupabaseMetrics";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
 // Retorna os índices dos meses a serem exibidos baseado no período
+// Considerando os últimos meses com dados (Dezembro = 11, Novembro = 10, etc.)
 const getMonthsForPeriod = (period: PeriodType): number[] => {
-  const currentMonth = new Date().getMonth(); // 0-11 (Janeiro = 0)
+  // Usamos Dezembro como referência pois é o último mês com dados de 2025
+  const referenceMonth = 11; // Dezembro
   
   switch (period) {
     case "30":
-      // Último mês (mês atual)
-      return [currentMonth];
+      // Último mês (Dezembro)
+      return [referenceMonth];
     case "60":
-      // Últimos 2 meses
-      return [Math.max(0, currentMonth - 1), currentMonth];
+      // Últimos 2 meses (Novembro e Dezembro)
+      return [referenceMonth - 1, referenceMonth];
     case "90":
-      // Últimos 3 meses
-      return [Math.max(0, currentMonth - 2), Math.max(0, currentMonth - 1), currentMonth];
+      // Últimos 3 meses (Outubro, Novembro, Dezembro)
+      return [referenceMonth - 2, referenceMonth - 1, referenceMonth];
     default:
       // Todos - retorna array com todos os 12 meses
       return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -72,10 +74,18 @@ const Index = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
-  const [selectedMonth, setSelectedMonth] = useState<MonthType>("all");
+  const [selectedMonth, setSelectedMonth] = useState<MonthType>("Dezembro");
   const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Quando muda de categoria, reseta para Dezembro e "Todos os indicadores"
+  const handleCategoryChange = useCallback((category: string) => {
+    setSelectedCategory(category);
+    setSelectedMonth("Dezembro");
+    setSelectedIndicator("all");
+    setSelectedPeriod("Todos");
+  }, []);
 
   // Fullscreen toggle
   const toggleFullscreen = useCallback(() => {
@@ -272,7 +282,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
       {/* Sidebar - hidden in fullscreen */}
       {!isFullscreen && (
         <Sidebar 
-          onCategoryChange={setSelectedCategory} 
+          onCategoryChange={handleCategoryChange} 
           selectedCategory={selectedCategory} 
         />
       )}
