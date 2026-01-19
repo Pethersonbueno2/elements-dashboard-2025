@@ -191,10 +191,14 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
       nomeLower.includes('reclame')) {
     return { prefix: '', suffix: ' pts' };
   }
+  // Giro de Estoque - Renovação de Estoque
+  if (nomeLower.includes('giro') && nomeLower.includes('estoque')) {
+    return { prefix: '', suffix: ' Renovação Est.' };
+  }
   // Quantidade/Unidades
   if (nomeLower.includes('numero') || nomeLower.includes('número') || nomeLower.includes('clientes') ||
       nomeLower.includes('oportunidades') || nomeLower.includes('projetos') || nomeLower.includes('produtos') ||
-      nomeLower.includes('agendas') || nomeLower.includes('giro')) {
+      nomeLower.includes('agendas')) {
     return { prefix: '', suffix: ' un' };
   }
   
