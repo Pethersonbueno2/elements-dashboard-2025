@@ -13,6 +13,8 @@ interface IndicatorKPICardProps {
   realizadoValue?: string;
   className?: string;
   inverso?: boolean; // true = menor é melhor
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
 export function IndicatorKPICard({
@@ -26,12 +28,21 @@ export function IndicatorKPICard({
   realizadoValue,
   className,
   inverso = false,
+  onClick,
+  isSelected = false,
 }: IndicatorKPICardProps) {
   // Para métricas inversas (menor é melhor), a lógica é invertida
   const isPositive = inverso ? percentage <= 100 : percentage >= 100;
 
   return (
-    <Card className={cn("bg-card border-border hover:border-primary/50 transition-all", className)}>
+    <Card 
+      className={cn(
+        "bg-card border-border hover:border-primary/50 transition-all cursor-pointer",
+        isSelected && "ring-2 ring-primary border-primary",
+        className
+      )}
+      onClick={onClick}
+    >
       <CardContent className="p-2.5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
