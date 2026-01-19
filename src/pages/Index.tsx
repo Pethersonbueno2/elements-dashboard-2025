@@ -431,6 +431,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
               previstoValue={kpi.previsto}
               realizadoValue={kpi.realizado}
               inverso={kpi.inverso}
+              onClick={() => setSelectedIndicator(kpi.id === selectedIndicator ? "all" : kpi.id)}
+              isSelected={selectedIndicator === kpi.id}
             />
           ))}
         </section>
@@ -439,8 +441,14 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         <section className="mb-6">
           <AggregatedEvolutionChart 
             metrics={filteredMetrics}
-            title="Evolução Agregada"
-            subtitle="Soma de todos os indicadores por mês"
+            title={selectedIndicator !== "all" 
+              ? filteredMetrics[0]?.nome?.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, '') || "Evolução Agregada"
+              : "Evolução Agregada"
+            }
+            subtitle={selectedIndicator !== "all" 
+              ? "Evolução mensal do indicador selecionado"
+              : "Soma de todos os indicadores por mês"
+            }
           />
         </section>
 
