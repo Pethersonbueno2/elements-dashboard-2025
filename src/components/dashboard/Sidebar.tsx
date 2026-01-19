@@ -22,7 +22,6 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: "Todas", label: "Dashboard", icon: LayoutDashboard },
   { id: "Compras Internacionais", label: "2025 - Compras Internacionais", icon: ShoppingCart },
   { id: "Financeiro e Controladoria", label: "2025 - Financeiro e Controladoria", icon: DollarSign },
   { id: "B2BC", label: "2025 - B2BC", icon: Building2 },
