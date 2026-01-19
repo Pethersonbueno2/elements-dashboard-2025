@@ -121,20 +121,30 @@ const Index = () => {
   const filteredMetrics = useMemo(() => {
     let result = indicatorFilteredMetrics;
 
+    const maskToMonths = (metric: typeof result[number], allowedIndices: Set<number>) => ({
+      ...metric,
+      dados: metric.dados.map((d, index) => {
+        if (allowedIndices.has(index)) return d;
+        return {
+          ...d,
+          previsto: null,
+          realizado: null,
+          diferenca: null,
+          concluido: null,
+        };
+      }),
+    });
+
     // Apply specific month filter first
     if (selectedMonth !== "all") {
       const monthIndex = monthNameToIndex[selectedMonth];
-      result = result.map((metric) => ({
-        ...metric,
-        dados: metric.dados.filter((_, index) => index === monthIndex),
-      }));
+      const allowed = new Set([monthIndex]);
+      result = result.map((metric) => maskToMonths(metric, allowed));
     } else if (selectedPeriod !== "Todos") {
-      // Apply period filter - filtra pelos meses do período selecionado
+      // Apply period filter - mantém o índice original dos meses (não reindexa)
       const monthsToShow = getMonthsForPeriod(selectedPeriod);
-      result = result.map((metric) => ({
-        ...metric,
-        dados: metric.dados.filter((_, index) => monthsToShow.includes(index)),
-      }));
+      const allowed = new Set(monthsToShow);
+      result = result.map((metric) => maskToMonths(metric, allowed));
     }
 
     return result;
