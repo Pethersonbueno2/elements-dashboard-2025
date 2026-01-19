@@ -18,7 +18,14 @@ interface AggregatedEvolutionChartProps {
   metrics: Metric[];
   title?: string;
   subtitle?: string;
+  inverso?: boolean;
 }
+
+// Função para verificar se meta foi atingida considerando inversão
+const isMetaAtingida = (previsto: number | null, realizado: number | null, inverso?: boolean): boolean => {
+  if (previsto === null || realizado === null) return false;
+  return inverso ? realizado <= previsto : realizado >= previsto;
+};
 
 // Formata valores - preserva decimais para valores pequenos
 const formatValue = (value: number | null | undefined): string => {
@@ -73,8 +80,8 @@ const CustomDot = (props: any) => {
   const { cx, cy, payload } = props;
   if (!payload || payload.realizado === 0 || payload.realizado === null) return null;
   
-  const isMetaAtingida = payload.realizado >= payload.previsto;
-  const color = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
+  const atingida = isMetaAtingida(payload.previsto, payload.realizado, payload.inverso);
+  const color = atingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
   
   return (
     <circle
@@ -94,11 +101,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
         <p className="text-sm font-medium text-foreground mb-2">{label}</p>
         {payload.map((entry: any, index: number) => {
-          // Define cor dinâmica para Realizado
+          // Define cor dinâmica para Realizado considerando inverso
           let dotColor = entry.color;
           if (entry.name === "Realizado" && entry.payload) {
-            const isMetaAtingida = entry.payload.realizado >= entry.payload.previsto;
-            dotColor = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
+            const atingida = isMetaAtingida(entry.payload.previsto, entry.payload.realizado, entry.payload.inverso);
+            dotColor = atingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
           }
           return (
             <div key={index} className="flex items-center gap-2 text-sm">
@@ -123,7 +130,10 @@ export function AggregatedEvolutionChart({
   metrics,
   title = "Evolução Agregada",
   subtitle = "Comparativo Previsto vs Realizado por mês",
+  inverso,
 }: AggregatedEvolutionChartProps) {
+  // Determina se é inverso: usa a prop ou detecta do primeiro metric
+  const isInverso = inverso ?? (metrics.length === 1 ? metrics[0]?.inverso : false);
   const chartData = useMemo(() => {
     const fullMonthNames = [
       "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -168,10 +178,10 @@ export function AggregatedEvolutionChart({
         mes: mesAbrev,
         previsto: totalPrevisto,
         realizado: totalRealizado,
-        metaAtingida: totalRealizado >= totalPrevisto,
+        inverso: isInverso,
       };
     });
-  }, [metrics]);
+  }, [metrics, isInverso]);
 
   return (
     <Card className="bg-card border-border h-full">
