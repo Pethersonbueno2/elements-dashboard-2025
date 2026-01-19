@@ -292,8 +292,13 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
 
       const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
-      // Valor principal - SEMPRE mostra porcentagem com 2 casas decimais
-      const displayValue = `${safePercentage.toFixed(2)}%`;
+      // Valor principal - mostra porcentagem sem decimais desnecessários
+      // Se as casas decimais são 0, mostra só o inteiro (ex: 57.00% -> 57%)
+      // Se tem decimais significativos, mostra só 2 casas (ex: 57.25% -> 57.25%)
+      const formattedPercentage = safePercentage % 1 === 0 
+        ? safePercentage.toFixed(0) 
+        : safePercentage.toFixed(2).replace(/\.?0+$/, '');
+      const displayValue = `${formattedPercentage}%`;
 
       // Formata previsto e realizado com nomenclatura correta
       const previstoFormatted = formatValueWithUnit(displayPrevisto, metric.meta, metric.nome);
