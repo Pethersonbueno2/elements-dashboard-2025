@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import {
-  ComposedChart,
-  Bar,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -10,7 +9,6 @@ import {
   ResponsiveContainer,
   Legend,
   LabelList,
-  Cell,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Metric } from "@/data/dashboardData";
@@ -52,18 +50,14 @@ const CustomLabelPrevisto = (props: any) => {
 };
 
 const CustomLabelRealizado = (props: any) => {
-  const { x, y, width, value, payload } = props;
+  const { x, y, value } = props;
   if (value === 0 || value === null || value === undefined) return null;
-  
-  // Verde se atingiu a meta, vermelho se não
-  const isOnTarget = payload?.isOnTarget;
-  const color = isOnTarget ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
   
   return (
     <text
-      x={x + (width || 0) / 2}
-      y={y - 5}
-      fill={color}
+      x={x}
+      y={y + 15}
+      fill="hsl(142 76% 36%)"
       textAnchor="middle"
       fontSize={9}
       fontWeight={600}
@@ -141,13 +135,10 @@ export function AggregatedEvolutionChart({
         }
       });
 
-      const isOnTarget = totalRealizado >= totalPrevisto;
-      
       return {
         mes: mesAbrev,
         previsto: totalPrevisto,
         realizado: totalRealizado,
-        isOnTarget,
       };
     });
   }, [metrics]);
@@ -163,10 +154,20 @@ export function AggregatedEvolutionChart({
       <CardContent>
         <div className="h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
+            <AreaChart
               data={chartData}
               margin={{ top: 30, right: 10, left: 10, bottom: 20 }}
             >
+              <defs>
+                <linearGradient id="colorPrevisto" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(142 76% 36%)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="hsl(142 76% 36%)" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="hsl(var(--border))"
@@ -192,32 +193,28 @@ export function AggregatedEvolutionChart({
                 height={36}
                 formatter={(value) => <span className="text-xs text-foreground">{value}</span>}
               />
-              <Bar
-                dataKey="realizado"
-                name="Realizado"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={40}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.isOnTarget ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)"}
-                  />
-                ))}
-                <LabelList content={<CustomLabelRealizado />} dataKey="realizado" position="top" />
-              </Bar>
-              <Line
+              <Area
                 type="monotone"
                 dataKey="previsto"
                 name="Previsto"
                 stroke="hsl(var(--primary))"
                 strokeWidth={2}
                 strokeDasharray="5 5"
-                dot={{ fill: "hsl(var(--primary))", strokeWidth: 0, r: 4 }}
+                fill="url(#colorPrevisto)"
               >
                 <LabelList content={<CustomLabelPrevisto />} dataKey="previsto" position="top" />
-              </Line>
-            </ComposedChart>
+              </Area>
+              <Area
+                type="monotone"
+                dataKey="realizado"
+                name="Realizado"
+                stroke="hsl(142 76% 36%)"
+                strokeWidth={2}
+                fill="url(#colorRealizado)"
+              >
+                <LabelList content={<CustomLabelRealizado />} dataKey="realizado" position="bottom" />
+              </Area>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
