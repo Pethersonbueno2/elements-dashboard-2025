@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
   LabelList,
+  ReferenceLine,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Metric } from "@/data/dashboardData";
@@ -50,14 +51,17 @@ const CustomLabelPrevisto = (props: any) => {
 };
 
 const CustomLabelRealizado = (props: any) => {
-  const { x, y, value } = props;
+  const { x, y, value, payload } = props;
   if (value === 0 || value === null || value === undefined) return null;
+  
+  const isMetaAtingida = payload && payload.realizado >= payload.previsto;
+  const color = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
   
   return (
     <text
       x={x}
       y={y + 15}
-      fill="hsl(142 76% 36%)"
+      fill={color}
       textAnchor="middle"
       fontSize={9}
       fontWeight={600}
@@ -67,23 +71,51 @@ const CustomLabelRealizado = (props: any) => {
   );
 };
 
+// Dot customizado que muda de cor baseado no atingimento da meta
+const CustomDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  if (!payload || payload.realizado === 0 || payload.realizado === null) return null;
+  
+  const isMetaAtingida = payload.realizado >= payload.previsto;
+  const color = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
+  
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      fill={color}
+      stroke={color}
+      strokeWidth={2}
+    />
+  );
+};
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
         <p className="text-sm font-medium text-foreground mb-2">{label}</p>
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center gap-2 text-sm">
-            <div
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-muted-foreground">{entry.name}:</span>
-            <span className="font-medium text-foreground">
-              {formatValue(entry.value || 0)}
-            </span>
-          </div>
-        ))}
+        {payload.map((entry: any, index: number) => {
+          // Define cor dinâmica para Realizado
+          let dotColor = entry.color;
+          if (entry.name === "Realizado" && entry.payload) {
+            const isMetaAtingida = entry.payload.realizado >= entry.payload.previsto;
+            dotColor = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
+          }
+          return (
+            <div key={index} className="flex items-center gap-2 text-sm">
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: dotColor }}
+              />
+              <span className="text-muted-foreground">{entry.name}:</span>
+              <span className="font-medium text-foreground">
+                {formatValue(entry.value || 0)}
+              </span>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -139,6 +171,7 @@ export function AggregatedEvolutionChart({
         mes: mesAbrev,
         previsto: totalPrevisto,
         realizado: totalRealizado,
+        metaAtingida: totalRealizado >= totalPrevisto,
       };
     });
   }, [metrics]);
@@ -163,9 +196,13 @@ export function AggregatedEvolutionChart({
                   <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
                 </linearGradient>
-                <linearGradient id="colorRealizado" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="colorRealizadoGreen" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="hsl(142 76% 36%)" stopOpacity={0.4} />
                   <stop offset="95%" stopColor="hsl(142 76% 36%)" stopOpacity={0.05} />
+                </linearGradient>
+                <linearGradient id="colorRealizadoRed" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(0 84% 60%)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="hsl(0 84% 60%)" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
               <CartesianGrid
@@ -208,9 +245,11 @@ export function AggregatedEvolutionChart({
                 type="monotone"
                 dataKey="realizado"
                 name="Realizado"
-                stroke="hsl(142 76% 36%)"
+                stroke="hsl(var(--muted-foreground))"
                 strokeWidth={2}
-                fill="url(#colorRealizado)"
+                fill="transparent"
+                dot={<CustomDot />}
+                activeDot={<CustomDot />}
               >
                 <LabelList content={<CustomLabelRealizado />} dataKey="realizado" position="bottom" />
               </Area>
