@@ -214,108 +214,112 @@ export function MonthlyDetailChart({
         <p className="text-xs text-muted-foreground">{subtitle}</p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Gráfico agregado */}
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-              <XAxis 
-                dataKey="month" 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-              />
-              <YAxis 
-                tickFormatter={formatValue}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-                width={50}
-              />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-              <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Previsto">
-                <LabelList dataKey="previsto" content={<CustomLabel />} />
-              </Bar>
-              <Bar dataKey="realizado" radius={[4, 4, 0, 0]} name="Realizado">
-                {chartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
-                  />
-                ))}
-                <LabelList dataKey="realizado" content={<CustomLabel />} />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Legenda */}
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-primary" />
-            <span className="text-muted-foreground">Previsto</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-success" />
-            <span className="text-muted-foreground">Realizado (meta atingida)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60%)' }} />
-            <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
-          </div>
-        </div>
-
-        {/* Grid de gráficos por indicador */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {indicatorCharts.map((chart) => (
-            <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
-              <div className="flex flex-col gap-1 mb-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
-                    {chart.nome}
-                  </h4>
-                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                    Meta: {chart.meta}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <Clock className="w-3 h-3" />
-                  <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
-                  {chart.inverso && (
-                    <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
-                      ↓ Menor = Melhor
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="h-32">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chart.data} margin={{ top: 15, right: 5, left: 5, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
-                    <XAxis 
-                      dataKey="month" 
-                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 8 }}
-                      axisLine={false}
-                      tickLine={false}
+        {/* Seção 1: Gráfico agregado */}
+        <section id="monthly-detail-aggregated" className="monthly-detail-aggregated">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis 
+                  dataKey="month" 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <YAxis 
+                  tickFormatter={formatValue}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  width={50}
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Previsto">
+                  <LabelList dataKey="previsto" content={<CustomLabel />} />
+                </Bar>
+                <Bar dataKey="realizado" radius={[4, 4, 0, 0]} name="Realizado">
+                  {chartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
                     />
-                    <YAxis hide />
-                    <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
-                    <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
-                      <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
-                    </Bar>
-                    <Bar dataKey="realizado" radius={[2, 2, 0, 0]} barSize={8}>
-                      {chart.data.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
-                        />
-                      ))}
-                      <LabelList dataKey="realizado" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+                  ))}
+                  <LabelList dataKey="realizado" content={<CustomLabel />} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Legenda */}
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs mt-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-primary" />
+              <span className="text-muted-foreground">Previsto</span>
             </div>
-          ))}
-        </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-success" />
+              <span className="text-muted-foreground">Realizado (meta atingida)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60%)' }} />
+              <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Seção 2: Grid de gráficos por indicador */}
+        <section id="monthly-detail-indicators" className="monthly-detail-indicators">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {indicatorCharts.map((chart) => (
+              <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
+                <div className="flex flex-col gap-1 mb-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
+                      {chart.nome}
+                    </h4>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      Meta: {chart.meta}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Clock className="w-3 h-3" />
+                    <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
+                    {chart.inverso && (
+                      <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
+                        ↓ Menor = Melhor
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="h-32">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chart.data} margin={{ top: 15, right: 5, left: 5, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 8 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis hide />
+                      <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
+                      <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
+                        <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
+                      </Bar>
+                      <Bar dataKey="realizado" radius={[2, 2, 0, 0]} barSize={8}>
+                        {chart.data.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
+                          />
+                        ))}
+                        <LabelList dataKey="realizado" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </CardContent>
     </Card>
   );
