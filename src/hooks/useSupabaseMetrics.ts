@@ -374,7 +374,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_compras_internacionais_giro_estoque": {
     categoria: "Compras internacionais",
     nome: "Compras Int. – Giro de Estoque",
-    meta: "> 4",
+    meta: "> 1",
   },
   "2025_compras_internacionais_indice_ruptura_estoque_30": {
     categoria: "Compras internacionais",
@@ -391,17 +391,19 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_compras_internacionais_qualidade_do_fornecedor": {
     categoria: "Compras internacionais",
     nome: "Compras Int. – Qualidade do Fornecedor",
-    meta: "> 95%",
+    meta: "< 2%",
+    inverso: true,
   },
   "2025_compras_internacionais_redução_de_custos_de_aquisi": {
     categoria: "Compras internacionais",
     nome: "Compras Int. – Redução de Custos de Aquisição",
-    meta: "3%",
+    meta: "≤ 3%",
+    inverso: true,
   },
   "2025_compras_internacionais_custo_de_frete_por_unidade": {
     categoria: "Compras internacionais",
     nome: "Compras Int. – Custo de Frete por Unidade",
-    meta: "Redução",
+    meta: "< R$ 75",
     inverso: true,
   },
 

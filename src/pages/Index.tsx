@@ -9,7 +9,6 @@ import { PeriodFilter, type PeriodType } from "@/components/dashboard/PeriodFilt
 import { MonthFilter, type MonthType } from "@/components/dashboard/MonthFilter";
 import { IndicatorSelect } from "@/components/dashboard/IndicatorSelect";
 import { IndicatorKPICard } from "@/components/dashboard/IndicatorKPICard";
-import { ComparativeChart } from "@/components/dashboard/ComparativeChart";
 import { AggregatedEvolutionChart } from "@/components/dashboard/AggregatedEvolutionChart";
 import { MonthlyDetailChart } from "@/components/dashboard/MonthlyDetailChart";
 import { TVCarousel } from "@/components/dashboard/TVCarousel";
@@ -45,12 +44,17 @@ const monthNameToIndex: Record<string, number> = {
   "Setembro": 8, "Outubro": 9, "Novembro": 10, "Dezembro": 11
 };
 
-// Formata valores monetários
-const formatValue = (value: number | null | undefined): string => {
+// Formata valores - preserva decimais para valores pequenos
+const formatValue = (value: number | null | undefined, preserveDecimals = false): string => {
   if (value === null || value === undefined || isNaN(value)) return "0";
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
+  // Para valores pequenos (menores que 10), preserva até 2 casas decimais se necessário
+  if (preserveDecimals || (value > 0 && value < 10)) {
+    if (value % 1 !== 0) return value.toFixed(2);
+  }
+  if (value % 1 !== 0) return value.toFixed(2);
   return value.toFixed(0);
 };
 
@@ -135,8 +139,15 @@ const Index = () => {
     
     return topMetrics.map((metric) => {
       const lastValidData = [...metric.dados].reverse().find(d => d.realizado !== null);
-      const totalRealizado = metric.dados.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
-      const totalPrevisto = metric.dados.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
+      
+      // Calcula média apenas dos meses preenchidos
+      const filledMonths = metric.dados.filter(d => d.realizado !== null || d.previsto !== null);
+      const totalRealizado = filledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
+      const totalPrevisto = filledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
+      
+      // Para calcular média do setor, soma % de atingimento e divide pelo número de indicadores
+      const avgRealizado = filledMonths.length > 0 ? totalRealizado / filledMonths.length : 0;
+      const avgPrevisto = filledMonths.length > 0 ? totalPrevisto / filledMonths.length : 0;
       
       // Calcula percentual de conclusão
       let percentage = 0;
@@ -150,13 +161,24 @@ const Index = () => {
       // Valor principal - usa o último realizado ou percentual
       let displayValue = "";
       const meta = metric.meta.toLowerCase();
+      const nome = metric.nome.toLowerCase();
 
       const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
-      if (meta.includes('%') || (meta.includes('>') && !meta.includes('r$'))) {
+      // Para métricas de taxa de conversão, mostra o valor realizado com decimais
+      if (nome.includes('taxa de conversão') || nome.includes('taxa de conversao')) {
+        const lastRealized = lastValidData?.realizado;
+        if (lastRealized !== null && lastRealized !== undefined) {
+          displayValue = `${lastRealized.toFixed(2)}%`;
+        } else {
+          displayValue = `${safePercentage.toFixed(1)}%`;
+        }
+      } else if (meta.includes('%') || (meta.includes('>') && !meta.includes('r$'))) {
         displayValue = `${safePercentage.toFixed(1)}%`;
+      } else if (lastValidData?.realizado !== null && lastValidData?.realizado !== undefined) {
+        displayValue = formatValue(lastValidData.realizado, true);
       } else if (totalRealizado > 0) {
-        displayValue = formatValue(totalRealizado);
+        displayValue = formatValue(totalRealizado, true);
       } else {
         displayValue = `${safePercentage.toFixed(1)}%`;
       }
@@ -166,9 +188,9 @@ const Index = () => {
         title: metric.nome.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, ''),
         value: displayValue,
         meta: metric.meta,
-        percentage,
-        previsto: formatValue(totalPrevisto),
-        realizado: formatValue(totalRealizado),
+        percentage: safePercentage,
+        previsto: formatValue(avgPrevisto, true),
+        realizado: formatValue(lastValidData?.realizado ?? avgRealizado, true),
       };
     });
   }, [filteredMetrics]);
@@ -286,12 +308,7 @@ const Index = () => {
         </section>
 
         {/* Charts Row */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-          <ComparativeChart 
-            metrics={filteredMetrics}
-            title="Comparativo Mensal"
-            subtitle={`${selectedCategory} - Previsto vs Realizado`}
-          />
+        <section className="mb-6">
           <AggregatedEvolutionChart 
             metrics={filteredMetrics}
             title="Evolução Agregada"
