@@ -259,11 +259,11 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           displayRealizado = monthData.realizado ?? 0;
           displayPrevisto = monthData.previsto ?? 0;
           
-          // Primeiro tenta usar concluido do Supabase
+          // Primeiro tenta usar concluido do Supabase (aceita 0 como valor válido)
           if (monthData.concluido !== null && monthData.concluido !== undefined && 
-              Number.isFinite(monthData.concluido) && monthData.concluido > 0) {
+              Number.isFinite(monthData.concluido)) {
             percentage = monthData.concluido;
-          } else if (displayPrevisto > 0) {
+          } else if (displayPrevisto !== 0) {
             // Calcula porcentagem: (realizado / previsto) * 100
             percentage = (displayRealizado / displayPrevisto) * 100;
           }
@@ -276,11 +276,11 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         originalMetric.dados.forEach((d) => {
           if (d.realizado !== null && d.previsto !== null && 
               d.realizado !== undefined && d.previsto !== undefined) {
-            // Se tem concluido, usa ele
+            // Se tem concluido, usa ele (aceita 0 como valor válido)
             if (d.concluido !== null && d.concluido !== undefined && 
-                Number.isFinite(d.concluido) && d.concluido > 0) {
+                Number.isFinite(d.concluido)) {
               monthPercentages.push(d.concluido);
-            } else if (d.previsto > 0) {
+            } else if (d.previsto !== 0) {
               // Calcula porcentagem do mês
               const monthPct = (d.realizado / d.previsto) * 100;
               monthPercentages.push(monthPct);
@@ -309,10 +309,11 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         const monthPercentages: number[] = [];
         
         periodFilledMonths.forEach((d) => {
+          // Aceita 0 como valor válido para concluido
           if (d.concluido !== null && d.concluido !== undefined && 
-              Number.isFinite(d.concluido) && d.concluido > 0) {
+              Number.isFinite(d.concluido)) {
             monthPercentages.push(d.concluido);
-          } else if (d.previsto > 0) {
+          } else if (d.previsto !== 0) {
             const monthPct = (d.realizado! / d.previsto) * 100;
             monthPercentages.push(monthPct);
           }
