@@ -421,7 +421,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         </header>
 
         {/* KPI Cards Row */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           {topKPIs.map((kpi) => (
             <IndicatorKPICard
               key={kpi.id}
