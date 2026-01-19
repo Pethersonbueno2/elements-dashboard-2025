@@ -437,29 +437,27 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           ))}
         </section>
 
-        {/* Charts Row */}
-        <section className="mb-6">
-          <AggregatedEvolutionChart 
-            metrics={filteredMetrics}
-            title={selectedIndicator !== "all" 
-              ? filteredMetrics[0]?.nome?.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, '') || "Evolução Agregada"
-              : "Evolução Agregada"
-            }
-            subtitle={selectedIndicator !== "all" 
-              ? "Evolução mensal do indicador selecionado"
-              : "Soma de todos os indicadores por mês"
-            }
-          />
-        </section>
+        {/* Charts Row - Only show when a specific indicator is selected */}
+        {selectedIndicator !== "all" && (
+          <section className="mb-6">
+            <AggregatedEvolutionChart 
+              metrics={filteredMetrics}
+              title={filteredMetrics[0]?.nome?.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, '') || "Evolução Agregada"}
+              subtitle="Evolução mensal do indicador selecionado"
+            />
+          </section>
+        )}
 
-        {/* Detail Chart (replaces table) */}
-        <section>
-          <MonthlyDetailChart 
-            metrics={filteredMetrics}
-            title="Detalhamento Mensal"
-            subtitle="Valores de Previsto e Realizado por mês para cada indicador"
-          />
-        </section>
+        {/* Detail Chart - Only show when a specific indicator is selected */}
+        {selectedIndicator !== "all" && (
+          <section>
+            <MonthlyDetailChart 
+              metrics={filteredMetrics}
+              title="Detalhamento Mensal"
+              subtitle="Valores de Previsto e Realizado por mês para cada indicador"
+            />
+          </section>
+        )}
       </main>
     </div>
   );
