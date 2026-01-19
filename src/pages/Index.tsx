@@ -46,7 +46,8 @@ const monthNameToIndex: Record<string, number> = {
 };
 
 // Formata valores monetários
-const formatValue = (value: number): string => {
+const formatValue = (value: number | null | undefined): string => {
+  if (value === null || value === undefined || isNaN(value)) return "0";
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(2)} Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(2)} Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(1)} K`;
