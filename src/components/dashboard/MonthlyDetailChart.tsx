@@ -75,6 +75,7 @@ const CustomTooltip = ({ active, payload, label, inverso }: any) => {
   if (active && payload && payload.length) {
     const previsto = payload.find((p: any) => p.dataKey === 'previsto');
     const realizado = payload.find((p: any) => p.dataKey === 'realizado');
+    const entry = payload[0]?.payload;
 
     // Lógica para determinar se meta foi atingida
     const metaAtingida = previsto && realizado && previsto.value != null && realizado.value != null
@@ -94,6 +95,11 @@ const CustomTooltip = ({ active, payload, label, inverso }: any) => {
         {realizado && (
           <p className="text-xs text-success">
             Realizado: <span className="font-medium">{formatValue(realizado.value)}</span>
+          </p>
+        )}
+        {entry?.totalMetas !== undefined && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Metas atingidas: {entry.metasAtingidas}/{entry.totalMetas} ({entry.percentualAtingido?.toFixed(0)}%)
           </p>
         )}
         {previsto && realizado && previsto.value != null && realizado.value != null && (
@@ -119,32 +125,60 @@ export function MonthlyDetailChart({
   title = "Detalhamento Mensal",
   subtitle = "Valores de Previsto e Realizado por mês para cada indicador",
 }: MonthlyDetailChartProps) {
-  // Agregar dados por mês
+  // Agregar dados por mês considerando o contexto inverso de cada métrica
   const chartData = useMemo(() => {
-    const aggregated: Record<string, { previsto: number; realizado: number }> = {};
+    const aggregated: Record<string, { 
+      previsto: number; 
+      realizado: number; 
+      totalMetas: number; 
+      metasAtingidas: number 
+    }> = {};
     
     // Inicializa todos os meses
     monthNames.forEach((month, index) => {
-      aggregated[months[index]] = { previsto: 0, realizado: 0 };
+      aggregated[months[index]] = { previsto: 0, realizado: 0, totalMetas: 0, metasAtingidas: 0 };
     });
 
-    // Soma os valores de todos os indicadores por mês
+    // Soma os valores e conta metas atingidas considerando o contexto inverso
     metrics.forEach((metric) => {
+      const inverso = metric.inverso || false;
+      
       metric.dados.forEach((d, index) => {
         const monthKey = months[index];
-        if (aggregated[monthKey]) {
+        if (aggregated[monthKey] && d.previsto !== null && d.realizado !== null) {
           aggregated[monthKey].previsto += d.previsto || 0;
           aggregated[monthKey].realizado += d.realizado || 0;
+          aggregated[monthKey].totalMetas += 1;
+          
+          // Verifica se a meta foi atingida considerando o contexto
+          const metaAtingida = inverso 
+            ? d.realizado <= d.previsto  // Menor = Melhor
+            : d.realizado >= d.previsto; // Maior = Melhor
+          
+          if (metaAtingida) {
+            aggregated[monthKey].metasAtingidas += 1;
+          }
         }
       });
     });
 
-    return months.map((month) => ({
-      month,
-      previsto: aggregated[month].previsto,
-      realizado: aggregated[month].realizado,
-      atingido: aggregated[month].realizado >= aggregated[month].previsto,
-    }));
+    return months.map((month) => {
+      const data = aggregated[month];
+      // Meta atingida se pelo menos 50% das métricas atingiram a meta
+      const percentualAtingido = data.totalMetas > 0 
+        ? (data.metasAtingidas / data.totalMetas) * 100 
+        : 0;
+      
+      return {
+        month,
+        previsto: data.previsto,
+        realizado: data.realizado,
+        atingido: percentualAtingido >= 50,
+        percentualAtingido,
+        metasAtingidas: data.metasAtingidas,
+        totalMetas: data.totalMetas,
+      };
+    });
   }, [metrics]);
 
   // Gráfico individual por indicador
