@@ -103,7 +103,7 @@ const CustomTooltip = ({ active, payload, label, inverso }: any) => {
           </p>
         )}
         {previsto && realizado && previsto.value != null && realizado.value != null && (
-          <p className={`text-xs mt-1 ${metaAtingida ? 'text-success' : 'text-orange-500'}`}>
+          <p className={`text-xs mt-1 ${metaAtingida ? 'text-success' : 'text-red-500'}`}>
             {metaAtingida ? '✓ Meta atingida' : '⚠ Abaixo da meta'}
             {inverso && <span className="text-muted-foreground ml-1">(quanto menor, melhor)</span>}
           </p>

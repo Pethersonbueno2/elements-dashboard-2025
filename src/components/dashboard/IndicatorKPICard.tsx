@@ -47,16 +47,16 @@ export function IndicatorKPICard({
           <div className="flex flex-col items-center gap-0.5 shrink-0">
             <div className={cn(
               "p-1.5 rounded-full",
-              isPositive ? "bg-green-500/10" : "bg-orange-500/10"
+              isPositive ? "bg-green-500/10" : "bg-red-500/10"
             )}>
               <Percent className={cn(
                 "h-3.5 w-3.5",
-                isPositive ? "text-green-500" : "text-orange-500"
+                isPositive ? "text-green-500" : "text-red-500"
               )} />
             </div>
             <span className={cn(
               "text-[8px] font-medium text-center leading-tight",
-              isPositive ? "text-green-500" : "text-orange-500"
+              isPositive ? "text-green-500" : "text-red-500"
             )}>
               Porcentagem<br />atingida
             </span>
