@@ -70,8 +70,8 @@ const Index = () => {
     return initialMetrics;
   }, [supabaseMetrics]);
 
-  const [selectedCategory, setSelectedCategory] = useState("Todas");
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
+  const [selectedCategory, setSelectedCategory] = useState("Compras Internacionais");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("30");
   const [selectedMonth, setSelectedMonth] = useState<MonthType>("Dezembro");
   const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
