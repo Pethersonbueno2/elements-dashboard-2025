@@ -228,10 +228,10 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
   return `${prefix}${formattedNumber}${suffix}`;
 };
 
-// Calculate KPIs for top 4 indicators - SEMPRE mostra porcentagem
+// Calculate KPIs for ALL indicators - SEMPRE mostra porcentagem
   const topKPIs = useMemo(() => {
-    // Pega os primeiros 4 indicadores filtrados para exibir como KPI cards
-    const topMetrics = filteredMetrics.slice(0, 4);
+    // Mostra todos os indicadores filtrados como KPI cards
+    const topMetrics = filteredMetrics;
     
     return topMetrics.map((metric) => {
       // Filtra apenas os meses que têm dados válidos (não nulos)
