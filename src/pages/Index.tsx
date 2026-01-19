@@ -132,7 +132,58 @@ const Index = () => {
     return result;
   }, [indicatorFilteredMetrics, selectedPeriod, selectedMonth]);
 
-  // Calculate KPIs for top 4 indicators
+// Detecta a unidade com base na meta ou nome do indicador
+const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: string } => {
+  const metaLower = meta.toLowerCase();
+  const nomeLower = nome.toLowerCase();
+  
+  // Reais
+  if (metaLower.includes('r$') || metaLower.includes('reais')) {
+    return { prefix: 'R$ ', suffix: '' };
+  }
+  // Dias
+  if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda')) {
+    return { prefix: '', suffix: ' dias' };
+  }
+  // Horas
+  if (metaLower.includes('h') && !metaLower.includes('%')) {
+    return { prefix: '', suffix: 'h' };
+  }
+  // Percentual
+  if (metaLower.includes('%') || nomeLower.includes('taxa') || nomeLower.includes('margem')) {
+    return { prefix: '', suffix: '%' };
+  }
+  // Pontuação/Nota
+  if (nomeLower.includes('nps') || nomeLower.includes('reputação') || nomeLower.includes('satisfação')) {
+    return { prefix: '', suffix: '' };
+  }
+  
+  return { prefix: '', suffix: '' };
+};
+
+// Formata valor com unidade
+const formatValueWithUnit = (value: number | null | undefined, meta: string, nome: string): string => {
+  if (value === null || value === undefined || isNaN(value)) return "0";
+  const { prefix, suffix } = getUnitFromMeta(meta, nome);
+  
+  // Formata o número
+  let formattedNumber = "";
+  if (value >= 1000000000) {
+    formattedNumber = `${(value / 1000000000).toFixed(2)} Bi`;
+  } else if (value >= 1000000) {
+    formattedNumber = `${(value / 1000000).toFixed(2)} Mi`;
+  } else if (value >= 1000 && !suffix.includes('dia') && !suffix.includes('%')) {
+    formattedNumber = `${(value / 1000).toFixed(1)} K`;
+  } else if (value % 1 !== 0) {
+    formattedNumber = value.toFixed(2);
+  } else {
+    formattedNumber = value.toFixed(0);
+  }
+  
+  return `${prefix}${formattedNumber}${suffix}`;
+};
+
+// Calculate KPIs for top 4 indicators
   const topKPIs = useMemo(() => {
     // Pega os primeiros 4 indicadores filtrados para exibir como KPI cards
     const topMetrics = filteredMetrics.slice(0, 4);
@@ -140,30 +191,34 @@ const Index = () => {
     return topMetrics.map((metric) => {
       const lastValidData = [...metric.dados].reverse().find(d => d.realizado !== null);
       
-      // Calcula média apenas dos meses preenchidos
+      // Calcula média apenas dos meses preenchidos COM dados de concluído válidos
+      const filledMonthsWithConcluido = metric.dados.filter(d => 
+        d.concluido !== null && d.concluido !== undefined && Number.isFinite(d.concluido) && d.concluido > 0
+      );
       const filledMonths = metric.dados.filter(d => d.realizado !== null || d.previsto !== null);
+      
       const totalRealizado = filledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
       const totalPrevisto = filledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
       
-      // Para calcular média do setor, soma % de atingimento e divide pelo número de indicadores
+      // Média do realizado e previsto para exibição
       const avgRealizado = filledMonths.length > 0 ? totalRealizado / filledMonths.length : 0;
       const avgPrevisto = filledMonths.length > 0 ? totalPrevisto / filledMonths.length : 0;
       
-      // Calcula percentual de conclusão
+      // PERCENTUAL: Soma das % de conclusão dividido pela quantidade de meses preenchidos
       let percentage = 0;
-      const concluido = lastValidData?.concluido;
-      if (concluido !== null && concluido !== undefined && Number.isFinite(concluido)) {
-        percentage = concluido;
+      if (filledMonthsWithConcluido.length > 0) {
+        const totalConcluido = filledMonthsWithConcluido.reduce((sum, d) => sum + (d.concluido ?? 0), 0);
+        percentage = totalConcluido / filledMonthsWithConcluido.length;
       } else if (totalPrevisto > 0) {
         percentage = (totalRealizado / totalPrevisto) * 100;
       }
+
+      const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
       // Valor principal - usa o último realizado ou percentual
       let displayValue = "";
       const meta = metric.meta.toLowerCase();
       const nome = metric.nome.toLowerCase();
-
-      const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
       // Para métricas de taxa de conversão, mostra o valor realizado com decimais
       if (nome.includes('taxa de conversão') || nome.includes('taxa de conversao')) {
@@ -183,14 +238,18 @@ const Index = () => {
         displayValue = `${safePercentage.toFixed(1)}%`;
       }
 
+      // Formata previsto e realizado com nomenclatura correta
+      const previstoFormatted = formatValueWithUnit(avgPrevisto, metric.meta, metric.nome);
+      const realizadoFormatted = formatValueWithUnit(lastValidData?.realizado ?? avgRealizado, metric.meta, metric.nome);
+
       return {
         id: metric.id,
         title: metric.nome.replace(/^[^-]+ – /, '').replace(/^[^-]+ - /, ''),
         value: displayValue,
         meta: metric.meta,
         percentage: safePercentage,
-        previsto: formatValue(avgPrevisto, true),
-        realizado: formatValue(lastValidData?.realizado ?? avgRealizado, true),
+        previsto: previstoFormatted,
+        realizado: realizadoFormatted,
       };
     });
   }, [filteredMetrics]);
