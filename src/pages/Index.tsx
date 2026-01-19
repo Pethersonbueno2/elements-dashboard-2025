@@ -393,14 +393,6 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           />
         </section>
 
-        {/* Detail Chart (replaces table) */}
-        <section>
-          <MonthlyDetailChart 
-            metrics={filteredMetrics}
-            title="Detalhamento Mensal"
-            subtitle="Valores de Previsto e Realizado por mês para cada indicador"
-          />
-        </section>
       </main>
     </div>
   );
