@@ -77,12 +77,12 @@ const Index = () => {
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Quando muda de categoria, reseta para Dezembro e "Todos os indicadores"
+  // Quando muda de categoria, reseta para Dezembro, "30 dias" e "Todos os indicadores"
   const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category);
     setSelectedMonth("Dezembro");
     setSelectedIndicator("all");
-    setSelectedPeriod("Todos");
+    setSelectedPeriod("30");
   }, []);
 
   // Fullscreen toggle
