@@ -155,27 +155,50 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   const metaLower = meta.toLowerCase();
   const nomeLower = nome.toLowerCase();
   
-  // Reais
-  if (metaLower.includes('r$') || metaLower.includes('reais')) {
+  // Reais - verifica primeiro por ser mais específico
+  if (metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
+      nomeLower.includes('faturamento') || nomeLower.includes('ebtida') || nomeLower.includes('ebitda') ||
+      nomeLower.includes('ticket') || nomeLower.includes('custo') || nomeLower.includes('despesa') ||
+      nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl')) {
     return { prefix: 'R$ ', suffix: '' };
   }
   // Dias
-  if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda')) {
+  if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda') ||
+      nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de') || nomeLower.includes('lcp')) {
     return { prefix: '', suffix: ' dias' };
   }
   // Horas
-  if (metaLower.includes('h') && !metaLower.includes('%')) {
+  if (metaLower.includes('h') && !metaLower.includes('%') || nomeLower.includes('hora') || 
+      nomeLower.includes('primeira_resposta')) {
     return { prefix: '', suffix: 'h' };
   }
-  // Percentual
-  if (metaLower.includes('%') || nomeLower.includes('taxa') || nomeLower.includes('margem')) {
+  // Percentual - mais abrangente
+  if (metaLower.includes('%') || nomeLower.includes('taxa') || nomeLower.includes('margem') ||
+      nomeLower.includes('churn') || nomeLower.includes('conversao') || nomeLower.includes('conversão') ||
+      nomeLower.includes('roas') || nomeLower.includes('crescimento') || nomeLower.includes('indice') ||
+      nomeLower.includes('índice') || nomeLower.includes('ruptura') || nomeLower.includes('avaria') ||
+      nomeLower.includes('performance') || nomeLower.includes('acuracidade') || nomeLower.includes('reducao') ||
+      nomeLower.includes('redução') || nomeLower.includes('compliance') || nomeLower.includes('share') ||
+      nomeLower.includes('engajamento') || nomeLower.includes('trafego') || nomeLower.includes('organico') ||
+      nomeLower.includes('brand') || nomeLower.includes('alcance') || nomeLower.includes('alavancagem') ||
+      nomeLower.includes('endividamento') || nomeLower.includes('tributari') || nomeLower.includes('ltv') ||
+      nomeLower.includes('base_ativa') || nomeLower.includes('base ativa')) {
     return { prefix: '', suffix: '%' };
   }
-  // Pontuação/Nota
-  if (nomeLower.includes('nps') || nomeLower.includes('reputação') || nomeLower.includes('satisfação')) {
-    return { prefix: '', suffix: '' };
+  // Pontuação/Nota (NPS, Satisfação, Reputação)
+  if (nomeLower.includes('nps') || nomeLower.includes('reputação') || nomeLower.includes('satisfação') ||
+      nomeLower.includes('reputacao') || nomeLower.includes('satisfacao') || nomeLower.includes('google') ||
+      nomeLower.includes('reclame')) {
+    return { prefix: '', suffix: ' pts' };
+  }
+  // Quantidade/Unidades
+  if (nomeLower.includes('numero') || nomeLower.includes('número') || nomeLower.includes('clientes') ||
+      nomeLower.includes('oportunidades') || nomeLower.includes('projetos') || nomeLower.includes('produtos') ||
+      nomeLower.includes('agendas') || nomeLower.includes('giro')) {
+    return { prefix: '', suffix: ' un' };
   }
   
+  // Fallback - retorna unidade genérica para não deixar vazio
   return { prefix: '', suffix: '' };
 };
 
