@@ -53,18 +53,6 @@ export function IndicatorKPICard({
               Meta: {meta}
             </p>
           </div>
-          
-          <div className="flex items-center">
-            <span
-              className={cn(
-                "text-xs font-semibold px-2 py-1 rounded-full",
-                isPositive && "text-success bg-success/10",
-                isNegative && "text-orange-500 bg-orange-500/10"
-              )}
-            >
-              {percentage.toFixed(2)}%
-            </span>
-          </div>
         </div>
 
         {(previstoValue || realizadoValue) && (
