@@ -406,15 +406,6 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
                 >
                   {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsTVMode(true)}
-                  className="gap-2 h-8"
-                >
-                  <Tv className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs">Modo TV</span>
-                </Button>
               </div>
             </div>
           </div>
