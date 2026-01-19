@@ -206,16 +206,16 @@ export function MonthlyDetailChart({
   }, [metrics]);
 
   return (
-    <Card className="bg-card border-border">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold text-foreground">
-          {title}
-        </CardTitle>
-        <p className="text-xs text-muted-foreground">{subtitle}</p>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Seção 1: Gráfico agregado */}
-        <section id="monthly-detail-aggregated" className="monthly-detail-aggregated">
+    <div className="space-y-4">
+      {/* Card 1: Gráfico agregado */}
+      <Card id="monthly-detail-aggregated" className="bg-card border-border monthly-detail-aggregated">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold text-foreground">
+            {title}
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        </CardHeader>
+        <CardContent>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
@@ -263,10 +263,18 @@ export function MonthlyDetailChart({
               <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
             </div>
           </div>
-        </section>
+        </CardContent>
+      </Card>
 
-        {/* Seção 2: Grid de gráficos por indicador */}
-        <section id="monthly-detail-indicators" className="monthly-detail-indicators">
+      {/* Card 2: Grid de gráficos por indicador */}
+      <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold text-foreground">
+            Indicadores por Setor
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">Evolução mensal de cada indicador</p>
+        </CardHeader>
+        <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {indicatorCharts.map((chart) => (
               <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
@@ -319,8 +327,8 @@ export function MonthlyDetailChart({
               </div>
             ))}
           </div>
-        </section>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
