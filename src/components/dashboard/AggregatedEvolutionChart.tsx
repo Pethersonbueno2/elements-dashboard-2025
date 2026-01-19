@@ -19,7 +19,8 @@ interface AggregatedEvolutionChartProps {
   subtitle?: string;
 }
 
-const formatValue = (value: number): string => {
+const formatValue = (value: number | null | undefined): string => {
+  if (value === null || value === undefined) return "0";
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
