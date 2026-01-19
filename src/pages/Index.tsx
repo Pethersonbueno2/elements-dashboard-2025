@@ -269,8 +269,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
 
       const safePercentage = Number.isFinite(percentage) ? percentage : 0;
 
-      // Valor principal - SEMPRE mostra porcentagem SEM arredondamento
-      const displayValue = `${safePercentage}%`;
+      // Valor principal - SEMPRE mostra porcentagem com 2 casas decimais
+      const displayValue = `${safePercentage.toFixed(2)}%`;
 
       // Formata previsto e realizado com nomenclatura correta
       const previstoFormatted = formatValueWithUnit(displayPrevisto, metric.meta, metric.nome);
