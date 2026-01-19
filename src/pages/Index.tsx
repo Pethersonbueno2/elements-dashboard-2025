@@ -18,19 +18,18 @@ import { useSupabaseMetrics } from "@/hooks/useSupabaseMetrics";
 import { initialMetrics, type Metric } from "@/data/dashboardData";
 
 // Retorna os índices dos meses a serem exibidos baseado no período
-// Considerando os últimos meses com dados (Dezembro = 11, Novembro = 10, etc.)
+// Períodos são cumulativos: 30=Dez, 60=Nov+Dez, 90=Out+Nov+Dez
 const getMonthsForPeriod = (period: PeriodType): number[] => {
-  // Dezembro é o último mês com dados de 2025
   switch (period) {
     case "30":
-      // 30 dias = Dezembro
+      // 30 dias = apenas Dezembro
       return [11];
     case "60":
-      // 60 dias = Novembro
-      return [10];
+      // 60 dias = Novembro e Dezembro
+      return [10, 11];
     case "90":
-      // 90 dias = Outubro
-      return [9];
+      // 90 dias = Outubro, Novembro e Dezembro
+      return [9, 10, 11];
     default:
       // Todos - retorna array com todos os 12 meses
       return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
