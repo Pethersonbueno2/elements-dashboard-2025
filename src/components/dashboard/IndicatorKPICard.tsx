@@ -62,7 +62,7 @@ export function IndicatorKPICard({
                 isNegative && "text-orange-500 bg-orange-500/10"
               )}
             >
-              ○ {percentage.toFixed(0)}%
+              {percentage.toFixed(2)}%
             </span>
           </div>
         </div>
