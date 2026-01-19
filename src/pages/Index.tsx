@@ -20,19 +20,17 @@ import { initialMetrics, type Metric } from "@/data/dashboardData";
 // Retorna os índices dos meses a serem exibidos baseado no período
 // Considerando os últimos meses com dados (Dezembro = 11, Novembro = 10, etc.)
 const getMonthsForPeriod = (period: PeriodType): number[] => {
-  // Usamos Dezembro como referência pois é o último mês com dados de 2025
-  const referenceMonth = 11; // Dezembro
-  
+  // Dezembro é o último mês com dados de 2025
   switch (period) {
     case "30":
-      // Último mês (Dezembro)
-      return [referenceMonth];
+      // 30 dias = Dezembro
+      return [11];
     case "60":
-      // Últimos 2 meses (Novembro e Dezembro)
-      return [referenceMonth - 1, referenceMonth];
+      // 60 dias = Novembro
+      return [10];
     case "90":
-      // Últimos 3 meses (Outubro, Novembro, Dezembro)
-      return [referenceMonth - 2, referenceMonth - 1, referenceMonth];
+      // 90 dias = Outubro
+      return [9];
     default:
       // Todos - retorna array com todos os 12 meses
       return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
