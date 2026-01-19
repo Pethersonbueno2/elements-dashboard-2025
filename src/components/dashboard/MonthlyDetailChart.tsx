@@ -183,7 +183,7 @@ export function MonthlyDetailChart({
 
   // Gráfico individual por indicador
   const indicatorCharts = useMemo(() => {
-    return metrics.slice(0, 6).map((metric) => {
+    return metrics.map((metric) => {
       const inverso = metric.inverso || false;
       
       const data = metric.dados.map((d, index) => ({
