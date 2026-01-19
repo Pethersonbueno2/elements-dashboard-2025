@@ -455,6 +455,22 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           </div>
         </header>
 
+        {/* Legend */}
+        <div className="flex items-center gap-6 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-sm bg-primary"></div>
+            <span className="text-xs text-muted-foreground">Previsto</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-success"></div>
+            <span className="text-xs text-muted-foreground">Realizado (meta atingida)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-destructive"></div>
+            <span className="text-xs text-muted-foreground">Realizado (abaixo da meta)</span>
+          </div>
+        </div>
+
         {/* KPI Cards Row */}
         <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           {topKPIs.map((kpi) => (
