@@ -458,6 +458,18 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
             />
           </section>
         )}
+
+        {/* Indicadores por Setor - Visível apenas quando "Todos os Indicadores" está selecionado */}
+        {selectedIndicator === "all" && (
+          <section>
+            <MonthlyDetailChart 
+              metrics={filteredMetrics}
+              title="Indicadores por Setor"
+              subtitle="Evolução mensal de cada indicador"
+              showOnlyIndicators={true}
+            />
+          </section>
+        )}
       </main>
     </div>
   );
