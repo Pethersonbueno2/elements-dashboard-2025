@@ -11,6 +11,7 @@ interface IndicatorKPICardProps {
   realizadoLabel?: string;
   realizadoValue?: string;
   className?: string;
+  inverso?: boolean; // true = menor é melhor
 }
 
 export function IndicatorKPICard({
@@ -23,7 +24,17 @@ export function IndicatorKPICard({
   realizadoLabel = "Realizado:",
   realizadoValue,
   className,
+  inverso = false,
 }: IndicatorKPICardProps) {
+  // Para métricas inversas (menor é melhor): 
+  // - Se realizado < previsto, porcentagem será > 100, mas isso é BOM
+  // - Mas a lógica de concluido já considera isso, então:
+  // Para inverso: percentage >= 100 significa que atingiu OU superou (mesmo que realizado < previsto)
+  // Na verdade, a cor deve ser baseada se a meta foi atingida:
+  // - Normal: realizado >= previsto = verde
+  // - Inverso: realizado <= previsto = verde (porque menor é melhor)
+  // Como o percentage vem do Supabase (concluido), ele já está calculado corretamente
+  // Então percentage >= 100 = verde para ambos os casos
   const isPositive = percentage >= 100;
   const isNegative = percentage < 100;
 
