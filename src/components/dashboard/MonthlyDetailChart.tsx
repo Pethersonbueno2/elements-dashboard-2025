@@ -23,11 +23,14 @@ interface MonthlyDetailChartProps {
 const months = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
 const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+// Formata valores - preserva decimais para valores pequenos
 const formatValue = (value: number | null): string => {
   if (value === null || value === undefined) return "-";
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+  // Preserva decimais para valores pequenos
+  if (value > 0 && value < 10) return value.toFixed(2);
   if (value % 1 !== 0) return value.toFixed(2);
   return value.toFixed(0);
 };

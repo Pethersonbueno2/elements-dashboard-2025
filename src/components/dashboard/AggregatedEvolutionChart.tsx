@@ -19,12 +19,15 @@ interface AggregatedEvolutionChartProps {
   subtitle?: string;
 }
 
+// Formata valores - preserva decimais para valores pequenos
 const formatValue = (value: number | null | undefined): string => {
   if (value === null || value === undefined) return "0";
   if (value >= 1000000000) return `${(value / 1000000000).toFixed(1)}Bi`;
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}Mi`;
   if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-  if (value % 1 !== 0) return value.toFixed(1);
+  // Preserva decimais para valores pequenos
+  if (value > 0 && value < 10) return value.toFixed(2);
+  if (value % 1 !== 0) return value.toFixed(2);
   return value.toFixed(0);
 };
 
