@@ -230,7 +230,7 @@ export function MonthlyDetailChart({
                 axisLine={{ stroke: 'hsl(var(--border))' }}
                 width={50}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
               <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Previsto">
                 <LabelList dataKey="previsto" content={<CustomLabel />} />
               </Bar>
@@ -297,7 +297,7 @@ export function MonthlyDetailChart({
                       tickLine={false}
                     />
                     <YAxis hide />
-                    <Tooltip content={<CustomTooltip inverso={chart.inverso} />} />
+                    <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
                     <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
                       <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
                     </Bar>
