@@ -130,7 +130,7 @@ export function MonthlyDetailTable({
                             "px-2 py-1 rounded text-xs font-medium",
                             realizado === null && "text-muted-foreground",
                             realizado !== null && isAchieved && "bg-success/20 text-success",
-                            realizado !== null && !isAchieved && "bg-orange-500/20 text-orange-500"
+                            realizado !== null && !isAchieved && "bg-red-500/20 text-red-500"
                           )}
                         >
                           {formatValue(realizado)}
