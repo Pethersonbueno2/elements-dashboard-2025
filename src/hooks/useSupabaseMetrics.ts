@@ -376,9 +376,9 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
     nome: "Compras Int. – Giro de Estoque",
     meta: "> 1",
   },
-  "2025_compras_internacionais_indice_ruptura_estoque_30": {
+  "2025_compras_internacionais_ruptura_estoque_30": {
     categoria: "Compras Internacionais",
-    nome: "Compras Int. – Índice Ruptura Estoque",
+    nome: "Compras Int. – Ruptura de Estoque",
     meta: "< 30%",
     inverso: true,
   },
