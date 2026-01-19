@@ -201,7 +201,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
   return `${prefix}${formattedNumber}${suffix}`;
 };
 
-// Calculate KPIs for top 4 indicators
+// Calculate KPIs for top 4 indicators - SEMPRE mostra porcentagem
   const topKPIs = useMemo(() => {
     // Pega os primeiros 4 indicadores filtrados para exibir como KPI cards
     const topMetrics = filteredMetrics.slice(0, 4);
@@ -209,15 +209,10 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
     return topMetrics.map((metric) => {
       // Filtra apenas os meses que têm dados válidos (não nulos)
       const filledMonths = metric.dados.filter(d => 
-        d.realizado !== null && d.previsto !== null
+        d.realizado !== null && d.previsto !== null && 
+        d.realizado !== undefined && d.previsto !== undefined
       );
       
-      // Filtra meses com concluído válido para cálculo de porcentagem
-      const filledMonthsWithConcluido = metric.dados.filter(d => 
-        d.concluido !== null && d.concluido !== undefined && 
-        Number.isFinite(d.concluido) && d.concluido > 0
-      );
-
       let percentage = 0;
       let displayRealizado = 0;
       let displayPrevisto = 0;
@@ -227,29 +222,42 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         const monthIndex = monthNameToIndex[selectedMonth];
         const monthData = metric.dados[monthIndex];
         
-        if (monthData) {
+        if (monthData && monthData.realizado !== null && monthData.previsto !== null) {
           displayRealizado = monthData.realizado ?? 0;
           displayPrevisto = monthData.previsto ?? 0;
           
-          // Usa concluído se disponível, senão calcula
+          // Primeiro tenta usar concluido do Supabase
           if (monthData.concluido !== null && monthData.concluido !== undefined && 
               Number.isFinite(monthData.concluido) && monthData.concluido > 0) {
             percentage = monthData.concluido;
           } else if (displayPrevisto > 0) {
+            // Calcula porcentagem: (realizado / previsto) * 100
             percentage = (displayRealizado / displayPrevisto) * 100;
           }
         }
       } else {
-        // "Todos os meses" - calcula média dos meses preenchidos
-        if (filledMonthsWithConcluido.length > 0) {
-          const totalConcluido = filledMonthsWithConcluido.reduce((sum, d) => sum + (d.concluido ?? 0), 0);
-          percentage = totalConcluido / filledMonthsWithConcluido.length;
-        } else if (filledMonths.length > 0) {
-          const totalRealizado = filledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0);
-          const totalPrevisto = filledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0);
-          if (totalPrevisto > 0) {
-            percentage = (totalRealizado / totalPrevisto) * 100;
+        // "Todos os meses" - calcula média das porcentagens dos meses preenchidos
+        const monthPercentages: number[] = [];
+        
+        metric.dados.forEach((d) => {
+          if (d.realizado !== null && d.previsto !== null && 
+              d.realizado !== undefined && d.previsto !== undefined) {
+            // Se tem concluido, usa ele
+            if (d.concluido !== null && d.concluido !== undefined && 
+                Number.isFinite(d.concluido) && d.concluido > 0) {
+              monthPercentages.push(d.concluido);
+            } else if (d.previsto > 0) {
+              // Calcula porcentagem do mês
+              const monthPct = (d.realizado / d.previsto) * 100;
+              monthPercentages.push(monthPct);
+            }
           }
+        });
+        
+        // Média das porcentagens
+        if (monthPercentages.length > 0) {
+          const totalPercentage = monthPercentages.reduce((sum, pct) => sum + pct, 0);
+          percentage = totalPercentage / monthPercentages.length;
         }
         
         // Médias para exibição
@@ -260,37 +268,9 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
       }
 
       const safePercentage = Number.isFinite(percentage) ? percentage : 0;
-      
-      // Pega o último dado válido para exibição do valor principal
-      const lastValidData = [...metric.dados].reverse().find(d => d.realizado !== null);
 
-      // Valor principal - usa o último realizado ou percentual
-      let displayValue = "";
-      const meta = metric.meta.toLowerCase();
-      const nome = metric.nome.toLowerCase();
-
-      // Para métricas de taxa de conversão, mostra o valor realizado com decimais
-      if (nome.includes('taxa de conversão') || nome.includes('taxa de conversao')) {
-        if (selectedMonth !== "all") {
-          const monthIndex = monthNameToIndex[selectedMonth];
-          const monthData = metric.dados[monthIndex];
-          displayValue = `${(monthData?.realizado ?? 0).toFixed(2)}%`;
-        } else if (lastValidData?.realizado !== null && lastValidData?.realizado !== undefined) {
-          displayValue = `${lastValidData.realizado.toFixed(2)}%`;
-        } else {
-          displayValue = `${safePercentage.toFixed(1)}%`;
-        }
-      } else if (meta.includes('%') || (meta.includes('>') && !meta.includes('r$'))) {
-        displayValue = `${safePercentage.toFixed(1)}%`;
-      } else if (selectedMonth !== "all") {
-        const monthIndex = monthNameToIndex[selectedMonth];
-        const monthData = metric.dados[monthIndex];
-        displayValue = formatValue(monthData?.realizado ?? 0, true);
-      } else if (lastValidData?.realizado !== null && lastValidData?.realizado !== undefined) {
-        displayValue = formatValue(lastValidData.realizado, true);
-      } else {
-        displayValue = `${safePercentage.toFixed(1)}%`;
-      }
+      // Valor principal - SEMPRE mostra porcentagem
+      const displayValue = `${safePercentage.toFixed(1)}%`;
 
       // Formata previsto e realizado com nomenclatura correta
       const previstoFormatted = formatValueWithUnit(displayPrevisto, metric.meta, metric.nome);
