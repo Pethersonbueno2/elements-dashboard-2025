@@ -27,7 +27,8 @@ export function IndicatorKPICard({
   className,
   inverso = false,
 }: IndicatorKPICardProps) {
-  const isPositive = percentage >= 100;
+  // Para métricas inversas (menor é melhor), a lógica é invertida
+  const isPositive = inverso ? percentage <= 100 : percentage >= 100;
 
   return (
     <Card className={cn("bg-card border-border hover:border-primary/50 transition-all", className)}>
