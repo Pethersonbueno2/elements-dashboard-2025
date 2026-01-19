@@ -18,6 +18,7 @@ interface MonthlyDetailChartProps {
   metrics: Metric[];
   title?: string;
   subtitle?: string;
+  showOnlyIndicators?: boolean;
 }
 
 const months = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
@@ -124,6 +125,7 @@ export function MonthlyDetailChart({
   metrics,
   title = "Detalhamento Mensal",
   subtitle = "Valores de Previsto e Realizado por mês para cada indicador",
+  showOnlyIndicators = false,
 }: MonthlyDetailChartProps) {
   // Agregar dados por mês considerando o contexto inverso de cada métrica
   const chartData = useMemo(() => {
@@ -207,72 +209,76 @@ export function MonthlyDetailChart({
 
   return (
     <div className="space-y-4">
-      {/* Card 1: Gráfico agregado */}
-      <Card id="monthly-detail-aggregated" className="bg-card border-border monthly-detail-aggregated">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-semibold text-foreground">
-            {title}
-          </CardTitle>
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                <XAxis 
-                  dataKey="month" 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                />
-                <YAxis 
-                  tickFormatter={formatValue}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                  width={50}
-                />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Previsto">
-                  <LabelList dataKey="previsto" content={<CustomLabel />} />
-                </Bar>
-                <Bar dataKey="realizado" radius={[4, 4, 0, 0]} name="Realizado">
-                  {chartData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
-                    />
-                  ))}
-                  <LabelList dataKey="realizado" content={<CustomLabel />} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Card 1: Gráfico agregado - Oculto quando showOnlyIndicators é true */}
+      {!showOnlyIndicators && (
+        <Card id="monthly-detail-aggregated" className="bg-card border-border monthly-detail-aggregated">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-semibold text-foreground">
+              {title}
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                  />
+                  <YAxis 
+                    tickFormatter={formatValue}
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                    width={50}
+                  />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                  <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Previsto">
+                    <LabelList dataKey="previsto" content={<CustomLabel />} />
+                  </Bar>
+                  <Bar dataKey="realizado" radius={[4, 4, 0, 0]} name="Realizado">
+                    {chartData.map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
+                      />
+                    ))}
+                    <LabelList dataKey="realizado" content={<CustomLabel />} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-          {/* Legenda */}
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-primary" />
-              <span className="text-muted-foreground">Previsto</span>
+            {/* Legenda */}
+            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs mt-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-primary" />
+                <span className="text-muted-foreground">Previsto</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-success" />
+                <span className="text-muted-foreground">Realizado (meta atingida)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60%)' }} />
+                <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-success" />
-              <span className="text-muted-foreground">Realizado (meta atingida)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60%)' }} />
-              <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Card 2: Grid de gráficos por indicador */}
       <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-foreground">
-            Indicadores por Setor
+            {showOnlyIndicators ? title : "Indicadores por Setor"}
           </CardTitle>
-          <p className="text-xs text-muted-foreground">Evolução mensal de cada indicador</p>
+          <p className="text-xs text-muted-foreground">
+            {showOnlyIndicators ? subtitle : "Evolução mensal de cada indicador"}
+          </p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
