@@ -238,7 +238,7 @@ export function MonthlyDetailChart({
                 {chartData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(25 95% 53%)'} 
+                    fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
                   />
                 ))}
                 <LabelList dataKey="realizado" content={<CustomLabel />} />
@@ -258,7 +258,7 @@ export function MonthlyDetailChart({
             <span className="text-muted-foreground">Realizado (meta atingida)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(25 95% 53%)' }} />
+            <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60%)' }} />
             <span className="text-muted-foreground">Realizado (abaixo da meta)</span>
           </div>
         </div>
@@ -305,7 +305,7 @@ export function MonthlyDetailChart({
                       {chart.data.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
-                          fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(25 95% 53%)'} 
+                          fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
                         />
                       ))}
                       <LabelList dataKey="realizado" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
