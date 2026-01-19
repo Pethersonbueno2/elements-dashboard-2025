@@ -51,17 +51,14 @@ const CustomLabelPrevisto = (props: any) => {
 };
 
 const CustomLabelRealizado = (props: any) => {
-  const { x, y, value, payload } = props;
+  const { x, y, value } = props;
   if (value === 0 || value === null || value === undefined) return null;
-  
-  const isMetaAtingida = payload && payload.realizado >= payload.previsto;
-  const color = isMetaAtingida ? "hsl(142 76% 36%)" : "hsl(0 84% 60%)";
   
   return (
     <text
       x={x}
       y={y + 15}
-      fill={color}
+      fill="white"
       textAnchor="middle"
       fontSize={9}
       fontWeight={600}
