@@ -140,8 +140,9 @@ const Index = () => {
       
       // Calcula percentual de conclusão
       let percentage = 0;
-      if (lastValidData && lastValidData.concluido !== null) {
-        percentage = lastValidData.concluido;
+      const concluido = lastValidData?.concluido;
+      if (concluido !== null && concluido !== undefined && Number.isFinite(concluido)) {
+        percentage = concluido;
       } else if (totalPrevisto > 0) {
         percentage = (totalRealizado / totalPrevisto) * 100;
       }
@@ -149,13 +150,15 @@ const Index = () => {
       // Valor principal - usa o último realizado ou percentual
       let displayValue = "";
       const meta = metric.meta.toLowerCase();
-      
-      if (meta.includes('%') || meta.includes('>') && !meta.includes('r$')) {
-        displayValue = `${percentage.toFixed(1)}%`;
+
+      const safePercentage = Number.isFinite(percentage) ? percentage : 0;
+
+      if (meta.includes('%') || (meta.includes('>') && !meta.includes('r$'))) {
+        displayValue = `${safePercentage.toFixed(1)}%`;
       } else if (totalRealizado > 0) {
         displayValue = formatValue(totalRealizado);
       } else {
-        displayValue = `${percentage.toFixed(1)}%`;
+        displayValue = `${safePercentage.toFixed(1)}%`;
       }
 
       return {
