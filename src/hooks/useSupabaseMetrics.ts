@@ -385,7 +385,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_compras_internacionais_prazo_medio_de_entrega": {
     categoria: "Compras Internacionais",
     nome: "Compras Int. – Lead Time",
-    meta: "< 60 dias",
+    meta: "< 110 dias",
     inverso: true,
   },
   "2025_compras_internacionais_qualidade_do_fornecedor": {
