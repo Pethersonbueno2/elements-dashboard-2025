@@ -716,36 +716,6 @@ export type Database = {
         }
         Relationships: []
       }
-      "2025_compras_internacionais_indice_ruptura_estoque_30": {
-        Row: {
-          "Atualizado-em": string | null
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
       "2025_compras_internacionais_prazo_medio_de_entrega": {
         Row: {
           "Atualizado-em": string | null
@@ -810,6 +780,36 @@ export type Database = {
         Relationships: []
       }
       "2025_compras_internacionais_redução_de_custos_de_aquisi": {
+        Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_compras_internacionais_ruptura_estoque_30": {
         Row: {
           "Atualizado-em": string | null
           diferenca: number | null
