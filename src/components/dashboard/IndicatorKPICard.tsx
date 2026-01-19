@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Percent } from "lucide-react";
 
 interface IndicatorKPICardProps {
   title: string;
@@ -52,6 +53,23 @@ export function IndicatorKPICard({
             <p className="text-xs text-muted-foreground mt-1">
               Meta: {meta}
             </p>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <div className={cn(
+              "p-2 rounded-full",
+              isPositive ? "bg-green-500/10" : "bg-orange-500/10"
+            )}>
+              <Percent className={cn(
+                "h-5 w-5",
+                isPositive ? "text-green-500" : "text-orange-500"
+              )} />
+            </div>
+            <span className={cn(
+              "text-[10px] font-medium text-center leading-tight",
+              isPositive ? "text-green-500" : "text-orange-500"
+            )}>
+              Porcentagem<br />atingida
+            </span>
           </div>
         </div>
 
