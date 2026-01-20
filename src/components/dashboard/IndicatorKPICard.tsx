@@ -31,8 +31,11 @@ export function IndicatorKPICard({
   onClick,
   isSelected = false,
 }: IndicatorKPICardProps) {
-  // Verde se >= 100%, vermelho se < 100%
-  const isPositive = percentage >= 100;
+  // Para métricas inversas (menor é melhor): verde se <= 100%, vermelho se > 100%
+  // Para métricas normais (maior é melhor): verde se >= 100%, vermelho se < 100%
+  const isPositive = inverso 
+    ? percentage <= 100 
+    : percentage >= 100;
 
   return (
     <Card 
