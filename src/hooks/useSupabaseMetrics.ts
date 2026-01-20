@@ -190,35 +190,35 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   },
 
   // Marketing Branding
-  "2025_marketing_branding_alcance_100": {
-    categoria: "Marketing Branding",
-    nome: "Marketing Branding – Alcance",
-    meta: "100%",
-  },
   "2025_marketing_branding_brand_search_25": {
     categoria: "Marketing Branding",
     nome: "Marketing Branding – Brand Search",
-    meta: "25%",
+    meta: "> 25%",
+  },
+  "2025_marketing_branding_alcance_100": {
+    categoria: "Marketing Branding",
+    nome: "Marketing Branding – Alcance",
+    meta: "> 100%",
   },
   "2025_marketing_branding_engajamento_25": {
     categoria: "Marketing Branding",
     nome: "Marketing Branding – Engajamento",
-    meta: "25%",
+    meta: "> 25%",
   },
   "2025_marketing_branding_trafego_organico_20": {
     categoria: "Marketing Branding",
     nome: "Marketing Branding – Tráfego Orgânico",
-    meta: "20%",
+    meta: "> 20%",
+  },
+  "2025_marketing_branding_experiência_nps_satisfacao": {
+    categoria: "Marketing Branding",
+    nome: "Marketing Branding – Experiência NPS Satisfação",
+    meta: "> 100",
   },
   "2025_marketing_branding_share_of_voice_25": {
     categoria: "Marketing Branding",
     nome: "Marketing Branding – Share of Voice",
-    meta: "25%",
-  },
-  "2025_marketing_branding_experiência_nps_satisfacao": {
-    categoria: "Marketing Branding",
-    nome: "Marketing Branding – NPS Satisfação",
-    meta: "> 70",
+    meta: "> 25%",
   },
 
   // Financeiro e Controladoria
