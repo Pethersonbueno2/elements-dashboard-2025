@@ -250,6 +250,57 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
   return `${prefix}${formattedNumber}${suffix}`;
 };
 
+// Helper para calcular porcentagem corretamente considerando números negativos
+// Para "maior é melhor": quanto maior o realizado em relação ao previsto, melhor
+// Para números negativos: -7 é melhor que -14 (mais próximo de zero)
+const calculatePercentage = (realizado: number, previsto: number, isInverso: boolean): number => {
+  if (previsto === 0 || realizado === 0) return 0;
+  
+  // Verifica se ambos são negativos
+  const bothNegative = realizado < 0 && previsto < 0;
+  
+  if (bothNegative) {
+    // Para números negativos, usamos valores absolutos e invertemos a lógica
+    const absRealizado = Math.abs(realizado);
+    const absPrevisto = Math.abs(previsto);
+    
+    if (isInverso) {
+      // Inverso (menor é melhor): valores mais negativos são melhores
+      // Ex: -14 é melhor que -8 → absRealizado/absPrevisto * 100
+      return (absRealizado / absPrevisto) * 100;
+    } else {
+      // Normal (maior é melhor): valores menos negativos são melhores
+      // Ex: -7 é melhor que -14 → absPrevisto/absRealizado * 100
+      return (absPrevisto / absRealizado) * 100;
+    }
+  }
+  
+  // Lógica normal para números positivos
+  if (isInverso) {
+    return (previsto / realizado) * 100;
+  } else {
+    return (realizado / previsto) * 100;
+  }
+};
+
+// Helper para determinar se meta foi atingida considerando números negativos
+const isMetaAtingida = (realizado: number, previsto: number, isInverso: boolean): boolean => {
+  const bothNegative = realizado < 0 && previsto < 0;
+  
+  if (bothNegative) {
+    if (isInverso) {
+      // Inverso: valores mais negativos são melhores (ex: -14 melhor que -8)
+      return realizado <= previsto;
+    } else {
+      // Normal: valores menos negativos são melhores (ex: -7 melhor que -14)
+      return realizado >= previsto;
+    }
+  }
+  
+  // Lógica normal
+  return isInverso ? realizado <= previsto : realizado >= previsto;
+};
+
 // Calculate KPIs for ALL indicators - SEMPRE mostra porcentagem
   const topKPIs = useMemo(() => {
     // Mostra todos os indicadores filtrados como KPI cards
@@ -278,14 +329,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           displayRealizado = monthData.realizado ?? 0;
           displayPrevisto = monthData.previsto ?? 0;
           
-          // Calcula porcentagem usando regra de três baseada na flag 'inverso'
-          // Para métricas inversas (menor é melhor): Previsto/Realizado * 100
-          // Para métricas normais (maior é melhor): Realizado/Previsto * 100
-          if (isInverso && displayRealizado !== 0) {
-            percentage = (displayPrevisto / displayRealizado) * 100;
-          } else if (!isInverso && displayPrevisto !== 0) {
-            percentage = (displayRealizado / displayPrevisto) * 100;
-          }
+          // Calcula porcentagem usando helper que considera números negativos
+          percentage = calculatePercentage(displayRealizado, displayPrevisto, isInverso);
         }
       } else if (isAllMonthsMode) {
         // "Todos os Meses" selecionado - calcula MÉDIA dos meses no período selecionado
@@ -309,16 +354,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           displayRealizado = periodFilledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / periodFilledMonths.length;
           displayPrevisto = periodFilledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / periodFilledMonths.length;
           
-          // Calcula porcentagem usando regra de três: Previsto = 100%
-          // Para métricas inversas (menor é melhor): Previsto/Realizado * 100
-          // Para métricas normais (maior é melhor): Realizado/Previsto * 100
-          if (displayPrevisto !== 0 && displayRealizado !== 0) {
-            if (isInverso) {
-              percentage = (displayPrevisto / displayRealizado) * 100;
-            } else {
-              percentage = (displayRealizado / displayPrevisto) * 100;
-            }
-          }
+          // Calcula porcentagem usando helper que considera números negativos
+          percentage = calculatePercentage(displayRealizado, displayPrevisto, isInverso);
         }
       }
 
@@ -339,12 +376,8 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
       // Verifica se é métrica inversa (menor é melhor)
       const inverso = metric.inverso || false;
       
-      // Calcula se a meta foi atingida considerando inverso
-      // Para métricas inversas: meta atingida se realizado <= previsto
-      // Para métricas normais: meta atingida se realizado >= previsto
-      const metaAtingida = inverso 
-        ? displayRealizado <= displayPrevisto 
-        : displayRealizado >= displayPrevisto;
+      // Calcula se a meta foi atingida usando helper que considera números negativos
+      const metaAtingida = isMetaAtingida(displayRealizado, displayPrevisto, inverso);
 
       return {
         id: metric.id,
