@@ -152,36 +152,6 @@ export type Database = {
         }
         Relationships: []
       }
-      "2025_b2b_churn_revendedores_1": {
-        Row: {
-          "Atualizado-em": string | null
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
       "2025_b2b_ciclo_de_vendas_15_dias": {
         Row: {
           "Atualizado-em": string | null
@@ -236,30 +206,6 @@ export type Database = {
           diferenca?: number | null
           id?: number
           mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
-      "2025_b2b_rd_summit": {
-        Row: {
-          diferenca: number | null
-          id: number
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          diferenca?: number | null
-          id?: number
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          diferenca?: number | null
-          id?: number
           percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
