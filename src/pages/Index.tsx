@@ -281,7 +281,28 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
 // Para "maior é melhor": quanto maior o realizado em relação ao previsto, melhor
 // Para números negativos: -7 é melhor que -14 (mais próximo de zero)
 const calculatePercentage = (realizado: number, previsto: number, isInverso: boolean): number => {
-  if (previsto === 0 || realizado === 0) return 0;
+  // Caso especial: previsto é 0
+  if (previsto === 0) {
+    if (realizado === 0) return 0; // Ambos zero, sem dados
+    // Se previsto é 0 mas realizado não, depende da lógica
+    return isInverso ? 0 : (realizado > 0 ? 100 : 0);
+  }
+  
+  // Caso especial: realizado é 0 mas previsto não é 0
+  if (realizado === 0) {
+    // Para métricas inversas (menor é melhor), realizado = 0 significa sucesso total
+    // Ex: Índice de Avaria meta < 0.1%, realizado = 0% → (previsto/realizado) seria infinito
+    // Usamos (previsto/previsto) * 100 = 100% mínimo, mas na verdade é melhor que 100%
+    // Calculamos: quanto menor o realizado em relação ao previsto, melhor o percentual
+    // Como realizado é 0, a performance é perfeita: retornamos um valor proporcional alto
+    if (isInverso) {
+      // Retorna um percentual muito alto indicando que o resultado é melhor que a meta
+      // Usamos previsto * algum multiplicador para dar um número representativo
+      return (previsto / 0.0001) * 100; // Simula realizado muito pequeno para evitar infinito
+    }
+    // Para métricas normais (maior é melhor), realizado = 0 significa falha total
+    return 0;
+  }
   
   // Verifica se ambos são negativos
   const bothNegative = realizado < 0 && previsto < 0;
