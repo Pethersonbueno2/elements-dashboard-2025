@@ -5,6 +5,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { type Metric } from "@/data/dashboardData";
 
 interface IndicatorSelectProps {
@@ -14,8 +17,19 @@ interface IndicatorSelectProps {
 }
 
 export function IndicatorSelect({ metrics, selected, onChange }: IndicatorSelectProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center gap-2">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Voltar
+      </Button>
       <span className="text-sm text-muted-foreground">Indicador:</span>
       <Select value={selected} onValueChange={onChange}>
         <SelectTrigger className="w-[200px] bg-card border-border">
