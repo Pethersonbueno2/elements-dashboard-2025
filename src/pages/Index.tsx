@@ -278,16 +278,13 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           displayRealizado = monthData.realizado ?? 0;
           displayPrevisto = monthData.previsto ?? 0;
           
-          // Prioriza o campo 'concluido' do Supabase se disponível
-          if (monthData.concluido !== null && monthData.concluido !== undefined) {
-            percentage = monthData.concluido;
-          } else {
-            // Fallback: calcula manualmente
-            if (isInverso && displayRealizado !== 0) {
-              percentage = (displayPrevisto / displayRealizado) * 100;
-            } else if (displayPrevisto !== 0) {
-              percentage = (displayRealizado / displayPrevisto) * 100;
-            }
+          // Calcula porcentagem usando regra de três baseada na flag 'inverso'
+          // Para métricas inversas (menor é melhor): Previsto/Realizado * 100
+          // Para métricas normais (maior é melhor): Realizado/Previsto * 100
+          if (isInverso && displayRealizado !== 0) {
+            percentage = (displayPrevisto / displayRealizado) * 100;
+          } else if (!isInverso && displayPrevisto !== 0) {
+            percentage = (displayRealizado / displayPrevisto) * 100;
           }
         }
       } else if (isAllMonthsMode) {
