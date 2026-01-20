@@ -2473,7 +2473,7 @@ export type Database = {
           "Atualizado-em": string | null
           id: number
           mes: string
-          metrica_desempenho: string | null
+          percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
         }
@@ -2481,7 +2481,7 @@ export type Database = {
           "Atualizado-em"?: string | null
           id?: number
           mes: string
-          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
         }
@@ -2489,7 +2489,7 @@ export type Database = {
           "Atualizado-em"?: string | null
           id?: number
           mes?: string
-          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
         }
@@ -2527,7 +2527,7 @@ export type Database = {
           "Atualizado-em": string | null
           id: number
           mes: string
-          metrica_desempenho: string | null
+          percentual_concluido: number | null
           previsto: number | null
           realizado: number | null
         }
@@ -2535,7 +2535,7 @@ export type Database = {
           "Atualizado-em"?: string | null
           id?: number
           mes: string
-          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
         }
@@ -2543,7 +2543,7 @@ export type Database = {
           "Atualizado-em"?: string | null
           id?: number
           mes?: string
-          metrica_desempenho?: string | null
+          percentual_concluido?: number | null
           previsto?: number | null
           realizado?: number | null
         }
