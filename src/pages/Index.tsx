@@ -154,11 +154,12 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   const metaLower = meta.toLowerCase();
   const nomeLower = nome.toLowerCase();
   
-  // Reais - verifica primeiro por ser mais específico
-  if (metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
+  // Reais - verifica primeiro por ser mais específico (exceto Headcount vs Receita que usa %)
+  if ((metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
       nomeLower.includes('faturamento') || nomeLower.includes('ebtida') || nomeLower.includes('ebitda') ||
       nomeLower.includes('ticket') || nomeLower.includes('custo') || nomeLower.includes('despesa') ||
-      nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl')) {
+      nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl')) &&
+      !nomeLower.includes('headcount')) {
     return { prefix: 'R$ ', suffix: '' };
   }
   // Horas - Tempo de primeira resposta (deve vir antes de dias)
