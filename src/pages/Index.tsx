@@ -213,6 +213,10 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   if (nomeLower.includes('giro') && nomeLower.includes('estoque')) {
     return { prefix: '', suffix: ' Renovação Est.' };
   }
+  // Número de Novos Clientes - usa "Novos Clientes" como unidade
+  if (nomeLower.includes('novos clientes') || nomeLower.includes('novos_clientes')) {
+    return { prefix: '', suffix: ' Novos Clientes' };
+  }
   // Quantidade/Unidades
   if (nomeLower.includes('numero') || nomeLower.includes('número') || nomeLower.includes('clientes') ||
       nomeLower.includes('oportunidades') || nomeLower.includes('projetos') || nomeLower.includes('produtos') ||
