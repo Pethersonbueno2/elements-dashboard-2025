@@ -260,6 +260,16 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
   if (value === null || value === undefined || isNaN(value)) return "0";
   const { prefix, suffix } = getUnitFromMeta(meta, nome);
   
+  // Caso especial: horas - converte decimal para horas e minutos
+  if (suffix === ' horas') {
+    const hours = Math.floor(value);
+    const minutes = Math.round((value - hours) * 60);
+    if (minutes === 0) {
+      return `${hours}h`;
+    }
+    return `${hours}h ${minutes}min`;
+  }
+  
   // Formata o número
   let formattedNumber = "";
   if (value >= 1000000000) {
