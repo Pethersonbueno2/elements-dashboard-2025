@@ -19,12 +19,22 @@ interface IndicatorSelectProps {
 export function IndicatorSelect({ metrics, selected, onChange }: IndicatorSelectProps) {
   const navigate = useNavigate();
 
+  const handleGoBack = () => {
+    // Check if there's history to go back to
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // Fallback to area-indicadores if no history
+      navigate('/area-indicadores');
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => navigate(-1)}
+        onClick={handleGoBack}
         className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
