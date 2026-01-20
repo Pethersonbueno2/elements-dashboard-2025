@@ -123,21 +123,21 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   },
 
   // B2C Digital
-  "2025_b2c_receita_liquida": {
-    categoria: "B2C | Digital",
-    nome: "B2C Digital – Receita Líquida",
-    meta: "R$ 10.000.000",
-  },
-  "2025_b2c_taxa_de_conversao": {
-    categoria: "B2C | Digital",
-    nome: "B2C Digital – Taxa de Conversão",
-    meta: "1%",
-  },
   "2025_b2c_lcp_2s": {
     categoria: "B2C | Digital",
     nome: "B2C Digital – LCP",
     meta: "< 2s",
-    inverso: true, // Quanto menor o tempo, melhor
+    inverso: true,
+  },
+  "2025_b2c_taxa_de_conversao": {
+    categoria: "B2C | Digital",
+    nome: "B2C Digital – Taxa de Conversão",
+    meta: "> 1%",
+  },
+  "2025_b2c_receita_liquida": {
+    categoria: "B2C | Digital",
+    nome: "B2C Digital – Receita Líquida",
+    meta: "> R$ 60Mi",
   },
 
   // Marketing Growth
