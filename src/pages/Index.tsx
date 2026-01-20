@@ -245,19 +245,15 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
     // Mostra todos os indicadores filtrados como KPI cards
     const topMetrics = filteredMetrics;
     
-    // Verifica se está em modo "todos os indicadores" E "todos os meses/período"
-    const isAllMonthsMode = selectedMonth === "all" && selectedPeriod === "Todos";
+    // Verifica se está em modo "todos os meses" (independente se é período "Todos" ou não)
+    // Quando selectedMonth é "all", sempre calcula média
+    const isAllMonthsMode = selectedMonth === "all";
     
     return topMetrics.map((metric) => {
       // Para cálculo de média anual, usamos os dados originais (não filtrados)
       // encontramos a métrica original em categoryFilteredMetrics
       const originalMetric = categoryFilteredMetrics.find(m => m.id === metric.id) || metric;
-      
-      // Filtra apenas os meses que têm dados válidos (não nulos) dos dados originais
-      const filledMonths = originalMetric.dados.filter(d => 
-        d.realizado !== null && d.previsto !== null && 
-        d.realizado !== undefined && d.previsto !== undefined
-      );
+      const isInverso = metric.inverso || false;
       
       let percentage = 0;
       let displayRealizado = 0;
@@ -274,8 +270,6 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           
           // Para métricas inversas (menor é melhor), calcula (previsto/realizado)*100
           // Ex: Ciclo de Vendas - previsto 15 dias, realizado 4 dias = 375% (muito bom!)
-          const isInverso = metric.inverso || false;
-          
           if (isInverso && displayRealizado !== 0) {
             // Métricas inversas: quanto menor o realizado em relação ao previsto, melhor
             percentage = (displayPrevisto / displayRealizado) * 100;
@@ -285,23 +279,34 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           }
         }
       } else if (isAllMonthsMode) {
-        // "Todos os indicadores" + "Todos os meses" - calcula MÉDIA ANUAL dos meses preenchidos
-        const monthPercentages: number[] = [];
-        const isInverso = metric.inverso || false;
+        // "Todos os Meses" selecionado - calcula MÉDIA dos meses no período selecionado
+        // Se período também é "Todos", usa todos os 12 meses
+        // Se período é 30/60/90, usa apenas os meses desse período
+        const monthsToInclude = selectedPeriod === "Todos" 
+          ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] 
+          : getMonthsForPeriod(selectedPeriod);
         
-        // Usa dados ORIGINAIS (não filtrados) para calcular média anual
-        originalMetric.dados.forEach((d) => {
-          if (d.realizado !== null && d.previsto !== null && 
-              d.realizado !== undefined && d.previsto !== undefined) {
-            // Para métricas inversas: (previsto/realizado)*100
-            // Para métricas normais: (realizado/previsto)*100
-            if (isInverso && d.realizado !== 0) {
-              const monthPct = (d.previsto / d.realizado) * 100;
-              monthPercentages.push(monthPct);
-            } else if (d.previsto !== 0) {
-              const monthPct = (d.realizado / d.previsto) * 100;
-              monthPercentages.push(monthPct);
-            }
+        const monthsSet = new Set(monthsToInclude);
+        
+        // Filtra apenas os meses do período que têm dados válidos
+        const periodFilledMonths = originalMetric.dados.filter((d, index) => 
+          monthsSet.has(index) &&
+          d.realizado !== null && d.previsto !== null && 
+          d.realizado !== undefined && d.previsto !== undefined
+        );
+        
+        const monthPercentages: number[] = [];
+        
+        // Calcula percentual para cada mês válido
+        periodFilledMonths.forEach((d) => {
+          if (isInverso && d.realizado !== 0) {
+            // Métricas inversas: (previsto/realizado)*100
+            const monthPct = (d.previsto! / d.realizado!) * 100;
+            monthPercentages.push(monthPct);
+          } else if (!isInverso && d.previsto !== 0) {
+            // Métricas normais: (realizado/previsto)*100
+            const monthPct = (d.realizado! / d.previsto!) * 100;
+            monthPercentages.push(monthPct);
           }
         });
         
@@ -311,37 +316,7 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           percentage = totalPercentage / monthPercentages.length;
         }
         
-        // Médias anuais para exibição (previsto e realizado)
-        if (filledMonths.length > 0) {
-          displayRealizado = filledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / filledMonths.length;
-          displayPrevisto = filledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / filledMonths.length;
-        }
-      } else {
-        // Período específico (30, 60, 90 dias) - calcula média dos meses no período
-        const periodFilledMonths = metric.dados.filter(d => 
-          d.realizado !== null && d.previsto !== null && 
-          d.realizado !== undefined && d.previsto !== undefined
-        );
-        
-        const monthPercentages: number[] = [];
-        const isInverso = metric.inverso || false;
-        
-        periodFilledMonths.forEach((d) => {
-          // Para métricas inversas: (previsto/realizado)*100
-          // Para métricas normais: (realizado/previsto)*100
-          if (isInverso && d.realizado !== 0) {
-            const monthPct = (d.previsto / d.realizado) * 100;
-            monthPercentages.push(monthPct);
-          } else if (d.previsto !== 0) {
-            const monthPct = (d.realizado! / d.previsto) * 100;
-            monthPercentages.push(monthPct);
-          }
-        });
-        
-        if (monthPercentages.length > 0) {
-          percentage = monthPercentages.reduce((sum, pct) => sum + pct, 0) / monthPercentages.length;
-        }
-        
+        // Médias para exibição (previsto e realizado) dos meses válidos
         if (periodFilledMonths.length > 0) {
           displayRealizado = periodFilledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / periodFilledMonths.length;
           displayPrevisto = periodFilledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / periodFilledMonths.length;
