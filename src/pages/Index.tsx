@@ -163,10 +163,12 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   // Indicadores de Financeiro e Controladoria que usam % (não R$)
   // Margem EBITDA, Margem Líquida, Margem Bruta, Margem de Contribuição, Despesas Operacionais
   // Crescimento EBITDA, Resultado Financeiro, Compliance Tributário, Carga Tributária
+  // Crescimento Receita Clientes Existentes (Marketing Growth)
   if (nomeLower.includes('margem') || nomeLower.includes('despesas operacionais') || 
       nomeLower.includes('crescimento ebitda') || nomeLower.includes('resultado financeiro') ||
       nomeLower.includes('compliance') || nomeLower.includes('carga tributária') ||
-      nomeLower.includes('carga tributaria')) {
+      nomeLower.includes('carga tributaria') || nomeLower.includes('crescimento receita') ||
+      nomeLower.includes('crescimento_receita')) {
     return { prefix: '', suffix: '%' };
   }
   
