@@ -29,7 +29,6 @@ const menuItems = [
   { id: "Marketing Growth", label: "2025 - Marketing Growth", icon: TrendingUp },
   { id: "B2C | Digital", label: "2025 - B2C | Digital", icon: Package },
   { id: "Marketing Branding", label: "2025 - Marketing Branding", icon: Palette },
-  { id: "Legacy", label: "2025 - Legacy", icon: BarChart3 },
   { id: "Logística", label: "2025 - Logística", icon: Truck },
   { id: "Atendimento", label: "2025 - Atendimento", icon: Headphones },
   { id: "Operações", label: "2025 - Operações", icon: Cog },
