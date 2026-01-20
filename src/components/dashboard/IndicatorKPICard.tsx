@@ -31,11 +31,11 @@ export function IndicatorKPICard({
   onClick,
   isSelected = false,
 }: IndicatorKPICardProps) {
-  // Para métricas inversas (menor é melhor): verde se <= 100%, vermelho se > 100%
-  // Para métricas normais (maior é melhor): verde se >= 100%, vermelho se < 100%
-  const isPositive = inverso 
-    ? percentage <= 100 
-    : percentage >= 100;
+  // O percentual do Supabase já considera a lógica inversa internamente
+  // percentual >= 100% significa meta atingida (bom) para AMBOS os tipos de métricas
+  // Isso porque para métricas inversas, o Supabase calcula: (previsto/realizado)*100
+  // Ex: Ruptura de Estoque - previsto 30%, realizado 23.80% = 126.05% (bom, abaixo do limite)
+  const isPositive = percentage >= 100;
 
   return (
     <Card 
