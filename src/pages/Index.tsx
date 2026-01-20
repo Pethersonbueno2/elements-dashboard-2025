@@ -172,6 +172,14 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   if (nomeLower.includes('lcp')) {
     return { prefix: '', suffix: 's' };
   }
+  // Brand Search - pesquisas
+  if (nomeLower.includes('brand search')) {
+    return { prefix: '', suffix: ' pesquisas' };
+  }
+  // Alcance - Pessoas
+  if (nomeLower.includes('alcance')) {
+    return { prefix: '', suffix: ' Pessoas' };
+  }
   // Dias
   if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda') ||
       nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de')) {
@@ -185,9 +193,8 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
       nomeLower.includes('performance') || nomeLower.includes('acuracidade') || nomeLower.includes('reducao') ||
       nomeLower.includes('redução') || nomeLower.includes('compliance') || nomeLower.includes('share') ||
       nomeLower.includes('engajamento') || nomeLower.includes('trafego') || nomeLower.includes('organico') ||
-      nomeLower.includes('brand') || nomeLower.includes('alcance') || nomeLower.includes('alavancagem') ||
-      nomeLower.includes('endividamento') || nomeLower.includes('tributari') || nomeLower.includes('ltv') ||
-      nomeLower.includes('base_ativa') || nomeLower.includes('base ativa')) {
+      nomeLower.includes('alavancagem') || nomeLower.includes('endividamento') || nomeLower.includes('tributari') || 
+      nomeLower.includes('ltv') || nomeLower.includes('base_ativa') || nomeLower.includes('base ativa')) {
     return { prefix: '', suffix: '%' };
   }
   // Pontuação/Nota (NPS, Satisfação, Reputação)
