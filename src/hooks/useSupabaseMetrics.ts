@@ -141,12 +141,6 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   },
 
   // Marketing Growth
-  "2025_marketing_growth_cpl_rs_50": {
-    categoria: "Marketing Growth",
-    nome: "Marketing Growth – CPL",
-    meta: "< R$ 50",
-    inverso: true,
-  },
   "2025_marketing_growth_cpa_rs_200": {
     categoria: "Marketing Growth",
     nome: "Marketing Growth – CPA",
@@ -156,32 +150,33 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_marketing_growth_roas": {
     categoria: "Marketing Growth",
     nome: "Marketing Growth – ROAS",
-    meta: "> 4",
+    meta: "> 7",
+  },
+  "2025_marketing_growth_cpl_rs_50": {
+    categoria: "Marketing Growth",
+    nome: "Marketing Growth – CPL",
+    meta: "< R$ 50",
+    inverso: true,
+  },
+  "2025_marketing_growth_cohort_ltv": {
+    categoria: "Marketing Growth",
+    nome: "Marketing Growth – Cohort LTV",
+    meta: "Validar Dashboard",
   },
   "2025_marketing_growth_taxa_de_conversão_de_lead": {
     categoria: "Marketing Growth",
     nome: "Marketing Growth – Taxa de Conversão de Lead",
-    meta: "> 3%",
-  },
-  "2025_marketing_growth_crescimento_da_Base_de_clientes": {
-    categoria: "Marketing Growth",
-    nome: "Marketing Growth – Crescimento da Base de Clientes",
-    meta: "Crescimento",
+    meta: "> 20%",
   },
   "2025_marketing_growth_crescimento_da_receita_de_clientes": {
     categoria: "Marketing Growth",
     nome: "Marketing Growth – Crescimento Receita Clientes Existentes",
-    meta: "5%",
+    meta: "> 10%",
   },
-  "2025_marketing_growth_cohort_ltv": {
+  "2025_marketing_growth_crescimento_da_Base_de_clientes": {
     categoria: "Marketing Growth",
-    nome: "Marketing Growth – LTV",
-    meta: "Crescimento",
-  },
-  "2025_marketing_growth_projetos_realizados": {
-    categoria: "Marketing Growth",
-    nome: "Marketing Growth – Projetos Realizados",
-    meta: "100%",
+    nome: "Marketing Growth – Crescimento da Base de Clientes",
+    meta: "> 20%",
   },
   "2025_marketing_growth_percentual_de_compras_indicacao": {
     categoria: "Marketing Growth",
@@ -191,7 +186,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_marketing_growth_vendas_por_ia": {
     categoria: "Marketing Growth",
     nome: "Marketing Growth – Vendas por IA",
-    meta: "Crescimento",
+    meta: "> 15%",
   },
 
   // Marketing Branding
