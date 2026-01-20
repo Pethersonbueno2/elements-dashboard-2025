@@ -2279,36 +2279,6 @@ export type Database = {
         }
         Relationships: []
       }
-      "2025_marketing_growth_projetos_realizados": {
-        Row: {
-          "Atualizado-em": string | null
-          diferenca: number | null
-          id: number
-          mes: string
-          percentual_concluido: number | null
-          previsto: number | null
-          realizado: number | null
-        }
-        Insert: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Update: {
-          "Atualizado-em"?: string | null
-          diferenca?: number | null
-          id?: number
-          mes?: string
-          percentual_concluido?: number | null
-          previsto?: number | null
-          realizado?: number | null
-        }
-        Relationships: []
-      }
       "2025_marketing_growth_roas": {
         Row: {
           "Atualizado-em": string | null
