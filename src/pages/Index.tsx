@@ -158,7 +158,8 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   if ((metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
       nomeLower.includes('faturamento') || nomeLower.includes('ebtida') || nomeLower.includes('ebitda') ||
       nomeLower.includes('ticket') || nomeLower.includes('custo') || nomeLower.includes('despesa') ||
-      nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl')) &&
+      nomeLower.includes('investimento') || nomeLower.includes('cpa') || nomeLower.includes('cpl') ||
+      nomeLower.includes('ltv')) &&
       !nomeLower.includes('headcount')) {
     return { prefix: 'R$ ', suffix: '' };
   }
