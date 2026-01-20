@@ -441,7 +441,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_people_enps_51": {
     categoria: "People",
     nome: "People – eNPS",
-    meta: "> 51",
+    meta: "> 51 pts",
   },
   "2025_people_turnover": {
     categoria: "People",
@@ -452,7 +452,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_people_headcount_vs_receita": {
     categoria: "People",
     nome: "People – Headcount vs Receita",
-    meta: "Otimizado",
+    meta: "> 1%",
   },
   "2025_people_time_to_fill_30_dias": {
     categoria: "People",
@@ -463,7 +463,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_people_consistencia_de_feedbacks_de_liderança": {
     categoria: "People",
     nome: "People – Consistência Feedbacks Liderança",
-    meta: "80%",
+    meta: "> 80%",
   },
 
   // Legacy
