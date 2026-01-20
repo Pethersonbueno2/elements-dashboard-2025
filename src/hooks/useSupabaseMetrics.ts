@@ -397,8 +397,8 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_compras_internacionais_redução_de_custos_de_aquisi": {
     categoria: "Compras Internacionais",
     nome: "Compras Int. – Redução de Custos de Aquisição",
-    meta: "≤ 3%",
-    inverso: true,
+    meta: "> 3%",
+    inverso: false,
   },
   "2025_compras_internacionais_custo_de_frete_por_unidade": {
     categoria: "Compras Internacionais",
