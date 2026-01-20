@@ -230,22 +230,22 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_financeiro_e_controladoria_margem_bruta_55": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem Bruta",
-    meta: "55%",
+    meta: "> 55%",
   },
   "2025_financeiro_e_controladoria_margem_de_contribuicao": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem de Contribuição",
-    meta: "34%",
+    meta: "> 34%",
   },
   "2025_financeiro_e_controladoria_margem_ebtida": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem EBITDA",
-    meta: "25%",
+    meta: "> 25%",
   },
   "2025_financeiro_e_controladoria_margem_liquida_15": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Margem Líquida",
-    meta: "15%",
+    meta: "> 15%",
   },
   "2025_financeiro_e_controladoria_crescimento_ebitda": {
     categoria: "Financeiro e Controladoria",
@@ -261,7 +261,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_financeiro_controladoria_resultado_financeiro": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Resultado Financeiro",
-    meta: "Positivo",
+    meta: "> 6%",
   },
   "2025_financeiro_e_controladoria_compliance_tributário": {
     categoria: "Financeiro e Controladoria",
@@ -271,13 +271,12 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_financeiro_e_controladoria_carga_tributaria_efetiva": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Carga Tributária Efetiva",
-    meta: "< 25%",
-    inverso: true,
+    meta: "Em construção",
   },
   "2025_financeiro_e_controladoria_grau_de_alavancagem": {
     categoria: "Financeiro e Controladoria",
     nome: "Financeiro – Grau de Alavancagem Financeira",
-    meta: "< 2.5",
+    meta: "< 2,5 (em construção)",
     inverso: true,
   },
   "2025_financeiro_e_controladoria_endividamento_sobre_ebitda": {
