@@ -160,6 +160,26 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
     return { prefix: '', suffix: '%' };
   }
   
+  // Indicadores de Financeiro e Controladoria que usam % (não R$)
+  // Margem EBITDA, Margem Líquida, Margem Bruta, Margem de Contribuição, Despesas Operacionais
+  // Crescimento EBITDA, Resultado Financeiro, Compliance Tributário, Carga Tributária
+  if (nomeLower.includes('margem') || nomeLower.includes('despesas operacionais') || 
+      nomeLower.includes('crescimento ebitda') || nomeLower.includes('resultado financeiro') ||
+      nomeLower.includes('compliance') || nomeLower.includes('carga tributária') ||
+      nomeLower.includes('carga tributaria')) {
+    return { prefix: '', suffix: '%' };
+  }
+  
+  // Endividamento sobre EBITDA e Grau de Alavancagem - são índices sem unidade
+  if (nomeLower.includes('endividamento') || nomeLower.includes('alavancagem')) {
+    return { prefix: '', suffix: '' };
+  }
+  
+  // EBITDA sob Juros - usa % (não R$)
+  if (nomeLower.includes('ebtida sob juros') || nomeLower.includes('ebitda sob juros')) {
+    return { prefix: '', suffix: '%' };
+  }
+  
   // Reais - verifica primeiro por ser mais específico (exceto Headcount vs Receita que usa %)
   if ((metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
       nomeLower.includes('faturamento') || nomeLower.includes('ebtida') || nomeLower.includes('ebitda') ||
