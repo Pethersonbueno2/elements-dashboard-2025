@@ -167,9 +167,13 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
       (metaLower.includes('h') && !metaLower.includes('%')) || nomeLower.includes('hora')) {
     return { prefix: '', suffix: ' horas' };
   }
+  // Segundos - LCP (Largest Contentful Paint) é métrica de web performance
+  if (nomeLower.includes('lcp')) {
+    return { prefix: '', suffix: 's' };
+  }
   // Dias
   if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda') ||
-      nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de') || nomeLower.includes('lcp')) {
+      nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de')) {
     return { prefix: '', suffix: ' dias' };
   }
   // Percentual - mais abrangente
