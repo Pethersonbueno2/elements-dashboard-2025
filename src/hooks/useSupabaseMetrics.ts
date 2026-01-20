@@ -49,22 +49,22 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_b2b_receita": {
     categoria: "B2B",
     nome: "B2B – Receita",
-    meta: "R$ 61.622.991",
+    meta: "> R$ 61.622.991",
   },
   "2025_b2b_base_ativa_saudavel_60": {
     categoria: "B2B",
     nome: "B2B – Base Ativa Saudável",
-    meta: "60%",
+    meta: "> 60%",
   },
   "2025_b2b_taxa_de_conversão_25": {
     categoria: "B2B",
     nome: "B2B – Taxa de Conversão",
-    meta: "25%",
+    meta: "> 25%",
   },
   "2025_b2b_ticket_medio": {
     categoria: "B2B",
     nome: "B2B – Ticket Médio",
-    meta: "R$ 50.000",
+    meta: "> R$ 50.000",
   },
   "2025_b2b_ciclo_de_vendas_15_dias": {
     categoria: "B2B",
