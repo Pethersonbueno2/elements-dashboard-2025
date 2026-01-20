@@ -260,29 +260,33 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
           displayRealizado = monthData.realizado ?? 0;
           displayPrevisto = monthData.previsto ?? 0;
           
-          // Primeiro tenta usar concluido do Supabase (aceita 0 como valor válido)
-          if (monthData.concluido !== null && monthData.concluido !== undefined && 
-              Number.isFinite(monthData.concluido)) {
-            percentage = monthData.concluido;
+          // Para métricas inversas (menor é melhor), calcula (previsto/realizado)*100
+          // Ex: Ciclo de Vendas - previsto 15 dias, realizado 4 dias = 375% (muito bom!)
+          const isInverso = metric.inverso || false;
+          
+          if (isInverso && displayRealizado !== 0) {
+            // Métricas inversas: quanto menor o realizado em relação ao previsto, melhor
+            percentage = (displayPrevisto / displayRealizado) * 100;
           } else if (displayPrevisto !== 0) {
-            // Calcula porcentagem: (realizado / previsto) * 100
+            // Métricas normais: (realizado / previsto) * 100
             percentage = (displayRealizado / displayPrevisto) * 100;
           }
         }
       } else if (isAllMonthsMode) {
         // "Todos os indicadores" + "Todos os meses" - calcula MÉDIA ANUAL dos meses preenchidos
         const monthPercentages: number[] = [];
+        const isInverso = metric.inverso || false;
         
         // Usa dados ORIGINAIS (não filtrados) para calcular média anual
         originalMetric.dados.forEach((d) => {
           if (d.realizado !== null && d.previsto !== null && 
               d.realizado !== undefined && d.previsto !== undefined) {
-            // Se tem concluido, usa ele (aceita 0 como valor válido)
-            if (d.concluido !== null && d.concluido !== undefined && 
-                Number.isFinite(d.concluido)) {
-              monthPercentages.push(d.concluido);
+            // Para métricas inversas: (previsto/realizado)*100
+            // Para métricas normais: (realizado/previsto)*100
+            if (isInverso && d.realizado !== 0) {
+              const monthPct = (d.previsto / d.realizado) * 100;
+              monthPercentages.push(monthPct);
             } else if (d.previsto !== 0) {
-              // Calcula porcentagem do mês
               const monthPct = (d.realizado / d.previsto) * 100;
               monthPercentages.push(monthPct);
             }
@@ -308,12 +312,14 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         );
         
         const monthPercentages: number[] = [];
+        const isInverso = metric.inverso || false;
         
         periodFilledMonths.forEach((d) => {
-          // Aceita 0 como valor válido para concluido
-          if (d.concluido !== null && d.concluido !== undefined && 
-              Number.isFinite(d.concluido)) {
-            monthPercentages.push(d.concluido);
+          // Para métricas inversas: (previsto/realizado)*100
+          // Para métricas normais: (realizado/previsto)*100
+          if (isInverso && d.realizado !== 0) {
+            const monthPct = (d.previsto / d.realizado) * 100;
+            monthPercentages.push(monthPct);
           } else if (d.previsto !== 0) {
             const monthPct = (d.realizado! / d.previsto) * 100;
             monthPercentages.push(monthPct);
