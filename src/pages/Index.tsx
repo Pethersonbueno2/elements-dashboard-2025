@@ -296,18 +296,6 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         
         const monthsSet = new Set(monthsToInclude);
         
-        // Filtra meses do período que têm campo 'concluido' preenchido no Supabase
-        const periodMonthsWithPercentage = originalMetric.dados.filter((d, index) => 
-          monthsSet.has(index) &&
-          d.concluido !== null && d.concluido !== undefined
-        );
-        
-        // Média das porcentagens usando o campo 'concluido' do Supabase
-        if (periodMonthsWithPercentage.length > 0) {
-          const totalPercentage = periodMonthsWithPercentage.reduce((sum, d) => sum + (d.concluido ?? 0), 0);
-          percentage = totalPercentage / periodMonthsWithPercentage.length;
-        }
-        
         // Filtra meses que têm previsto e realizado preenchidos para calcular médias
         const periodFilledMonths = originalMetric.dados.filter((d, index) => 
           monthsSet.has(index) &&
@@ -319,6 +307,17 @@ const formatValueWithUnit = (value: number | null | undefined, meta: string, nom
         if (periodFilledMonths.length > 0) {
           displayRealizado = periodFilledMonths.reduce((sum, d) => sum + (d.realizado ?? 0), 0) / periodFilledMonths.length;
           displayPrevisto = periodFilledMonths.reduce((sum, d) => sum + (d.previsto ?? 0), 0) / periodFilledMonths.length;
+          
+          // Calcula porcentagem usando regra de três: Previsto = 100%
+          // Para métricas inversas (menor é melhor): Previsto/Realizado * 100
+          // Para métricas normais (maior é melhor): Realizado/Previsto * 100
+          if (displayPrevisto !== 0 && displayRealizado !== 0) {
+            if (isInverso) {
+              percentage = (displayPrevisto / displayRealizado) * 100;
+            } else {
+              percentage = (displayRealizado / displayPrevisto) * 100;
+            }
+          }
         }
       }
 
