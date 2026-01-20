@@ -154,6 +154,12 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   const metaLower = meta.toLowerCase();
   const nomeLower = nome.toLowerCase();
   
+  // Redução de Custos de Aquisição - usa % (exceção específica antes da regra de R$)
+  if (nomeLower.includes('redução de custos') || nomeLower.includes('reducao de custos') ||
+      nomeLower.includes('redução_de_custos') || nomeLower.includes('reducao_de_custos')) {
+    return { prefix: '', suffix: '%' };
+  }
+  
   // Reais - verifica primeiro por ser mais específico (exceto Headcount vs Receita que usa %)
   if ((metaLower.includes('r$') || metaLower.includes('reais') || nomeLower.includes('receita') || 
       nomeLower.includes('faturamento') || nomeLower.includes('ebtida') || nomeLower.includes('ebitda') ||
