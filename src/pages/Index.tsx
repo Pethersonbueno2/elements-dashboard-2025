@@ -208,6 +208,11 @@ const getUnitFromMeta = (meta: string, nome: string): { prefix: string; suffix: 
   if (nomeLower.includes('alcance')) {
     return { prefix: '', suffix: ' Pessoas' };
   }
+  // Tráfego Orgânico - usa "sessões" (exceção antes da regra de %)
+  if (nomeLower.includes('trafego organico') || nomeLower.includes('tráfego orgânico') ||
+      nomeLower.includes('trafego_organico')) {
+    return { prefix: '', suffix: ' sessões' };
+  }
   // Dias
   if (metaLower.includes('dia') || nomeLower.includes('prazo') || nomeLower.includes('ciclo de venda') ||
       nomeLower.includes('ciclo_de_venda') || nomeLower.includes('tempo de')) {
