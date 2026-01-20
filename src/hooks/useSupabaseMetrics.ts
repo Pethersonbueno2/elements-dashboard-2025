@@ -88,7 +88,7 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_b2bc_receita": {
     categoria: "B2BC",
     nome: "B2BC – Receita",
-    meta: "R$ 15.815.042",
+    meta: "> R$ 15.815.042",
   },
   "2025_b2bc_numero_de_novos_clientes": {
     categoria: "B2BC",
@@ -98,12 +98,12 @@ const tableMapping: Record<string, { categoria: string; nome: string; meta: stri
   "2025_b2bc_ticket_medio": {
     categoria: "B2BC",
     nome: "B2BC – Ticket Médio",
-    meta: "R$ 16.000",
+    meta: "> R$ 16.000",
   },
   "2025_b2bc_taxa_de_conversao_25": {
     categoria: "B2BC",
     nome: "B2BC – Taxa de Conversão",
-    meta: "25%",
+    meta: "> 25%",
   },
   "2025_b2bc_ciclo_de_vendas_10_dias": {
     categoria: "B2BC",
