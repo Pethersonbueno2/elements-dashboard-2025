@@ -13,29 +13,10 @@ export function FloatingControls() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
-  const applyZoom = (zoomPercent: number) => {
-    // Smart TV browsers (Chromium variants) are inconsistent with `documentElement.style.zoom`.
-    // We instead scale the app viewport container (#app-viewport).
-    const zoomScale = Math.max(0.25, Math.min(1.5, zoomPercent / 100));
-    document.documentElement.style.setProperty("--app-zoom", String(zoomScale));
-    document.body.setAttribute("data-app-zoom", String(zoomScale));
-    // Ensure legacy zoom isn't stuck from previous sessions.
-    document.documentElement.style.zoom = "";
-  };
-
   // Initialize dark mode based on document class
   useEffect(() => {
     const isDarkMode = document.documentElement.classList.contains("dark");
     setIsDark(isDarkMode);
-  }, []);
-
-  // Load saved zoom on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("appZoom");
-    const savedZoom = saved ? Number(saved) : 100;
-    const normalized = Number.isFinite(savedZoom) ? Math.max(25, Math.min(150, savedZoom)) : 100;
-    setZoom(normalized);
-    applyZoom(normalized);
   }, []);
 
   // Listen for fullscreen changes
@@ -49,21 +30,18 @@ export function FloatingControls() {
   const handleZoomIn = () => {
     const newZoom = Math.min(zoom + 10, 150);
     setZoom(newZoom);
-    localStorage.setItem("appZoom", String(newZoom));
-    applyZoom(newZoom);
+    document.documentElement.style.zoom = `${newZoom}%`;
   };
 
   const handleZoomOut = () => {
     const newZoom = Math.max(zoom - 10, 25);
     setZoom(newZoom);
-    localStorage.setItem("appZoom", String(newZoom));
-    applyZoom(newZoom);
+    document.documentElement.style.zoom = `${newZoom}%`;
   };
 
   const handleResetZoom = () => {
     setZoom(100);
-    localStorage.setItem("appZoom", "100");
-    applyZoom(100);
+    document.documentElement.style.zoom = "100%";
   };
 
   const toggleDarkMode = () => {
@@ -104,7 +82,7 @@ export function FloatingControls() {
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-6 z-[9999] flex flex-col gap-2 bg-card border border-border rounded-xl p-2 shadow-lg transition-all duration-300" style={{ isolation: 'isolate' }}>
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 bg-card border border-border rounded-xl p-2 shadow-lg transition-all duration-300">
       {/* Minimize Toggle */}
       <Tooltip>
         <TooltipTrigger asChild>

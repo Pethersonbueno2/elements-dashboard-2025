@@ -18,21 +18,14 @@ const App = () => (
         <Toaster />
         <Sonner />
         <FloatingControls />
-        {/*
-          App viewport wrapper.
-          We apply "zoom" via CSS transform on this container instead of html { zoom },
-          which is unreliable on some Smart TV Chromium browsers and can break fixed overlays.
-        */}
-        <div id="app-viewport" className="min-h-screen">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/area-indicadores" element={<AreaIndicadores />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/area-indicadores" element={<AreaIndicadores />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

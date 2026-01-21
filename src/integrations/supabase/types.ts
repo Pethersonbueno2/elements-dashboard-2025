@@ -815,6 +815,96 @@ export type Database = {
         }
         Relationships: []
       }
+      "2025_financeiro_e_controladoria_carga_tributaria_efetiva": {
+        Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_financeiro_e_controladoria_compliance_tributário": {
+        Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
+      "2025_financeiro_e_controladoria_crescimento_ebitda": {
+        Row: {
+          "Atualizado-em": string | null
+          diferenca: number | null
+          id: number
+          mes: string
+          percentual_concluido: number | null
+          previsto: number | null
+          realizado: number | null
+        }
+        Insert: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Update: {
+          "Atualizado-em"?: string | null
+          diferenca?: number | null
+          id?: number
+          mes?: string
+          percentual_concluido?: number | null
+          previsto?: number | null
+          realizado?: number | null
+        }
+        Relationships: []
+      }
       "2025_financeiro_e_controladoria_despesas_operacionais": {
         Row: {
           "Atualizado-em": string | null

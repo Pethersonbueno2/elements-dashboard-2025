@@ -46,48 +46,48 @@ export function IndicatorKPICard({
       )}
       onClick={onClick}
     >
-      <CardContent className="p-3">
-        <div className="flex items-center justify-between gap-3">
+      <CardContent className="p-2.5">
+        <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-muted-foreground uppercase tracking-wide font-medium truncate">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium mb-1 truncate">
               {title}
             </p>
-            <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
+            <p className="text-lg md:text-xl font-bold text-foreground leading-tight">
               {value}
             </p>
-            <p className="text-sm text-muted-foreground font-medium">
+            <p className="text-[10px] text-muted-foreground mt-0.5">
               Meta: {meta}
             </p>
           </div>
-          <div className="flex flex-col items-center gap-1 shrink-0">
+          <div className="flex flex-col items-center gap-0.5 shrink-0">
             <div className={cn(
-              "p-2 rounded-full",
+              "p-1.5 rounded-full",
               isPositive ? "bg-green-500/10" : "bg-red-500/10"
             )}>
               <Percent className={cn(
-                "h-6 w-6",
+                "h-3.5 w-3.5",
                 isPositive ? "text-green-500" : "text-red-500"
               )} />
             </div>
             <span className={cn(
-              "font-bold text-center leading-tight",
+              "text-[8px] font-medium text-center leading-tight",
               isPositive ? "text-green-500" : "text-red-500"
-            )} style={{ fontSize: '30px' }}>
-              {percentage.toFixed(0)}%
+            )}>
+              Porcentagem<br />atingida
             </span>
           </div>
         </div>
 
         {(previstoValue || realizadoValue) && (
-          <div className="flex items-center gap-6 mt-2 pt-2 border-t border-border/50 text-lg">
+          <div className="flex items-center gap-2 mt-1.5 pt-1.5 border-t border-border/50">
             {previstoValue && (
-              <p className="text-muted-foreground" style={{ fontSize: '30px' }}>
-                {previstoLabel} <span className="font-bold text-foreground">{previstoValue}</span>
+              <p className="text-[10px] text-muted-foreground">
+                {previstoLabel} <span className="font-semibold text-foreground">{previstoValue}</span>
               </p>
             )}
             {realizadoValue && (
-              <p className="text-muted-foreground" style={{ fontSize: '30px' }}>
-                {realizadoLabel} <span className="font-bold text-foreground">{realizadoValue}</span>
+              <p className="text-[10px] text-muted-foreground">
+                {realizadoLabel} <span className="font-semibold text-foreground">{realizadoValue}</span>
               </p>
             )}
           </div>

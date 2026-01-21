@@ -1,11 +1,8 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
   Bar,
-  AreaChart,
-  Area,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,20 +10,15 @@ import {
   ResponsiveContainer,
   Cell,
   LabelList,
-  ComposedChart,
-  Legend,
-  Dot,
 } from "recharts";
 import { type Metric } from "@/data/dashboardData";
-import { Clock, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Clock } from "lucide-react";
 
 interface MonthlyDetailChartProps {
   metrics: Metric[];
   title?: string;
   subtitle?: string;
   showOnlyIndicators?: boolean;
-  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
 }
 
 const months = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
@@ -134,7 +126,6 @@ export function MonthlyDetailChart({
   title = "Detalhamento Mensal",
   subtitle = "Valores de Previsto e Realizado por mês para cada indicador",
   showOnlyIndicators = false,
-  onVisibleIndicatorsChange,
 }: MonthlyDetailChartProps) {
   // Agregar dados por mês considerando o contexto inverso de cada métrica
   const chartData = useMemo(() => {
@@ -280,370 +271,70 @@ export function MonthlyDetailChart({
       )}
 
       {/* Card 2: Grid de gráficos por indicador */}
-      <IndicatorChartsSection 
-        indicatorCharts={indicatorCharts}
-        showOnlyIndicators={showOnlyIndicators}
-        title={title}
-        subtitle={subtitle}
-        metrics={metrics}
-        onVisibleIndicatorsChange={onVisibleIndicatorsChange}
-      />
-    </div>
-  );
-}
-
-// Componente separado para renderizar um único gráfico de indicador - fullwidth para carrossel
-function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (value: number | null) => string }) {
-  // Prepara dados com cores para cada segmento
-  const chartDataWithSegments = useMemo(() => {
-    return chart.data.map((entry: any, index: number) => {
-      // Cor do segmento baseada no ponto atual
-      const segmentColor = entry.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
-      return {
-        ...entry,
-        segmentColor,
-      };
-    });
-  }, [chart.data]);
-
-  return (
-    <div className="bg-card rounded-lg border border-border p-4">
-      {/* Header do gráfico */}
-      <div className="flex items-center justify-between mb-4">
-        <h4 className="text-xl font-bold text-foreground">
-          {chart.nome}
-        </h4>
-        <div className="flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-primary"></div>
-            <span className="text-muted-foreground">Previsto</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142.1 76.2% 36.3%)' }}></div>
-            <span className="text-muted-foreground">Realizado (meta atingida)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0 84.2% 60.2%)' }}></div>
-            <span className="text-muted-foreground">Realizado (abaixo meta)</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Gráfico fullwidth */}
-      <div className="h-[45vh] min-h-[350px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartDataWithSegments} margin={{ top: 50, right: 30, left: 20, bottom: 30 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} horizontal vertical={false} />
-            <XAxis 
-              dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 14, fontWeight: 500 }}
-              axisLine={false}
-              tickLine={false}
-              height={40}
-              interval={0}
-              padding={{ left: 20, right: 20 }}
-            />
-            <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 500 }}
-              axisLine={false}
-              tickLine={false}
-              width={50}
-              tickFormatter={formatValue}
-            />
-            <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
-            
-            {/* Linha de Previsto - azul/roxa */}
-            <Line
-              type="monotone"
-              dataKey="previsto"
-              stroke="hsl(var(--primary))"
-              strokeWidth={3}
-              dot={(props: any) => {
-                const { cx, cy, payload } = props;
-                if (payload.previsto === null || payload.previsto === undefined) return null;
-                return (
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={8}
-                    fill="hsl(var(--primary))"
-                    stroke="hsl(var(--card))"
-                    strokeWidth={3}
-                  />
-                );
-              }}
-              label={(props: any) => {
-                const { x, y, value } = props;
-                if (value === null || value === undefined) return null;
-                return (
-                  <text
-                    x={x}
-                    y={y + 35}
-                    fill="hsl(var(--primary))"
-                    fontSize={14}
-                    fontWeight={600}
-                    textAnchor="middle"
-                  >
-                    {formatValue(value)}
-                  </text>
-                );
-              }}
-            />
-            
-            {/* Linha de Realizado - linha verde/vermelha com dots coloridos */}
-            <Line
-              type="monotone"
-              dataKey="realizado"
-              stroke="hsl(var(--muted-foreground))"
-              strokeWidth={3}
-              connectNulls={false}
-              dot={(props: any) => {
-                const { cx, cy, payload } = props;
-                if (payload.realizado === null || payload.realizado === undefined) return null;
-                const color = payload.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
-                return (
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={10}
-                    fill={color}
-                    stroke="hsl(var(--card))"
-                    strokeWidth={3}
-                  />
-                );
-              }}
-              label={(props: any) => {
-                const { x, y, value, index } = props;
-                if (value === null || value === undefined) return null;
-                const entry = chartDataWithSegments[index];
-                const color = entry?.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
-                return (
-                  <text
-                    x={x}
-                    y={y - 25}
-                    fill={color}
-                    fontSize={14}
-                    fontWeight={700}
-                    textAnchor="middle"
-                  >
-                    {formatValue(value)}
-                  </text>
-                );
-              }}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-// Componente de Carrossel para Financeiro e Controladoria
-function FinanceiroCarousel({ 
-  charts, 
-  formatValue,
-  onVisibleIndicatorsChange 
-}: { 
-  charts: any[]; 
-  formatValue: (value: number | null) => string;
-  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
-}) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [countdown, setCountdown] = useState(10);
-
-  // Cada slide contém 1 gráfico (fullwidth)
-  const totalSlides = charts.length;
-
-  // Notifica o pai sobre qual indicador está visível
-  useEffect(() => {
-    if (onVisibleIndicatorsChange && charts[currentSlide]) {
-      onVisibleIndicatorsChange([charts[currentSlide].id]);
-    }
-  }, [currentSlide, charts, onVisibleIndicatorsChange]);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    setCountdown(10);
-  }, [totalSlides]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-    setCountdown(10);
-  }, [totalSlides]);
-
-  const goToSlide = useCallback((index: number) => {
-    setCurrentSlide(index);
-    setCountdown(10);
-  }, []);
-
-  // Auto-avançar a cada 10 segundos
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          nextSlide();
-          return 10;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
-
-  return (
-    <div className="space-y-4 relative z-0">
-      {/* Controles do carrossel */}
-      <div className="flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={prevSlide}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setIsPaused(!isPaused)}
-          >
-            {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={nextSlide}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-muted-foreground">
-            {currentSlide + 1} / {totalSlides}
-          </span>
-          {!isPaused && (
-            <span className="text-xs text-primary font-medium">
-              {countdown}s
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Barra de progresso */}
-      <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-primary transition-all duration-1000 ease-linear"
-          style={{ width: `${((10 - countdown) / 10) * 100}%` }}
-        />
-      </div>
-
-      {/* Slides - 1 gráfico fullwidth por vez */}
-      <div className="relative overflow-hidden rounded-lg">
-        <div 
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {charts.map((chart, slideIndex) => (
-            <div 
-              key={chart.id} 
-              className="w-full flex-shrink-0"
-              style={{ minWidth: '100%' }}
-            >
-              <IndicatorChartItem 
-                chart={chart} 
-                formatValue={formatValue} 
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Indicadores de slide (dots) */}
-      <div className="flex items-center justify-center gap-2 relative z-10">
-        {charts.map((chart, index) => (
-          <button
-            key={chart.id}
-            onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentSlide 
-                ? 'bg-primary w-4' 
-                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Componente principal que decide entre grid ou carrossel
-function IndicatorChartsSection({ 
-  indicatorCharts, 
-  showOnlyIndicators, 
-  title, 
-  subtitle,
-  metrics,
-  onVisibleIndicatorsChange
-}: { 
-  indicatorCharts: any[]; 
-  showOnlyIndicators: boolean; 
-  title: string; 
-  subtitle: string;
-  metrics: Metric[];
-  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
-}) {
-  // Usa carrossel para qualquer setor com mais de 1 gráfico
-  const useCarousel = indicatorCharts.length > 1;
-
-  // Quando não usar carrossel, notifica todos os indicadores como visíveis
-  useEffect(() => {
-    if (!useCarousel && onVisibleIndicatorsChange) {
-      onVisibleIndicatorsChange(indicatorCharts.map(c => c.id));
-    }
-  }, [useCarousel, indicatorCharts, onVisibleIndicatorsChange]);
-
-  return (
-    <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-base font-semibold text-foreground">
-              {showOnlyIndicators ? title : "Indicadores por Setor"}
-            </CardTitle>
-            <p className="text-xs text-muted-foreground">
-              {showOnlyIndicators ? subtitle : "Evolução mensal de cada indicador"}
-            </p>
-          </div>
-          {useCarousel && (
-            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-              Modo Carrossel
-            </span>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        {useCarousel ? (
-          <FinanceiroCarousel 
-            charts={indicatorCharts} 
-            formatValue={formatValue} 
-            onVisibleIndicatorsChange={onVisibleIndicatorsChange}
-          />
-        ) : (
+      <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold text-foreground">
+            {showOnlyIndicators ? title : "Indicadores por Setor"}
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            {showOnlyIndicators ? subtitle : "Evolução mensal de cada indicador"}
+          </p>
+        </CardHeader>
+        <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {indicatorCharts.map((chart) => (
-              <IndicatorChartItem key={chart.id} chart={chart} formatValue={formatValue} />
+              <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
+                <div className="flex flex-col gap-1 mb-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
+                      {chart.nome}
+                    </h4>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      Meta: {chart.meta}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Clock className="w-3 h-3" />
+                    <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
+                    {chart.inverso && (
+                      <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
+                        ↓ Menor = Melhor
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="h-32">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chart.data} margin={{ top: 15, right: 5, left: 5, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 8 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis hide />
+                      <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
+                      <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
+                        <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
+                      </Bar>
+                      <Bar dataKey="realizado" radius={[2, 2, 0, 0]} barSize={8}>
+                        {chart.data.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
+                          />
+                        ))}
+                        <LabelList dataKey="realizado" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             ))}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
