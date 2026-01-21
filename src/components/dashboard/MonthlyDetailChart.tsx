@@ -292,32 +292,28 @@ export function MonthlyDetailChart({
   );
 }
 
-// Componente separado para renderizar um único gráfico de indicador
+// Componente separado para renderizar um único gráfico de indicador - compacto para 2 por slide
 function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (value: number | null) => string }) {
   return (
-    <div className="bg-muted/30 rounded-lg p-5">
-      <div className="flex flex-col gap-2 mb-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-3xl font-semibold text-foreground truncate max-w-[65%]">
-            {chart.nome}
-          </h4>
-          <span className="text-2xl text-muted-foreground bg-muted px-4 py-2 rounded-lg font-medium">
+    <div className="bg-muted/30 rounded-lg p-3">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="text-xl font-semibold text-foreground truncate max-w-[60%]">
+          {chart.nome}
+        </h4>
+        <div className="flex items-center gap-2">
+          <span className="text-lg text-muted-foreground bg-muted px-3 py-1 rounded font-medium">
             Meta: {chart.meta}
           </span>
-        </div>
-        <div className="flex items-center gap-2 text-xl text-muted-foreground">
-          <Clock className="w-6 h-6" />
-          <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
           {chart.inverso && (
-            <span className="ml-2 bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded text-xl">
+            <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm">
               ↓ Menor = Melhor
             </span>
           )}
         </div>
       </div>
-      <div className="h-[50vh] min-h-[350px] w-full overflow-visible">
+      <div className="h-[32vh] min-h-[200px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chart.data} margin={{ top: 60, right: 30, left: 20, bottom: 15 }}>
+          <ComposedChart data={chart.data} margin={{ top: 40, right: 20, left: 15, bottom: 10 }}>
             <defs>
               <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
@@ -327,18 +323,18 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
             <XAxis 
               dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 30, fontWeight: 600 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 18, fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
-              height={50}
+              height={35}
               interval={0}
-              padding={{ left: 15, right: 15 }}
+              padding={{ left: 10, right: 10 }}
             />
             <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 26, fontWeight: 500 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 16, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              width={80}
+              width={60}
               tickFormatter={formatValue}
             />
             <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
@@ -348,7 +344,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
               type="monotone"
               dataKey="previsto"
               stroke="hsl(var(--primary))"
-              strokeWidth={3}
+              strokeWidth={2}
               strokeDasharray="5 5"
               fill={`url(#gradient-${chart.id})`}
               dot={(props: any) => {
@@ -358,10 +354,10 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={10}
+                    r={6}
                     fill="hsl(var(--primary))"
                     stroke="hsl(var(--card))"
-                    strokeWidth={3}
+                    strokeWidth={2}
                   />
                 );
               }}
@@ -371,9 +367,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 50}
+                    y={y + 28}
                     fill="white"
-                    fontSize={30}
+                    fontSize={20}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -388,7 +384,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
               type="monotone"
               dataKey="realizado"
               stroke="hsl(var(--muted-foreground))"
-              strokeWidth={3}
+              strokeWidth={2}
               dot={(props: any) => {
                 const { cx, cy, payload } = props;
                 if (payload.realizado === null || payload.realizado === undefined) return null;
@@ -397,10 +393,10 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={12}
+                    r={8}
                     fill={color}
                     stroke="hsl(var(--card))"
-                    strokeWidth={4}
+                    strokeWidth={2}
                   />
                 );
               }}
@@ -412,9 +408,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y - 35}
+                    y={y - 20}
                     fill={color}
-                    fontSize={30}
+                    fontSize={20}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -444,9 +440,13 @@ function FinanceiroCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
-  // Cada slide contém 1 gráfico
+  // Cada slide contém 2 gráficos
   const slides = useMemo(() => {
-    return charts.map(chart => [chart]);
+    const result = [];
+    for (let i = 0; i < charts.length; i += 2) {
+      result.push(charts.slice(i, i + 2));
+    }
+    return result;
   }, [charts]);
 
   const totalSlides = slides.length;
@@ -542,7 +542,7 @@ function FinanceiroCarousel({
         />
       </div>
 
-      {/* Slides - 1 gráfico por vez */}
+      {/* Slides - 2 gráficos por vez */}
       <div className="relative overflow-hidden rounded-lg">
         <div 
           className="flex transition-transform duration-500 ease-in-out"
@@ -551,16 +551,18 @@ function FinanceiroCarousel({
           {slides.map((slideCharts, slideIndex) => (
             <div 
               key={slideIndex} 
-              className="w-full flex-shrink-0 px-1"
+              className="w-full flex-shrink-0"
               style={{ minWidth: '100%' }}
             >
-              {slideCharts.map((chart) => (
-                <IndicatorChartItem 
-                  key={chart.id} 
-                  chart={chart} 
-                  formatValue={formatValue} 
-                />
-              ))}
+              <div className="grid grid-cols-2 gap-3">
+                {slideCharts.map((chart) => (
+                  <IndicatorChartItem 
+                    key={chart.id} 
+                    chart={chart} 
+                    formatValue={formatValue} 
+                  />
+                ))}
+              </div>
             </div>
           ))}
         </div>
