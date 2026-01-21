@@ -46,48 +46,48 @@ export function IndicatorKPICard({
       )}
       onClick={onClick}
     >
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-4">
+      <CardContent className="p-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-xl text-muted-foreground uppercase tracking-wide font-medium mb-2 truncate">
+            <p className="text-sm text-muted-foreground uppercase tracking-wide font-medium truncate">
               {title}
             </p>
-            <p className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
+            <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
               {value}
             </p>
-            <p className="text-2xl text-muted-foreground mt-2 font-medium">
+            <p className="text-sm text-muted-foreground font-medium">
               Meta: {meta}
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 shrink-0">
+          <div className="flex flex-col items-center gap-1 shrink-0">
             <div className={cn(
-              "p-3 rounded-full",
+              "p-2 rounded-full",
               isPositive ? "bg-green-500/10" : "bg-red-500/10"
             )}>
               <Percent className={cn(
-                "h-10 w-10",
+                "h-6 w-6",
                 isPositive ? "text-green-500" : "text-red-500"
               )} />
             </div>
             <span className={cn(
-              "text-lg font-medium text-center leading-tight",
+              "text-xs font-medium text-center leading-tight",
               isPositive ? "text-green-500" : "text-red-500"
             )}>
-              Porcentagem<br />atingida
+              {percentage.toFixed(0)}%
             </span>
           </div>
         </div>
 
         {(previstoValue || realizadoValue) && (
-          <div className="flex items-center gap-6 mt-4 pt-4 border-t border-border/50">
+          <div className="flex items-center gap-4 mt-2 pt-2 border-t border-border/50 text-xs">
             {previstoValue && (
-              <p className="text-xl text-muted-foreground">
-                {previstoLabel} <span className="font-bold text-foreground text-2xl">{previstoValue}</span>
+              <p className="text-muted-foreground">
+                {previstoLabel} <span className="font-bold text-foreground">{previstoValue}</span>
               </p>
             )}
             {realizadoValue && (
-              <p className="text-xl text-muted-foreground">
-                {realizadoLabel} <span className="font-bold text-foreground text-2xl">{realizadoValue}</span>
+              <p className="text-muted-foreground">
+                {realizadoLabel} <span className="font-bold text-foreground">{realizadoValue}</span>
               </p>
             )}
           </div>
