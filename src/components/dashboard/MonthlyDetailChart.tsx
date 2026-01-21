@@ -311,7 +311,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
           )}
         </div>
       </div>
-      <div className="h-[42vh] min-h-[280px] w-full overflow-visible">
+      <div className="h-[55vh] min-h-[400px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chart.data} margin={{ top: 60, right: 20, left: 15, bottom: 50 }}>
             <defs>
@@ -440,13 +440,9 @@ function FinanceiroCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
-  // Cada slide contém 2 gráficos
+  // Cada slide contém 1 gráfico (empilhados verticalmente)
   const slides = useMemo(() => {
-    const result = [];
-    for (let i = 0; i < charts.length; i += 2) {
-      result.push(charts.slice(i, i + 2));
-    }
-    return result;
+    return charts.map(chart => [chart]);
   }, [charts]);
 
   const totalSlides = slides.length;
@@ -554,7 +550,7 @@ function FinanceiroCarousel({
               className="w-full flex-shrink-0"
               style={{ minWidth: '100%' }}
             >
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-4">
                 {slideCharts.map((chart) => (
                   <IndicatorChartItem 
                     key={chart.id} 
