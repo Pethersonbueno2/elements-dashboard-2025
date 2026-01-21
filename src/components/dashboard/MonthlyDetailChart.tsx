@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
   Bar,
+  AreaChart,
+  Area,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -10,6 +13,9 @@ import {
   ResponsiveContainer,
   Cell,
   LabelList,
+  ComposedChart,
+  Legend,
+  Dot,
 } from "recharts";
 import { type Metric } from "@/data/dashboardData";
 import { Clock } from "lucide-react";
@@ -303,31 +309,84 @@ export function MonthlyDetailChart({
                     )}
                   </div>
                 </div>
-                <div className="h-32">
+                <div className="h-40">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chart.data} margin={{ top: 15, right: 5, left: 5, bottom: 5 }}>
+                    <ComposedChart data={chart.data} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                      <defs>
+                        <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="month" 
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 8 }}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
                         axisLine={false}
                         tickLine={false}
                       />
-                      <YAxis hide />
+                      <YAxis 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={35}
+                        tickFormatter={formatValue}
+                      />
                       <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
-                      <Bar dataKey="previsto" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} barSize={8}>
-                        <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
-                      </Bar>
-                      <Bar dataKey="realizado" radius={[2, 2, 0, 0]} barSize={8}>
-                        {chart.data.map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)'} 
-                          />
-                        ))}
-                        <LabelList dataKey="realizado" position="top" fontSize={8} fill="hsl(var(--muted-foreground))" formatter={formatValue} />
-                      </Bar>
-                    </BarChart>
+                      
+                      {/* Área de Previsto */}
+                      <Area
+                        type="monotone"
+                        dataKey="previsto"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        fill={`url(#gradient-${chart.id})`}
+                        dot={false}
+                      />
+                      <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--primary))" formatter={formatValue} />
+                      
+                      {/* Linha de Realizado com dots coloridos */}
+                      <Line
+                        type="monotone"
+                        dataKey="realizado"
+                        stroke="hsl(var(--muted-foreground))"
+                        strokeWidth={2}
+                        dot={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          if (payload.realizado === null || payload.realizado === undefined) return null;
+                          const color = payload.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={5}
+                              fill={color}
+                              stroke="hsl(var(--card))"
+                              strokeWidth={2}
+                            />
+                          );
+                        }}
+                        label={(props: any) => {
+                          const { x, y, value, index } = props;
+                          if (value === null || value === undefined) return null;
+                          const entry = chart.data[index];
+                          const color = entry?.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                          return (
+                            <text
+                              x={x}
+                              y={y - 10}
+                              fill={color}
+                              fontSize={9}
+                              fontWeight={600}
+                              textAnchor="middle"
+                            >
+                              {formatValue(value)}
+                            </text>
+                          );
+                        }}
+                      />
+                    </ComposedChart>
                   </ResponsiveContainer>
                 </div>
               </div>
