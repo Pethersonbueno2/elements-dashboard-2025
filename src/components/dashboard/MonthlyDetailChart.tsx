@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
@@ -18,7 +18,8 @@ import {
   Dot,
 } from "recharts";
 import { type Metric } from "@/data/dashboardData";
-import { Clock } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MonthlyDetailChartProps {
   metrics: Metric[];
@@ -277,151 +278,349 @@ export function MonthlyDetailChart({
       )}
 
       {/* Card 2: Grid de gráficos por indicador */}
-      <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-semibold text-foreground">
-            {showOnlyIndicators ? title : "Indicadores por Setor"}
-          </CardTitle>
-          <p className="text-xs text-muted-foreground">
-            {showOnlyIndicators ? subtitle : "Evolução mensal de cada indicador"}
-          </p>
-        </CardHeader>
-        <CardContent>
+      <IndicatorChartsSection 
+        indicatorCharts={indicatorCharts}
+        showOnlyIndicators={showOnlyIndicators}
+        title={title}
+        subtitle={subtitle}
+        metrics={metrics}
+      />
+    </div>
+  );
+}
+
+// Componente separado para renderizar um único gráfico de indicador
+function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (value: number | null) => string }) {
+  return (
+    <div className="bg-muted/30 rounded-lg p-4">
+      <div className="flex flex-col gap-1 mb-2">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
+            {chart.nome}
+          </h4>
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+            Meta: {chart.meta}
+          </span>
+        </div>
+        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+          <Clock className="w-3 h-3" />
+          <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
+          {chart.inverso && (
+            <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
+              ↓ Menor = Melhor
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="h-40">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={chart.data} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+            <defs>
+              <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
+            <XAxis 
+              dataKey="month" 
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis 
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
+              axisLine={false}
+              tickLine={false}
+              width={35}
+              tickFormatter={formatValue}
+            />
+            <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
+            
+            {/* Área de Previsto */}
+            <Area
+              type="monotone"
+              dataKey="previsto"
+              stroke="hsl(var(--primary))"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              fill={`url(#gradient-${chart.id})`}
+              dot={(props: any) => {
+                const { cx, cy, payload } = props;
+                if (payload.previsto === null || payload.previsto === undefined) return null;
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={4}
+                    fill="hsl(var(--primary))"
+                    stroke="hsl(var(--card))"
+                    strokeWidth={2}
+                  />
+                );
+              }}
+              label={(props: any) => {
+                const { x, y, value } = props;
+                if (value === null || value === undefined) return null;
+                return (
+                  <text
+                    x={x}
+                    y={y + 22}
+                    fill="white"
+                    fontSize={7}
+                    fontWeight={500}
+                    textAnchor="middle"
+                  >
+                    {formatValue(value)}
+                  </text>
+                );
+              }}
+            />
+            
+            {/* Linha de Realizado com dots coloridos */}
+            <Line
+              type="monotone"
+              dataKey="realizado"
+              stroke="hsl(var(--muted-foreground))"
+              strokeWidth={2}
+              dot={(props: any) => {
+                const { cx, cy, payload } = props;
+                if (payload.realizado === null || payload.realizado === undefined) return null;
+                const color = payload.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={5}
+                    fill={color}
+                    stroke="hsl(var(--card))"
+                    strokeWidth={2}
+                  />
+                );
+              }}
+              label={(props: any) => {
+                const { x, y, value, index } = props;
+                if (value === null || value === undefined) return null;
+                const entry = chart.data[index];
+                const color = entry?.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                return (
+                  <text
+                    x={x}
+                    y={y - 14}
+                    fill={color}
+                    fontSize={8}
+                    fontWeight={600}
+                    textAnchor="middle"
+                  >
+                    {formatValue(value)}
+                  </text>
+                );
+              }}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+// Componente de Carrossel para Financeiro e Controladoria
+function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValue: (value: number | null) => string }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+
+  // Agrupa gráficos em pares (2 por slide, empilhados)
+  const slides = useMemo(() => {
+    const result: any[][] = [];
+    for (let i = 0; i < charts.length; i += 2) {
+      result.push(charts.slice(i, i + 2));
+    }
+    return result;
+  }, [charts]);
+
+  const totalSlides = slides.length;
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    setCountdown(10);
+  }, [totalSlides]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCountdown(10);
+  }, [totalSlides]);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentSlide(index);
+    setCountdown(10);
+  }, []);
+
+  // Auto-avançar a cada 10 segundos
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          nextSlide();
+          return 10;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isPaused, nextSlide]);
+
+  return (
+    <div className="space-y-4">
+      {/* Controles do carrossel */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={prevSlide}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setIsPaused(!isPaused)}
+          >
+            {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={nextSlide}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">
+            {currentSlide + 1} / {totalSlides}
+          </span>
+          {!isPaused && (
+            <span className="text-xs text-primary font-medium">
+              {countdown}s
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Barra de progresso */}
+      <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-primary transition-all duration-1000 ease-linear"
+          style={{ width: `${((10 - countdown) / 10) * 100}%` }}
+        />
+      </div>
+
+      {/* Slides - 2 gráficos empilhados verticalmente */}
+      <div className="relative overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {slides.map((slideCharts, slideIndex) => (
+            <div 
+              key={slideIndex} 
+              className="w-full flex-shrink-0 space-y-4"
+            >
+              {slideCharts.map((chart) => (
+                <IndicatorChartItem 
+                  key={chart.id} 
+                  chart={chart} 
+                  formatValue={formatValue} 
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Indicadores de slide (dots) */}
+      <div className="flex items-center justify-center gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === currentSlide 
+                ? 'bg-primary w-4' 
+                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Componente principal que decide entre grid ou carrossel
+function IndicatorChartsSection({ 
+  indicatorCharts, 
+  showOnlyIndicators, 
+  title, 
+  subtitle,
+  metrics 
+}: { 
+  indicatorCharts: any[]; 
+  showOnlyIndicators: boolean; 
+  title: string; 
+  subtitle: string;
+  metrics: Metric[];
+}) {
+  // Verifica se é categoria Financeiro e Controladoria
+  const isFinanceiroCategory = useMemo(() => {
+    return metrics.length > 0 && 
+      metrics.some(m => 
+        m.categoria?.toLowerCase().includes('financeiro') || 
+        m.categoria?.toLowerCase().includes('controladoria')
+      );
+  }, [metrics]);
+
+  // Usa carrossel apenas para Financeiro e Controladoria com mais de 4 gráficos
+  const useCarousel = isFinanceiroCategory && indicatorCharts.length > 4;
+
+  return (
+    <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-base font-semibold text-foreground">
+              {showOnlyIndicators ? title : "Indicadores por Setor"}
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              {showOnlyIndicators ? subtitle : "Evolução mensal de cada indicador"}
+            </p>
+          </div>
+          {useCarousel && (
+            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+              Modo Carrossel
+            </span>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {useCarousel ? (
+          <FinanceiroCarousel charts={indicatorCharts} formatValue={formatValue} />
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {indicatorCharts.map((chart) => (
-              <div key={chart.id} className="bg-muted/30 rounded-lg p-4">
-                <div className="flex flex-col gap-1 mb-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-foreground truncate max-w-[60%]">
-                      {chart.nome}
-                    </h4>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                      Meta: {chart.meta}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
-                    {chart.inverso && (
-                      <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[9px]">
-                        ↓ Menor = Melhor
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="h-40">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={chart.data} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
-                      <defs>
-                        <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
-                      <XAxis 
-                        dataKey="month" 
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }}
-                        axisLine={false}
-                        tickLine={false}
-                        width={35}
-                        tickFormatter={formatValue}
-                      />
-                      <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
-                      
-                      {/* Área de Previsto */}
-                      <Area
-                        type="monotone"
-                        dataKey="previsto"
-                        stroke="hsl(var(--primary))"
-                        strokeWidth={2}
-                        strokeDasharray="5 5"
-                        fill={`url(#gradient-${chart.id})`}
-                        dot={(props: any) => {
-                          const { cx, cy, payload } = props;
-                          if (payload.previsto === null || payload.previsto === undefined) return null;
-                          return (
-                            <circle
-                              cx={cx}
-                              cy={cy}
-                              r={4}
-                              fill="hsl(var(--primary))"
-                              stroke="hsl(var(--card))"
-                              strokeWidth={2}
-                            />
-                          );
-                        }}
-                        label={(props: any) => {
-                          const { x, y, value } = props;
-                          if (value === null || value === undefined) return null;
-                          return (
-                            <text
-                              x={x}
-                              y={y + 22}
-                              fill="white"
-                              fontSize={7}
-                              fontWeight={500}
-                              textAnchor="middle"
-                            >
-                              {formatValue(value)}
-                            </text>
-                          );
-                        }}
-                      />
-                      
-                      {/* Linha de Realizado com dots coloridos */}
-                      <Line
-                        type="monotone"
-                        dataKey="realizado"
-                        stroke="hsl(var(--muted-foreground))"
-                        strokeWidth={2}
-                        dot={(props: any) => {
-                          const { cx, cy, payload } = props;
-                          if (payload.realizado === null || payload.realizado === undefined) return null;
-                          const color = payload.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
-                          return (
-                            <circle
-                              cx={cx}
-                              cy={cy}
-                              r={5}
-                              fill={color}
-                              stroke="hsl(var(--card))"
-                              strokeWidth={2}
-                            />
-                          );
-                        }}
-                        label={(props: any) => {
-                          const { x, y, value, index } = props;
-                          if (value === null || value === undefined) return null;
-                          const entry = chart.data[index];
-                          const color = entry?.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
-                          return (
-                            <text
-                              x={x}
-                              y={y - 14}
-                              fill={color}
-                              fontSize={8}
-                              fontWeight={600}
-                              textAnchor="middle"
-                            >
-                              {formatValue(value)}
-                            </text>
-                          );
-                        }}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+              <IndicatorChartItem key={chart.id} chart={chart} formatValue={formatValue} />
             ))}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
