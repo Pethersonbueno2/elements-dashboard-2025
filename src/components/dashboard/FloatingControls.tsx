@@ -82,7 +82,7 @@ export function FloatingControls() {
   }, []);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 bg-card border border-border rounded-xl p-2 shadow-lg transition-all duration-300">
+    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2 bg-card border border-border rounded-xl p-2 shadow-lg transition-all duration-300" style={{ isolation: 'isolate' }}>
       {/* Minimize Toggle */}
       <Tooltip>
         <TooltipTrigger asChild>
