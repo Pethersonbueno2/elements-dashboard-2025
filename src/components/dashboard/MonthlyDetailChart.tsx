@@ -315,9 +315,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
           )}
         </div>
       </div>
-      <div className="h-[50vh] min-h-[350px]">
+      <div className="h-[50vh] min-h-[350px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chart.data} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+          <ComposedChart data={chart.data} margin={{ top: 35, right: 25, left: 15, bottom: 10 }}>
             <defs>
               <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
@@ -327,16 +327,18 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
             <XAxis 
               dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 14 }}
-              axisLine={false}
-              tickLine={false}
-              height={45}
-            />
-            <YAxis 
               tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 13 }}
               axisLine={false}
               tickLine={false}
-              width={55}
+              height={40}
+              interval={0}
+              padding={{ left: 10, right: 10 }}
+            />
+            <YAxis 
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              width={50}
               tickFormatter={formatValue}
             />
             <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
