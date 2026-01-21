@@ -132,6 +132,29 @@
   }
 }
 
+/*
+  Viewport zooming
+  - Uses transform scale on #app-viewport (more compatible than html { zoom })
+  - Keeps FloatingControls (fixed) unaffected because it lives outside #app-viewport
+*/
+#app-viewport {
+  transform-origin: top left;
+}
+
+:root {
+  --app-zoom: 1;
+}
+
+body[data-app-zoom="1"] #app-viewport {
+  transform: none;
+  width: 100%;
+}
+
+body:not([data-app-zoom="1"]) #app-viewport {
+  transform: scale(var(--app-zoom));
+  width: calc(100% / var(--app-zoom));
+}
+
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
