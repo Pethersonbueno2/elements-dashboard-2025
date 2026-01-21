@@ -292,61 +292,72 @@ export function MonthlyDetailChart({
   );
 }
 
-// Componente separado para renderizar um único gráfico de indicador - compacto para 2 por slide
+// Componente separado para renderizar um único gráfico de indicador - fullwidth para carrossel
 function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (value: number | null) => string }) {
+  // Prepara dados com cores para cada segmento
+  const chartDataWithSegments = useMemo(() => {
+    return chart.data.map((entry: any, index: number) => {
+      // Cor do segmento baseada no ponto atual
+      const segmentColor = entry.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
+      return {
+        ...entry,
+        segmentColor,
+      };
+    });
+  }, [chart.data]);
+
   return (
-    <div className="bg-muted/30 rounded-lg p-3">
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="text-xl font-semibold text-foreground truncate max-w-[60%]">
+    <div className="bg-card rounded-lg border border-border p-4">
+      {/* Header do gráfico */}
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="text-xl font-bold text-foreground">
           {chart.nome}
         </h4>
-        <div className="flex items-center gap-2">
-          <span className="text-lg text-muted-foreground bg-muted px-3 py-1 rounded font-medium">
-            Meta: {chart.meta}
-          </span>
-          {chart.inverso && (
-            <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm">
-              ↓ Menor = Melhor
-            </span>
-          )}
+        <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-primary"></div>
+            <span className="text-muted-foreground">Previsto</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(142.1 76.2% 36.3%)' }}></div>
+            <span className="text-muted-foreground">Realizado (meta atingida)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'hsl(0 84.2% 60.2%)' }}></div>
+            <span className="text-muted-foreground">Realizado (abaixo meta)</span>
+          </div>
         </div>
       </div>
-      <div className="h-[32vh] min-h-[200px] w-full overflow-visible">
+      
+      {/* Gráfico fullwidth */}
+      <div className="h-[45vh] min-h-[350px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chart.data} margin={{ top: 60, right: 20, left: 15, bottom: 50 }}>
-            <defs>
-              <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
+          <ComposedChart data={chartDataWithSegments} margin={{ top: 50, right: 30, left: 20, bottom: 30 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} horizontal vertical={false} />
             <XAxis 
               dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 18, fontWeight: 600 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 14, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              height={45}
+              height={40}
               interval={0}
-              padding={{ left: 10, right: 10 }}
+              padding={{ left: 20, right: 20 }}
             />
             <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 16, fontWeight: 500 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              width={60}
+              width={50}
               tickFormatter={formatValue}
             />
             <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
             
-            {/* Área de Previsto */}
-            <Area
+            {/* Linha de Previsto - azul/roxa */}
+            <Line
               type="monotone"
               dataKey="previsto"
               stroke="hsl(var(--primary))"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              fill={`url(#gradient-${chart.id})`}
+              strokeWidth={3}
               dot={(props: any) => {
                 const { cx, cy, payload } = props;
                 if (payload.previsto === null || payload.previsto === undefined) return null;
@@ -354,10 +365,10 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={6}
+                    r={8}
                     fill="hsl(var(--primary))"
                     stroke="hsl(var(--card))"
-                    strokeWidth={2}
+                    strokeWidth={3}
                   />
                 );
               }}
@@ -367,10 +378,10 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 30}
-                    fill="white"
-                    fontSize={30}
-                    fontWeight={700}
+                    y={y + 35}
+                    fill="hsl(var(--primary))"
+                    fontSize={14}
+                    fontWeight={600}
                     textAnchor="middle"
                   >
                     {formatValue(value)}
@@ -379,38 +390,39 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
               }}
             />
             
-            {/* Linha de Realizado com dots coloridos */}
+            {/* Linha de Realizado - linha verde/vermelha com dots coloridos */}
             <Line
               type="monotone"
               dataKey="realizado"
               stroke="hsl(var(--muted-foreground))"
-              strokeWidth={2}
+              strokeWidth={3}
+              connectNulls={false}
               dot={(props: any) => {
                 const { cx, cy, payload } = props;
                 if (payload.realizado === null || payload.realizado === undefined) return null;
-                const color = payload.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                const color = payload.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
                 return (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={8}
+                    r={10}
                     fill={color}
                     stroke="hsl(var(--card))"
-                    strokeWidth={2}
+                    strokeWidth={3}
                   />
                 );
               }}
               label={(props: any) => {
                 const { x, y, value, index } = props;
                 if (value === null || value === undefined) return null;
-                const entry = chart.data[index];
-                const color = entry?.atingido ? 'hsl(var(--success))' : 'hsl(0 84% 60%)';
+                const entry = chartDataWithSegments[index];
+                const color = entry?.atingido ? 'hsl(142.1 76.2% 36.3%)' : 'hsl(0 84.2% 60.2%)';
                 return (
                   <text
                     x={x}
-                    y={y - 45}
+                    y={y - 25}
                     fill={color}
-                    fontSize={30}
+                    fontSize={14}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -440,24 +452,15 @@ function FinanceiroCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
-  // Cada slide contém 2 gráficos
-  const slides = useMemo(() => {
-    const result = [];
-    for (let i = 0; i < charts.length; i += 2) {
-      result.push(charts.slice(i, i + 2));
-    }
-    return result;
-  }, [charts]);
+  // Cada slide contém 1 gráfico (fullwidth)
+  const totalSlides = charts.length;
 
-  const totalSlides = slides.length;
-
-  // Notifica o pai sobre quais indicadores estão visíveis
+  // Notifica o pai sobre qual indicador está visível
   useEffect(() => {
-    if (onVisibleIndicatorsChange && slides[currentSlide]) {
-      const visibleIds = slides[currentSlide].map((chart: any) => chart.id);
-      onVisibleIndicatorsChange(visibleIds);
+    if (onVisibleIndicatorsChange && charts[currentSlide]) {
+      onVisibleIndicatorsChange([charts[currentSlide].id]);
     }
-  }, [currentSlide, slides, onVisibleIndicatorsChange]);
+  }, [currentSlide, charts, onVisibleIndicatorsChange]);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -542,27 +545,22 @@ function FinanceiroCarousel({
         />
       </div>
 
-      {/* Slides - 2 gráficos por vez */}
+      {/* Slides - 1 gráfico fullwidth por vez */}
       <div className="relative overflow-hidden rounded-lg">
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {slides.map((slideCharts, slideIndex) => (
+          {charts.map((chart, slideIndex) => (
             <div 
-              key={slideIndex} 
+              key={chart.id} 
               className="w-full flex-shrink-0"
               style={{ minWidth: '100%' }}
             >
-              <div className="grid grid-cols-2 gap-3">
-                {slideCharts.map((chart) => (
-                  <IndicatorChartItem 
-                    key={chart.id} 
-                    chart={chart} 
-                    formatValue={formatValue} 
-                  />
-                ))}
-              </div>
+              <IndicatorChartItem 
+                chart={chart} 
+                formatValue={formatValue} 
+              />
             </div>
           ))}
         </div>
@@ -570,9 +568,9 @@ function FinanceiroCarousel({
 
       {/* Indicadores de slide (dots) */}
       <div className="flex items-center justify-center gap-2 relative z-10">
-        {slides.map((_, index) => (
+        {charts.map((chart, index) => (
           <button
-            key={index}
+            key={chart.id}
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 rounded-full transition-all ${
               index === currentSlide 
