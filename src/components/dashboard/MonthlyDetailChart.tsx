@@ -327,18 +327,18 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
             <XAxis 
               dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 13 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 15, fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
-              height={40}
+              height={45}
               interval={0}
               padding={{ left: 10, right: 10 }}
             />
             <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 14, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              width={50}
+              width={55}
               tickFormatter={formatValue}
             />
             <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
@@ -371,10 +371,10 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 30}
+                    y={y + 32}
                     fill="white"
-                    fontSize={14}
-                    fontWeight={600}
+                    fontSize={16}
+                    fontWeight={700}
                     textAnchor="middle"
                   >
                     {formatValue(value)}
@@ -412,9 +412,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y - 20}
+                    y={y - 22}
                     fill={color}
-                    fontSize={15}
+                    fontSize={18}
                     fontWeight={700}
                     textAnchor="middle"
                   >
