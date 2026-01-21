@@ -295,27 +295,27 @@ export function MonthlyDetailChart({
 // Componente separado para renderizar um único gráfico de indicador
 function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (value: number | null) => string }) {
   return (
-    <div className="bg-muted/30 rounded-lg p-6">
-      <div className="flex flex-col gap-2 mb-4">
+    <div className="bg-muted/30 rounded-lg p-4">
+      <div className="flex flex-col gap-1 mb-3">
         <div className="flex items-center justify-between">
-          <h4 className="text-lg font-semibold text-foreground truncate max-w-[70%]">
+          <h4 className="text-base font-medium text-foreground truncate max-w-[65%]">
             {chart.nome}
           </h4>
-          <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-lg">
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
             Meta: {chart.meta}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Clock className="w-4 h-4" />
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <Clock className="w-3.5 h-3.5" />
           <span>Atualizado: {formatDate(chart.ultimaAtualizacao)}</span>
           {chart.inverso && (
-            <span className="ml-2 bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">
+            <span className="ml-2 bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded text-[10px]">
               ↓ Menor = Melhor
             </span>
           )}
         </div>
       </div>
-      <div className="h-[45vh] min-h-[280px]">
+      <div className="h-[30vh] min-h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chart.data} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
             <defs>
@@ -327,16 +327,16 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
             <XAxis 
               dataKey="month" 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
               axisLine={false}
               tickLine={false}
-              height={40}
+              height={30}
             />
             <YAxis 
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
               axisLine={false}
               tickLine={false}
-              width={50}
+              width={40}
               tickFormatter={formatValue}
             />
             <Tooltip content={<CustomTooltip inverso={chart.inverso} />} cursor={{ fill: 'transparent' }} />
@@ -356,7 +356,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={6}
+                    r={5}
                     fill="hsl(var(--primary))"
                     stroke="hsl(var(--card))"
                     strokeWidth={2}
@@ -369,9 +369,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 28}
+                    y={y + 24}
                     fill="white"
-                    fontSize={11}
+                    fontSize={9}
                     fontWeight={500}
                     textAnchor="middle"
                   >
@@ -395,7 +395,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={8}
+                    r={6}
                     fill={color}
                     stroke="hsl(var(--card))"
                     strokeWidth={2}
@@ -410,9 +410,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y - 18}
+                    y={y - 16}
                     fill={color}
-                    fontSize={12}
+                    fontSize={10}
                     fontWeight={600}
                     textAnchor="middle"
                   >
