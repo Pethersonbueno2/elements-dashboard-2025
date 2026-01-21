@@ -70,19 +70,19 @@ const Index = () => {
   }, [supabaseMetrics]);
 
   const [selectedCategory, setSelectedCategory] = useState("Compras Internacionais");
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("30");
-  const [selectedMonth, setSelectedMonth] = useState<MonthType>("Dezembro");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("Todos");
+  const [selectedMonth, setSelectedMonth] = useState<MonthType>("all");
   const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [visibleIndicatorIds, setVisibleIndicatorIds] = useState<string[]>([]);
 
-  // Quando muda de categoria, reseta para Dezembro, "30 dias" e "Todos os indicadores"
+  // Quando muda de categoria, reseta para "Todos os meses", período "Todos" e "Todos os indicadores"
   const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category);
-    setSelectedMonth("Dezembro");
+    setSelectedMonth("all");
     setSelectedIndicator("all");
-    setSelectedPeriod("30");
+    setSelectedPeriod("Todos");
   }, []);
 
   // Fullscreen toggle
