@@ -367,9 +367,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 38}
+                    y={y + 60}
                     fill="white"
-                    fontSize={20}
+                    fontSize={30}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -408,9 +408,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y - 28}
+                    y={y - 45}
                     fill={color}
-                    fontSize={20}
+                    fontSize={30}
                     fontWeight={700}
                     textAnchor="middle"
                   >

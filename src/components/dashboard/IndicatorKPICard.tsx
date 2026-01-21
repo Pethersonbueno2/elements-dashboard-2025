@@ -70,23 +70,23 @@ export function IndicatorKPICard({
               )} />
             </div>
             <span className={cn(
-              "text-xs font-medium text-center leading-tight",
+              "font-bold text-center leading-tight",
               isPositive ? "text-green-500" : "text-red-500"
-            )}>
+            )} style={{ fontSize: '30px' }}>
               {percentage.toFixed(0)}%
             </span>
           </div>
         </div>
 
         {(previstoValue || realizadoValue) && (
-          <div className="flex items-center gap-4 mt-2 pt-2 border-t border-border/50 text-xs">
+          <div className="flex items-center gap-6 mt-2 pt-2 border-t border-border/50 text-lg">
             {previstoValue && (
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground" style={{ fontSize: '30px' }}>
                 {previstoLabel} <span className="font-bold text-foreground">{previstoValue}</span>
               </p>
             )}
             {realizadoValue && (
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground" style={{ fontSize: '30px' }}>
                 {realizadoLabel} <span className="font-bold text-foreground">{realizadoValue}</span>
               </p>
             )}
