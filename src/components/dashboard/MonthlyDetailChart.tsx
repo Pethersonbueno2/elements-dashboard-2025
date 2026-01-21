@@ -313,7 +313,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
       </div>
       <div className="h-[32vh] min-h-[200px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chart.data} margin={{ top: 100, right: 20, left: 15, bottom: 50 }}>
+          <ComposedChart data={chart.data} margin={{ top: 60, right: 20, left: 15, bottom: 50 }}>
             <defs>
               <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
