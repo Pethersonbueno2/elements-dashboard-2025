@@ -311,7 +311,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
           )}
         </div>
       </div>
-      <div className="h-[32vh] min-h-[200px] w-full overflow-visible">
+      <div className="h-[42vh] min-h-[280px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chart.data} margin={{ top: 60, right: 20, left: 15, bottom: 50 }}>
             <defs>
