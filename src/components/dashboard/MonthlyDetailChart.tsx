@@ -441,13 +441,9 @@ function FinanceiroCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(10);
 
-  // Agrupa gráficos em pares (2 por slide, empilhados)
+  // Cada slide contém 1 gráfico
   const slides = useMemo(() => {
-    const result: any[][] = [];
-    for (let i = 0; i < charts.length; i += 2) {
-      result.push(charts.slice(i, i + 2));
-    }
-    return result;
+    return charts.map(chart => [chart]);
   }, [charts]);
 
   const totalSlides = slides.length;
@@ -600,17 +596,8 @@ function IndicatorChartsSection({
   metrics: Metric[];
   onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
 }) {
-  // Verifica se é categoria Financeiro e Controladoria
-  const isFinanceiroCategory = useMemo(() => {
-    return metrics.length > 0 && 
-      metrics.some(m => 
-        m.categoria?.toLowerCase().includes('financeiro') || 
-        m.categoria?.toLowerCase().includes('controladoria')
-      );
-  }, [metrics]);
-
-  // Usa carrossel apenas para Financeiro e Controladoria com mais de 4 gráficos
-  const useCarousel = isFinanceiroCategory && indicatorCharts.length > 4;
+  // Usa carrossel para qualquer setor com mais de 1 gráfico
+  const useCarousel = indicatorCharts.length > 1;
 
   // Quando não usar carrossel, notifica todos os indicadores como visíveis
   useEffect(() => {
