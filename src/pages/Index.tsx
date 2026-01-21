@@ -75,6 +75,7 @@ const Index = () => {
   const [selectedIndicator, setSelectedIndicator] = useState("all");
   const [isTVMode, setIsTVMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [visibleIndicatorIds, setVisibleIndicatorIds] = useState<string[]>([]);
 
   // Quando muda de categoria, reseta para Dezembro, "30 dias" e "Todos os indicadores"
   const handleCategoryChange = useCallback((category: string) => {
@@ -555,22 +556,24 @@ const isMetaAtingida = (realizado: number, previsto: number, isInverso: boolean)
           </div>
         </div>
 
-        {/* KPI Cards Row */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-          {topKPIs.map((kpi) => (
-            <IndicatorKPICard
-              key={kpi.id}
-              title={kpi.title}
-              value={kpi.value}
-              meta={kpi.meta}
-              percentage={kpi.percentage}
-              previstoValue={kpi.previsto}
-              realizadoValue={kpi.realizado}
-              inverso={kpi.inverso}
-              onClick={() => setSelectedIndicator(kpi.id === selectedIndicator ? "all" : kpi.id)}
-              isSelected={selectedIndicator === kpi.id}
-            />
-          ))}
+        {/* KPI Cards Row - Filtra pelos indicadores visíveis no carrossel */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {topKPIs
+            .filter((kpi) => visibleIndicatorIds.length === 0 || visibleIndicatorIds.includes(kpi.id))
+            .map((kpi) => (
+              <IndicatorKPICard
+                key={kpi.id}
+                title={kpi.title}
+                value={kpi.value}
+                meta={kpi.meta}
+                percentage={kpi.percentage}
+                previstoValue={kpi.previsto}
+                realizadoValue={kpi.realizado}
+                inverso={kpi.inverso}
+                onClick={() => setSelectedIndicator(kpi.id === selectedIndicator ? "all" : kpi.id)}
+                isSelected={selectedIndicator === kpi.id}
+              />
+            ))}
         </section>
 
         {/* Charts Row - Oculto quando "Todos os Indicadores" está selecionado */}
@@ -591,6 +594,7 @@ const isMetaAtingida = (realizado: number, previsto: number, isInverso: boolean)
               metrics={filteredMetrics}
               title="Detalhamento Mensal"
               subtitle="Valores de Previsto e Realizado por mês para cada indicador"
+              onVisibleIndicatorsChange={setVisibleIndicatorIds}
             />
           </section>
         )}
@@ -603,6 +607,7 @@ const isMetaAtingida = (realizado: number, previsto: number, isInverso: boolean)
               title="Indicadores por Setor"
               subtitle="Evolução mensal de cada indicador"
               showOnlyIndicators={true}
+              onVisibleIndicatorsChange={setVisibleIndicatorIds}
             />
           </section>
         )}
