@@ -26,6 +26,7 @@ interface MonthlyDetailChartProps {
   title?: string;
   subtitle?: string;
   showOnlyIndicators?: boolean;
+  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
 }
 
 const months = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
@@ -133,6 +134,7 @@ export function MonthlyDetailChart({
   title = "Detalhamento Mensal",
   subtitle = "Valores de Previsto e Realizado por mês para cada indicador",
   showOnlyIndicators = false,
+  onVisibleIndicatorsChange,
 }: MonthlyDetailChartProps) {
   // Agregar dados por mês considerando o contexto inverso de cada métrica
   const chartData = useMemo(() => {
@@ -284,6 +286,7 @@ export function MonthlyDetailChart({
         title={title}
         subtitle={subtitle}
         metrics={metrics}
+        onVisibleIndicatorsChange={onVisibleIndicatorsChange}
       />
     </div>
   );
@@ -425,7 +428,15 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
 }
 
 // Componente de Carrossel para Financeiro e Controladoria
-function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValue: (value: number | null) => string }) {
+function FinanceiroCarousel({ 
+  charts, 
+  formatValue,
+  onVisibleIndicatorsChange 
+}: { 
+  charts: any[]; 
+  formatValue: (value: number | null) => string;
+  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
+}) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [countdown, setCountdown] = useState(10);
@@ -440,6 +451,14 @@ function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValu
   }, [charts]);
 
   const totalSlides = slides.length;
+
+  // Notifica o pai sobre quais indicadores estão visíveis
+  useEffect(() => {
+    if (onVisibleIndicatorsChange && slides[currentSlide]) {
+      const visibleIds = slides[currentSlide].map((chart: any) => chart.id);
+      onVisibleIndicatorsChange(visibleIds);
+    }
+  }, [currentSlide, slides, onVisibleIndicatorsChange]);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -571,13 +590,15 @@ function IndicatorChartsSection({
   showOnlyIndicators, 
   title, 
   subtitle,
-  metrics 
+  metrics,
+  onVisibleIndicatorsChange
 }: { 
   indicatorCharts: any[]; 
   showOnlyIndicators: boolean; 
   title: string; 
   subtitle: string;
   metrics: Metric[];
+  onVisibleIndicatorsChange?: (indicatorIds: string[]) => void;
 }) {
   // Verifica se é categoria Financeiro e Controladoria
   const isFinanceiroCategory = useMemo(() => {
@@ -590,6 +611,13 @@ function IndicatorChartsSection({
 
   // Usa carrossel apenas para Financeiro e Controladoria com mais de 4 gráficos
   const useCarousel = isFinanceiroCategory && indicatorCharts.length > 4;
+
+  // Quando não usar carrossel, notifica todos os indicadores como visíveis
+  useEffect(() => {
+    if (!useCarousel && onVisibleIndicatorsChange) {
+      onVisibleIndicatorsChange(indicatorCharts.map(c => c.id));
+    }
+  }, [useCarousel, indicatorCharts, onVisibleIndicatorsChange]);
 
   return (
     <Card id="monthly-detail-indicators" className="bg-card border-border monthly-detail-indicators">
@@ -612,7 +640,11 @@ function IndicatorChartsSection({
       </CardHeader>
       <CardContent>
         {useCarousel ? (
-          <FinanceiroCarousel charts={indicatorCharts} formatValue={formatValue} />
+          <FinanceiroCarousel 
+            charts={indicatorCharts} 
+            formatValue={formatValue} 
+            onVisibleIndicatorsChange={onVisibleIndicatorsChange}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {indicatorCharts.map((chart) => (
