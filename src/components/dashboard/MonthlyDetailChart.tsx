@@ -474,9 +474,9 @@ function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValu
   }, [isPaused, nextSlide]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative z-0">
       {/* Controles do carrossel */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -525,7 +525,7 @@ function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValu
       </div>
 
       {/* Slides - 2 gráficos empilhados verticalmente */}
-      <div className="relative overflow-hidden">
+      <div className="relative" style={{ overflow: 'clip' }}>
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -548,7 +548,7 @@ function FinanceiroCarousel({ charts, formatValue }: { charts: any[]; formatValu
       </div>
 
       {/* Indicadores de slide (dots) */}
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2 relative z-10">
         {slides.map((_, index) => (
           <button
             key={index}
