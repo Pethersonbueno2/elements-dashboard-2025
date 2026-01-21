@@ -371,9 +371,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 32}
+                    y={y + 35}
                     fill="white"
-                    fontSize={16}
+                    fontSize={20}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -412,9 +412,9 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y - 22}
+                    y={y - 24}
                     fill={color}
-                    fontSize={18}
+                    fontSize={20}
                     fontWeight={700}
                     textAnchor="middle"
                   >
@@ -542,8 +542,8 @@ function FinanceiroCarousel({
         />
       </div>
 
-      {/* Slides - 2 gráficos empilhados verticalmente */}
-      <div className="relative" style={{ overflow: 'clip' }}>
+      {/* Slides - 1 gráfico por vez */}
+      <div className="relative overflow-hidden rounded-lg">
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -551,7 +551,8 @@ function FinanceiroCarousel({
           {slides.map((slideCharts, slideIndex) => (
             <div 
               key={slideIndex} 
-              className="w-full flex-shrink-0 space-y-4"
+              className="w-full flex-shrink-0 px-1"
+              style={{ minWidth: '100%' }}
             >
               {slideCharts.map((chart) => (
                 <IndicatorChartItem 
