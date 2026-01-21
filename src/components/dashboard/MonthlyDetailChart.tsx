@@ -342,9 +342,37 @@ export function MonthlyDetailChart({
                         strokeWidth={2}
                         strokeDasharray="5 5"
                         fill={`url(#gradient-${chart.id})`}
-                        dot={false}
+                        dot={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          if (payload.previsto === null || payload.previsto === undefined) return null;
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={4}
+                              fill="hsl(var(--primary))"
+                              stroke="hsl(var(--card))"
+                              strokeWidth={2}
+                            />
+                          );
+                        }}
+                        label={(props: any) => {
+                          const { x, y, value } = props;
+                          if (value === null || value === undefined) return null;
+                          return (
+                            <text
+                              x={x}
+                              y={y + 18}
+                              fill="hsl(var(--primary))"
+                              fontSize={8}
+                              fontWeight={500}
+                              textAnchor="middle"
+                            >
+                              {formatValue(value)}
+                            </text>
+                          );
+                        }}
                       />
-                      <LabelList dataKey="previsto" position="top" fontSize={8} fill="hsl(var(--primary))" formatter={formatValue} />
                       
                       {/* Linha de Realizado com dots coloridos */}
                       <Line
