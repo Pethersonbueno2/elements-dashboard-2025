@@ -362,9 +362,9 @@ export function MonthlyDetailChart({
                           return (
                             <text
                               x={x}
-                              y={y + 18}
-                              fill="hsl(var(--primary))"
-                              fontSize={8}
+                              y={y + 22}
+                              fill="white"
+                              fontSize={7}
                               fontWeight={500}
                               textAnchor="middle"
                             >
@@ -403,9 +403,9 @@ export function MonthlyDetailChart({
                           return (
                             <text
                               x={x}
-                              y={y - 10}
+                              y={y - 14}
                               fill={color}
-                              fontSize={9}
+                              fontSize={8}
                               fontWeight={600}
                               textAnchor="middle"
                             >
