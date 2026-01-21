@@ -313,7 +313,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
       </div>
       <div className="h-[32vh] min-h-[200px] w-full overflow-visible">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chart.data} margin={{ top: 40, right: 20, left: 15, bottom: 10 }}>
+          <ComposedChart data={chart.data} margin={{ top: 60, right: 20, left: 15, bottom: 50 }}>
             <defs>
               <linearGradient id={`gradient-${chart.id}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
@@ -326,7 +326,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
               tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 18, fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
-              height={35}
+              height={45}
               interval={0}
               padding={{ left: 10, right: 10 }}
             />
@@ -367,7 +367,7 @@ function IndicatorChartItem({ chart, formatValue }: { chart: any; formatValue: (
                 return (
                   <text
                     x={x}
-                    y={y + 60}
+                    y={y + 30}
                     fill="white"
                     fontSize={30}
                     fontWeight={700}
